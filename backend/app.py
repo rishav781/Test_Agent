@@ -1,0 +1,730 @@
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import openai
+import os
+import tempfile
+import base64
+from PIL import Image
+import io
+import json
+from datetime import datetime
+from dotenv import load_dotenv
+import requests
+from urllib.parse import urlparse
+
+# Load environment variables from root .env file
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
+
+app = Flask(__name__)
+
+# Configure CORS dynamically based on frontend port
+frontend_port = os.getenv("FRONTEND_PORT", "3000")
+CORS(
+    app,
+    origins=[f"http://localhost:{frontend_port}", f"http://127.0.0.1:{frontend_port}"],
+)
+
+# Configure OpenAI
+client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY", "your-openai-api-key-here"))
+
+# Configure upload settings
+app.config["MAX_CONTENT_LENGTH"] = int(
+    os.getenv("MAX_CONTENT_LENGTH", 16 * 1024 * 1024)
+)  # Default 16MB
+ALLOWED_EXTENSIONS = set(
+    os.getenv("ALLOWED_EXTENSIONS", "png,jpg,jpeg,gif,bmp,webp").split(",")
+)
+
+
+def allowed_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def encode_image_to_base64(image_path):
+    """Convert image to base64 string for OpenAI API"""
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode("utf-8")
+
+
+def generate_test_cases_for_scenarios(scenarios):
+    """
+    Generate detailed test cases for selected scenarios using OpenAI
+    """
+    try:
+        # Prepare the system message
+        system_message = """You are an expert QA testing agent. Your task is to generate detailed test cases for the provided test scenarios.
+
+CRITICAL: You must respond with ONLY valid JSON. Do not include any explanatory text, comments, or formatting outside of the JSON structure. Start your response directly with '{' and end with '}'.
+
+Required JSON format:
+{
+    "scenarios": [
+        {
+            "id": "SC001",
+            "title": "Scenario Title",
+            "description": "Brief description of the scenario",
+            "preconditions": ["Precondition 1", "Precondition 2"],
+            "test_cases": [
+                {
+                    "id": "TC001",
+                    "title": "Test Case Title",
+                    "description": "Detailed test case description",
+                    "steps": ["Step 1", "Step 2", "Step 3"],
+                    "expected_result": "Expected outcome",
+                    "priority": "High/Medium/Low",
+                    "test_data": "Any required test data"
+                }
+            ]
+        }
+    ]
+}
+
+For each scenario provided, generate comprehensive test cases covering:
+- Functional testing
+- UI/UX testing
+- Edge cases
+- Error handling
+- Data validation
+- User workflows
+
+Remember: Return ONLY the JSON object, no additional text."""
+
+        user_message = f"Please generate detailed test cases for these scenarios:\n\n{json.dumps(scenarios, indent=2)}"
+
+        # Make API call
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": system_message},
+                {"role": "user", "content": user_message}
+            ],
+            max_tokens=4000,
+            temperature=0.3
+        )
+
+        content = response.choices[0].message.content.strip()
+
+        # Parse JSON response
+        try:
+            result = json.loads(content)
+            print("Successfully parsed JSON response")
+            return result
+        except json.JSONDecodeError as e:
+            print(f"Direct JSON parsing failed: {e}")
+
+            # Try to extract JSON from the response
+            import re
+            json_match = re.search(r'\{.*\}', content, re.DOTALL)
+            if json_match:
+                try:
+                    result = json.loads(json_match.group())
+                    print("Successfully parsed JSON from regex match")
+                    return result
+                except json.JSONDecodeError as e2:
+                    print(f"Regex JSON parsing failed: {e2}")
+
+            # Try to find and parse JSON array if it exists
+            if content:
+                array_match = re.search(r"\[.*\]", content, re.DOTALL)
+            else:
+                array_match = None
+            if array_match:
+                try:
+                    scenarios_array = json.loads(array_match.group())
+                    result = {"scenarios": scenarios_array}
+                    print("Successfully parsed scenarios array")
+                    return result
+                except json.JSONDecodeError as e3:
+                    print(f"Array JSON parsing failed: {e3}")
+
+            # If all parsing fails, return error
+            return {"error": f"Failed to parse AI response as JSON: {content[:500]}"}
+
+    except Exception as e:
+        return {"error": str(e)}
+
+
+def generate_test_scenarios_and_cases(description=None, image_path=None, scenarios_only=False):
+    """
+    Generate test scenarios and test cases using OpenAI
+    If scenarios_only is True, return only scenarios without detailed test cases
+    """
+    try:
+        # Prepare the system message based on scenarios_only flag
+        if scenarios_only:
+            system_message = """You are an expert QA testing agent. Your task is to analyze the given input (either a description or an image of a software feature/interface) and generate the MAXIMUM number of comprehensive test scenarios with maximum test cases for each scenario.
+
+CRITICAL: You must respond with ONLY valid JSON. Do not include any explanatory text, comments, or formatting outside of the JSON structure. Start your response directly with '{' and end with '}'.
+
+Required JSON format:
+{
+    "scenarios": [
+        {
+            "id": "SC001",
+            "title": "Scenario Title",
+            "description": "Brief description of what this scenario tests",
+            "preconditions": ["Precondition 1", "Precondition 2"],
+            "test_cases": [
+                {
+                    "id": "TC001",
+                    "title": "Test Case Title",
+                    "description": "Detailed test case description",
+                    "steps": ["Step 1", "Step 2", "Step 3"],
+                    "expected_result": "Expected outcome",
+                    "priority": "High/Medium/Low",
+                    "test_data": "Any required test data"
+                },
+                {
+                    "id": "TC002",
+                    "title": "Another Test Case Title",
+                    "description": "Another detailed test case description",
+                    "steps": ["Step 1", "Step 2", "Step 3"],
+                    "expected_result": "Expected outcome",
+                    "priority": "High/Medium/Low",
+                    "test_data": "Any required test data"
+                }
+            ]
+        }
+    ]
+}
+
+Generate the MAXIMUM number of distinct test scenarios possible for comprehensive coverage. For each scenario, generate the MAXIMUM number of comprehensive test cases covering:
+- Functional testing (positive and negative cases)
+- UI/UX testing (interactions, validations, error states)
+- Edge cases and boundary conditions
+- Error handling and exception scenarios
+- Data validation (valid/invalid inputs, formats, ranges)
+- User workflow scenarios (happy paths, alternative paths)
+- Performance and security considerations
+- Cross-browser/device compatibility
+- Accessibility requirements
+- Integration with other features
+- API testing scenarios
+- Database interaction scenarios
+- Third-party integration scenarios
+- Mobile responsiveness scenarios
+- Network connectivity scenarios
+- Authentication and authorization scenarios
+- Data persistence scenarios
+- Multi-user concurrency scenarios
+
+Generate as many UNIQUE and DISTINCT scenarios as possible. Each scenario should have at least 8-15 detailed test cases. Aim for 10-20+ total scenarios depending on the complexity of the input.
+
+Remember: Return ONLY the JSON object, no additional text."""
+        else:
+            system_message = """You are an expert QA testing agent. Your task is to analyze the given input (either a description or an image of a software feature/interface) and generate comprehensive test scenarios and test cases.
+
+CRITICAL: You must respond with ONLY valid JSON. Do not include any explanatory text, comments, or formatting outside of the JSON structure. Start your response directly with '{' and end with '}'.
+
+Required JSON format:
+{
+    "scenarios": [
+        {
+            "id": "SC001",
+            "title": "Scenario Title",
+            "description": "Brief description of the scenario",
+            "preconditions": ["Precondition 1", "Precondition 2"],
+            "test_cases": [
+                {
+                    "id": "TC001",
+                    "title": "Test Case Title",
+                    "description": "Detailed test case description",
+                    "steps": ["Step 1", "Step 2", "Step 3"],
+                    "expected_result": "Expected outcome",
+                    "priority": "High/Medium/Low",
+                    "test_data": "Any required test data"
+                }
+            ]
+        }
+    ]
+}
+
+Focus on:
+- Functional testing
+- UI/UX testing
+- Edge cases
+- Error handling
+- Data validation
+- User workflows
+- Performance considerations
+- Security aspects
+
+Remember: Return ONLY the JSON object, no additional text."""
+
+        # Build user message
+        if description:
+            user_message = (
+                "Please analyze this software feature description and generate test scenarios "
+                "and test cases:\n\n" + description
+            )
+        else:
+            user_message = "Please analyze the input and generate comprehensive test scenarios and test cases."
+
+        content = None  # Response content
+
+        if image_path:
+            # Image analysis via GPT-4o Vision
+            base64_image = encode_image_to_base64(image_path)
+            response = client.chat.completions.create(
+                model="gpt-4o",
+                messages=[
+                    {"role": "system", "content": system_message},
+                    {
+                        "role": "user",
+                        "content": [
+                            {"type": "text", "text": user_message},
+                            {
+                                "type": "image_url",
+                                "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"},
+                            },
+                        ],
+                    },
+                ],
+                max_tokens=8000,
+                temperature=0.1,
+            )
+            content = response.choices[0].message.content
+        else:
+            # Text-only analysis (description path)
+            response = client.chat.completions.create(
+                model="gpt-4o",
+                messages=[
+                    {"role": "system", "content": system_message},
+                    {"role": "user", "content": user_message},
+                ],
+                max_tokens=8000,
+                temperature=0.1,
+            )
+            content = response.choices[0].message.content
+
+        # Parse the JSON response
+        try:
+            # First try to parse the entire response as JSON
+            result = json.loads(content)
+            return result
+        except json.JSONDecodeError as e:
+            print(f"Direct JSON parsing failed: {e}")
+            if content:
+                print(f"Raw content preview: {content[:500]}...")
+            else:
+                print("No content received from API")
+
+            # If direct parsing fails, try to extract JSON from the response
+            import re
+
+            # Look for JSON-like content between curly braces
+            if content:
+                json_match = re.search(r"\{.*\}", content, re.DOTALL)
+            else:
+                json_match = None
+            if json_match:
+                try:
+                    result = json.loads(json_match.group())
+                    print("Successfully parsed JSON from regex match")
+                    return result
+                except json.JSONDecodeError as e2:
+                    print(f"Regex JSON parsing failed: {e2}")
+
+            # Try to find and parse JSON array if it exists
+            if content:
+                array_match = re.search(r"\[.*\]", content, re.DOTALL)
+            else:
+                array_match = None
+            if array_match:
+                try:
+                    scenarios = json.loads(array_match.group())
+                    print("Successfully parsed JSON array")
+                    return {"scenarios": scenarios}
+                except json.JSONDecodeError as e3:
+                    print(f"Array JSON parsing failed: {e3}")
+
+            # If all parsing attempts fail, return error with raw response
+            print("All JSON parsing attempts failed")
+            raw_response = content[:1000] if content else "No response received"
+            return {
+                "error": "Failed to parse AI response - invalid JSON format",
+                "raw_response": raw_response,  # Limit response size for error display
+                "scenarios": [],
+            }
+
+    except Exception as e:
+        return {"error": f"Error generating test cases: {str(e)}", "scenarios": []}
+
+
+def extract_api_endpoints(html_content, base_url):
+    """
+    Extract potential API endpoints from HTML content
+    """
+    endpoints = set()
+    import re
+    from urllib.parse import urljoin, urlparse
+
+    # Parse base URL
+    parsed_base = urlparse(base_url)
+    base_domain = parsed_base.netloc
+
+    # Extract fetch() calls
+    fetch_matches = re.findall(r'fetch\s*\(\s*["\']([^"\']+)["\']', html_content, re.IGNORECASE)
+    for match in fetch_matches:
+        if match.startswith(('http://', 'https://')):
+            parsed = urlparse(match)
+            if parsed.netloc and parsed.netloc != base_domain:
+                endpoints.add(match)
+
+    # Extract XMLHttpRequest calls (simplified)
+    xhr_matches = re.findall(r'open\s*\(\s*["\'](?:GET|POST|PUT|DELETE)["\']\s*,\s*["\']([^"\']+)["\']', html_content, re.IGNORECASE)
+    for match in xhr_matches:
+        if match.startswith(('http://', 'https://')):
+            parsed = urlparse(match)
+            if parsed.netloc and parsed.netloc != base_domain:
+                endpoints.add(match)
+
+    # Extract script src attributes that look like APIs
+    script_matches = re.findall(r'<script[^>]*src=["\']([^"\']+)["\'][^>]*>', html_content, re.IGNORECASE)
+    for match in script_matches:
+        full_url = urljoin(base_url, match)
+        parsed = urlparse(full_url)
+        if parsed.netloc and parsed.netloc != base_domain:
+            # Check if it looks like an API endpoint (contains api, v1, v2, etc.)
+            if any(keyword in full_url.lower() for keyword in ['api', 'v1', 'v2', 'v3', 'graphql', 'rest']):
+                endpoints.add(full_url)
+
+    # Extract link href attributes for external resources
+    link_matches = re.findall(r'<link[^>]*href=["\']([^"\']+)["\'][^>]*>', html_content, re.IGNORECASE)
+    for match in link_matches:
+        full_url = urljoin(base_url, match)
+        parsed = urlparse(full_url)
+        if parsed.netloc and parsed.netloc != base_domain:
+            endpoints.add(full_url)
+
+    return list(endpoints)[:10]  # Limit to 10 endpoints to avoid too many requests
+
+
+def test_api_performance(api_endpoints):
+    """
+    Test API endpoints for response times and performance metrics
+    """
+    performance_data = {}
+
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+    }
+
+    for endpoint in api_endpoints[:5]:  # Test max 5 endpoints
+        try:
+            import time
+            start_time = time.time()
+            response = requests.get(endpoint, headers=headers, timeout=5)
+            end_time = time.time()
+
+            response_time = round((end_time - start_time) * 1000, 2)  # Convert to milliseconds
+
+            performance_data[endpoint] = {
+                "response_time_ms": response_time,
+                "status_code": response.status_code,
+                "content_length": len(response.content),
+                "success": response.status_code < 400
+            }
+
+        except Exception as e:
+            performance_data[endpoint] = {
+                "error": str(e),
+                "success": False
+            }
+
+    return performance_data
+
+
+def analyze_website(url):
+    """
+    Analyze a website on multiple parameters using OpenAI
+    """
+    try:
+        # Validate URL
+        parsed = urlparse(url)
+        if not parsed.scheme or not parsed.netloc:
+            return {"error": "Invalid URL format"}
+
+        # Fetch website content
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+        response = requests.get(url, headers=headers, timeout=10)
+        response.raise_for_status()
+
+        # Extract basic info
+        html_content = response.text[:20000]  # Increased limit for better parsing
+        title = ""
+        meta_desc = ""
+
+        # Simple parsing for title and meta
+        import re
+        title_match = re.search(r'<title[^>]*>(.*?)</title>', html_content, re.IGNORECASE | re.DOTALL)
+        if title_match:
+            title = title_match.group(1).strip()
+
+        meta_match = re.search(r'<meta[^>]*name=["\']description["\'][^>]*content=["\']([^"\']*)["\'][^>]*>', html_content, re.IGNORECASE)
+        if meta_match:
+            meta_desc = meta_match.group(1).strip()
+
+        # Parse HTML for API endpoints and external resources
+        api_endpoints = extract_api_endpoints(html_content, url)
+
+        # Test API endpoints for performance
+        api_performance = test_api_performance(api_endpoints)
+
+        # Prepare prompt for OpenAI
+        system_message = """You are an expert web analyst. Analyze the provided website content and rate it on multiple parameters out of 5 stars.
+
+CRITICAL: Respond with ONLY valid JSON. Start directly with '{' and end with '}'.
+
+Required JSON format:
+{
+    "overall_rating": 4,
+    "parameters": {
+        "performance": {"rating": 4, "explanation": "Brief explanation"},
+        "seo": {"rating": 3, "explanation": "Brief explanation"},
+        "usability": {"rating": 5, "explanation": "Brief explanation"},
+        "accessibility": {"rating": 4, "explanation": "Brief explanation"},
+        "security": {"rating": 3, "explanation": "Brief explanation"}
+    },
+    "report": "Detailed analysis report summarizing strengths and weaknesses",
+    "recommendations": ["Recommendation 1", "Recommendation 2", "Recommendation 3"]
+}
+
+Rate each parameter 1-5 stars based on:
+- Performance: Loading speed, optimization, mobile-friendliness, API response times
+- SEO: Meta tags, content quality, structure
+- Usability: Navigation, user experience, design
+- Accessibility: WCAG compliance, screen reader support
+- Security: HTTPS, vulnerabilities, best practices
+
+Overall rating should be the average of parameter ratings."""
+
+        user_message = f"""Website URL: {url}
+Title: {title}
+Meta Description: {meta_desc}
+
+API Performance Data:
+{json.dumps(api_performance, indent=2)}
+
+HTML Content Preview:
+{html_content[:10000]}"""
+
+        # Make API call
+        api_response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": system_message},
+                {"role": "user", "content": user_message}
+            ],
+            max_tokens=2000,
+            temperature=0.3
+        )
+
+        content = api_response.choices[0].message.content.strip()
+
+        # Parse JSON response
+        result = json.loads(content)
+        result["analyzed_at"] = datetime.now().isoformat()
+        result["url"] = url
+        result["api_performance"] = api_performance  # Include raw API data
+        return result
+
+    except requests.exceptions.RequestException as e:
+        return {"error": f"Failed to fetch website: {str(e)}"}
+    except json.JSONDecodeError:
+        return {"error": "Failed to parse AI response"}
+    except Exception as e:
+        return {"error": f"Analysis error: {str(e)}"}
+
+
+@app.route("/health")
+def health():
+    return jsonify({"status": "healthy", "timestamp": datetime.now().isoformat()})
+
+
+@app.route("/analyze", methods=["POST"])
+def analyze():
+    try:
+        data = {}
+
+        # Check if description is provided
+        if "description" in request.form and request.form["description"].strip():
+            description = request.form["description"].strip()
+            data["description"] = description
+        elif "image" in request.files and request.files["image"].filename:
+            # Handle image upload
+            image_file = request.files["image"]
+
+            if image_file and allowed_file(image_file.filename):
+                # Save image temporarily
+                with tempfile.NamedTemporaryFile(
+                    delete=False, suffix=os.path.splitext(image_file.filename)[1]
+                ) as temp_file:
+                    image_file.save(temp_file.name)
+                    temp_image_path = temp_file.name
+
+                data["image_path"] = temp_image_path
+            else:
+                return (
+                    jsonify(
+                        {
+                            "error": "Invalid image file. Allowed formats: PNG, JPG, JPEG, GIF, BMP, WebP"
+                        }
+                    ),
+                    400,
+                )
+        else:
+            return (
+                jsonify(
+                    {"error": "Please provide either a description or upload an image"}
+                ),
+                400,
+            )
+
+        # Generate test scenarios only
+        result = generate_test_scenarios_and_cases(
+            description=data.get("description"), image_path=data.get("image_path"), scenarios_only=True
+        )
+
+        # Clean up temporary image file if it exists
+        if "image_path" in data and os.path.exists(data["image_path"]):
+            os.unlink(data["image_path"])
+
+        return jsonify(result)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/generate", methods=["POST"])
+def generate():
+    try:
+        # Check if this is JSON data with scenarios
+        if request.is_json:
+            json_data = request.get_json()
+            if "scenarios" in json_data:
+                # Generate test cases for selected scenarios
+                scenarios = json_data["scenarios"]
+                result = generate_test_cases_for_scenarios(scenarios)
+                result["generated_at"] = datetime.now().isoformat()
+                result["input_type"] = "selected_scenarios"
+                return jsonify(result)
+            else:
+                return jsonify({"error": "Invalid JSON data. Expected 'scenarios' field"}), 400
+
+        # Original form-based handling
+        data = {}
+
+        # Check if description is provided
+        if "description" in request.form and request.form["description"].strip():
+            description = request.form["description"].strip()
+            data["description"] = description
+        elif "image" in request.files and request.files["image"].filename:
+            # Handle image upload
+            image_file = request.files["image"]
+
+            if image_file and allowed_file(image_file.filename):
+                # Save image temporarily
+                with tempfile.NamedTemporaryFile(
+                    delete=False, suffix=os.path.splitext(image_file.filename)[1]
+                ) as temp_file:
+                    image_file.save(temp_file.name)
+                    temp_image_path = temp_file.name
+
+                data["image_path"] = temp_image_path
+            else:
+                return (
+                    jsonify(
+                        {
+                            "error": "Invalid image file. Allowed formats: PNG, JPG, JPEG, GIF, BMP, WebP"
+                        }
+                    ),
+                    400,
+                )
+        else:
+            return (
+                jsonify(
+                    {"error": "Please provide either a description or upload an image"}
+                ),
+                400,
+            )
+
+        # Generate test scenarios and cases
+        result = generate_test_scenarios_and_cases(
+            description=data.get("description"), image_path=data.get("image_path")
+        )
+
+        # Clean up temporary image file if it exists
+        if "image_path" in data and os.path.exists(data["image_path"]):
+            os.unlink(data["image_path"])
+
+        # Add metadata
+        result["generated_at"] = datetime.now().isoformat()
+        result["input_type"] = "description" if "description" in data else "image"
+
+        return jsonify(result)
+
+    except Exception as e:
+        return jsonify({"error": f"Server error: {str(e)}", "scenarios": []}), 500
+
+
+@app.route("/analyze_website", methods=["POST"])
+def analyze_website_endpoint():
+    try:
+        # Get URL from request
+        if request.is_json:
+            data = request.get_json()
+            url = data.get("url", "").strip()
+        else:
+            url = request.form.get("url", "").strip()
+
+        if not url:
+            return jsonify({"error": "Please provide a website URL"}), 400
+
+        # Analyze the website
+        result = analyze_website(url)
+
+        if "error" in result:
+            return jsonify(result), 400
+
+        return jsonify(result)
+
+    except Exception as e:
+        return jsonify({"error": f"Server error: {str(e)}"}), 500
+
+
+def main():
+    """Main entry point for the backend server"""
+    # Create necessary directories if they don't exist
+    os.makedirs("../frontend/static", exist_ok=True)
+    os.makedirs("../frontend/templates", exist_ok=True)
+
+    # Get environment settings
+    env = os.getenv("ENV", "development")
+    is_production = env == "production"
+
+    # Get server configuration from environment
+    host = os.getenv("BACKEND_HOST", "0.0.0.0")
+    port = int(os.getenv("BACKEND_PORT", 5000))
+    debug = (
+        os.getenv("FLASK_DEBUG", "False" if is_production else "True").lower() == "true"
+    )
+
+    if is_production:
+        print("🏭 Starting PRODUCTION server...")
+        print(f"🔒 Debug mode: DISABLED")
+        print(f"🌐 Host: {host}:{port}")
+        print("⚠️  Using production WSGI server recommended (gunicorn, uwsgi)")
+        print("   Example: gunicorn --bind 0.0.0.0:8000 backend.app:app")
+    else:
+        print("🛠️  Starting DEVELOPMENT server...")
+        print(f"🔧 Debug mode: ENABLED")
+        print(f"🌐 Host: {host}:{port}")
+
+    app.run(debug=debug, host=host, port=port)
+
+
+if __name__ == "__main__":
+    main()
