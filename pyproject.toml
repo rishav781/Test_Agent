@@ -3,17 +3,17 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "Pcloudy-testing-agent"
+name = "Pcloudy-test-case-agent"
 version = "0.1.0"
 description = "AI-powered test case generation from descriptions and images"
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.12"
 authors = [
-    {name = "Pcloudy Testing Agent Team"}
+    {name = "Pcloudy Test Case Agent Team"}
 ]
 maintainers = [
-    {name = "Pcloudy Testing Agent Team"}
+    {name = "Pcloudy Test Case Agent Team"}
 ]
 keywords = ["testing", "ai", "automation", "qa", "test-cases"]
 classifiers = [

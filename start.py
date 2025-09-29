@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Pcloudy Testing Agent - Startup Script
+Pcloudy Test Case Agent - Startup Script
 Starts both backend API and frontend servers
 """
 
@@ -17,7 +17,7 @@ load_dotenv()
 def start_backend():
     """Start the backend Flask API server"""
     print("🚀 Starting Backend API Server...")
-    backend_cmd = [sys.executable, "backend/app.py"]
+    backend_cmd = [sys.executable, "backend/src/app.py"]
     return subprocess.Popen(backend_cmd, cwd=os.getcwd())
 
 def start_frontend():
@@ -42,7 +42,7 @@ def main():
         print("   4. Configure proper logging")
         print()
 
-    print("🤖 Pcloudy Testing Agent - Starting Services")
+    print("🤖 Pcloudy Test Case Agent - Starting Services")
     print("=" * 50)
 
     # Start backend server
@@ -54,7 +54,7 @@ def main():
     time.sleep(1)  # Wait for frontend to start
 
     print("\n✅ Services Started Successfully!")
-    frontend_url = os.getenv('FRONTEND_URL', 'http://localhost:3000')
+    frontend_url = os.getenv('FRONTEND_URL', 'http://localhost:8000')
     backend_url = os.getenv('BACKEND_URL', 'http://localhost:5000')
     print(f"📱 Frontend: {frontend_url}")
     print(f"🔧 Backend API: {backend_url}")

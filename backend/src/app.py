@@ -29,6 +29,12 @@ CORS(
 # Configure OpenAI
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY", "your-openai-api-key-here"))
 
+# Configure LLM Models
+OPENAI_MODEL_TEXT = os.getenv("OPENAI_MODEL_TEXT", "gpt-4")
+OPENAI_MODEL_VISION = os.getenv("OPENAI_MODEL_VISION", "gpt-4o")
+OPENAI_MODEL_WEBSITE = os.getenv("OPENAI_MODEL_WEBSITE", "gpt-4")
+OPENAI_MODEL_API = os.getenv("OPENAI_MODEL_API", "gpt-4")
+
 # Configure upload settings
 app.config["MAX_CONTENT_LENGTH"] = int(
     os.getenv("MAX_CONTENT_LENGTH", 16 * 1024 * 1024)
@@ -95,7 +101,7 @@ Remember: Return ONLY the JSON object, no additional text."""
 
         # Make API call
         response = client.chat.completions.create(
-            model="gpt-4",
+            model=OPENAI_MODEL_TEXT,
             messages=[
                 {"role": "system", "content": system_message},
                 {"role": "user", "content": user_message}
@@ -268,7 +274,7 @@ Remember: Return ONLY the JSON object, no additional text."""
             # Image analysis via GPT-4o Vision
             base64_image = encode_image_to_base64(image_path)
             response = client.chat.completions.create(
-                model="gpt-4o",
+                model=OPENAI_MODEL_VISION,
                 messages=[
                     {"role": "system", "content": system_message},
                     {
@@ -289,7 +295,7 @@ Remember: Return ONLY the JSON object, no additional text."""
         else:
             # Text-only analysis (description path)
             response = client.chat.completions.create(
-                model="gpt-4o",
+                model=OPENAI_MODEL_TEXT,
                 messages=[
                     {"role": "system", "content": system_message},
                     {"role": "user", "content": user_message},

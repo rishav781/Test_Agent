@@ -1,4 +1,4 @@
-# Pcloudy Testing Agent
+# Pcloudy Test Case Agent
 
 An intelligent testing automation platform that combines AI-powered test generation with comprehensive testing tools.
 
@@ -71,7 +71,7 @@ FRONTEND_URL=http://localhost:3000
 BACKEND_URL=http://localhost:5000
 
 # Flask Configuration
-FLASK_APP=backend/app.py
+FLASK_APP=backend/src/app.py
 SECRET_KEY=your-secret-key-here
 ```
 
@@ -89,7 +89,7 @@ FRONTEND_URL=https://yourdomain.com
 BACKEND_URL=https://api.yourdomain.com
 
 # Flask Configuration
-FLASK_APP=backend/app.py
+FLASK_APP=backend/src/app.py
 SECRET_KEY=your-production-secret-key-here
 
 # Production Database (if applicable)

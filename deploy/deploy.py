@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Production Deployment Script for Pcloudy Testing Agent
+Production Deployment Script for Pcloudy Test Case Agent
 This script handles production deployment with gunicorn and proper configuration
 """
 
@@ -79,7 +79,7 @@ def start_production_frontend(host='0.0.0.0', port=3000):
         print("\n🛑 Production frontend stopped")
 
 def main():
-    parser = argparse.ArgumentParser(description='Production deployment for Pcloudy Testing Agent')
+    parser = argparse.ArgumentParser(description='Production deployment for Pcloudy Test Case Agent')
     parser.add_argument('--backend-only', action='store_true',
                        help='Start only the backend server')
     parser.add_argument('--frontend-only', action='store_true',
@@ -99,7 +99,7 @@ def main():
 
     args = parser.parse_args()
 
-    print("🏭 Pcloudy Testing Agent - Production Deployment")
+    print("🏭 Pcloudy Test Case Agent - Production Deployment")
     print("=" * 50)
 
     # Check environment

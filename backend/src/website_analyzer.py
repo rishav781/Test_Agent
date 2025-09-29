@@ -20,6 +20,9 @@ load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
 # Configure OpenAI client
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY", "your-openai-api-key-here"))
 
+# Configure LLM Model
+OPENAI_MODEL_WEBSITE = os.getenv("OPENAI_MODEL_WEBSITE", "gpt-4")
+
 
 def extract_api_endpoints(html_content, base_url):
     """
@@ -162,7 +165,7 @@ Generate comprehensive test scenarios and test cases based on this analysis."""
 
         # Make API call
         api_response = client.chat.completions.create(
-            model="gpt-4",
+            model=OPENAI_MODEL_WEBSITE,
             messages=[
                 {"role": "system", "content": system_message},
                 {"role": "user", "content": user_message}
@@ -311,7 +314,7 @@ HTML Content Preview:
 
         # Make API call
         api_response = client.chat.completions.create(
-            model="gpt-4",
+            model=OPENAI_MODEL_WEBSITE,
             messages=[
                 {"role": "system", "content": system_message},
                 {"role": "user", "content": user_message}

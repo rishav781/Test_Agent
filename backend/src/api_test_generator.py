@@ -17,6 +17,9 @@ load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
 # Configure OpenAI client
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY", "your-openai-api-key-here"))
 
+# Configure LLM Model
+OPENAI_MODEL_API = os.getenv("OPENAI_MODEL_API", "gpt-4")
+
 
 def detect_api_document_type(api_data: Dict[str, Any]) -> str:
     """
@@ -224,7 +227,7 @@ Please generate detailed test scenarios and test cases for each endpoint, consid
 
         # Make API call
         response = client.chat.completions.create(
-            model="gpt-4",
+            model=OPENAI_MODEL_API,
             messages=[
                 {"role": "system", "content": system_message},
                 {"role": "user", "content": user_message}
