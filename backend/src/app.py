@@ -20,7 +20,7 @@ load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
 app = Flask(__name__)
 
 # Configure CORS dynamically based on frontend port
-frontend_port = os.getenv("FRONTEND_PORT", "8000")
+frontend_port = os.getenv("FRONTEND_PORT", "8080")
 CORS(
     app,
     origins=[f"http://localhost:{frontend_port}", f"http://127.0.0.1:{frontend_port}"],
@@ -158,69 +158,10 @@ def generate_test_scenarios_and_cases(description=None, image_path=None, scenari
     If scenarios_only is True, return only scenarios without detailed test cases
     """
     try:
-        # Prepare the system message based on scenarios_only flag
-        if scenarios_only:
-            system_message = """You are an expert QA testing agent. Your task is to analyze the given input (either a description or an image of a software feature/interface) and generate the MAXIMUM number of comprehensive test scenarios with maximum test cases for each scenario.
-
-CRITICAL: You must respond with ONLY valid JSON. Do not include any explanatory text, comments, or formatting outside of the JSON structure. Start your response directly with '{' and end with '}'.
-
-Required JSON format:
-{
-    "scenarios": [
-        {
-            "id": "SC001",
-            "title": "Scenario Title",
-            "description": "Brief description of what this scenario tests",
-            "preconditions": ["Precondition 1", "Precondition 2"],
-            "test_cases": [
-                {
-                    "id": "TC001",
-                    "title": "Test Case Title",
-                    "description": "Detailed test case description",
-                    "steps": ["Step 1", "Step 2", "Step 3"],
-                    "expected_result": "Expected outcome",
-                    "priority": "High/Medium/Low",
-                    "test_data": "Any required test data"
-                },
-                {
-                    "id": "TC002",
-                    "title": "Another Test Case Title",
-                    "description": "Another detailed test case description",
-                    "steps": ["Step 1", "Step 2", "Step 3"],
-                    "expected_result": "Expected outcome",
-                    "priority": "High/Medium/Low",
-                    "test_data": "Any required test data"
-                }
-            ]
-        }
-    ]
-}
-
-Generate the MAXIMUM number of distinct test scenarios possible for comprehensive coverage. For each scenario, generate the MAXIMUM number of comprehensive test cases covering:
-- Functional testing (positive and negative cases)
-- UI/UX testing (interactions, validations, error states)
-- Edge cases and boundary conditions
-- Error handling and exception scenarios
-- Data validation (valid/invalid inputs, formats, ranges)
-- User workflow scenarios (happy paths, alternative paths)
-- Performance and security considerations
-- Cross-browser/device compatibility
-- Accessibility requirements
-- Integration with other features
-- API testing scenarios
-- Database interaction scenarios
-- Third-party integration scenarios
-- Mobile responsiveness scenarios
-- Network connectivity scenarios
-- Authentication and authorization scenarios
-- Data persistence scenarios
-- Multi-user concurrency scenarios
-
-Generate as many UNIQUE and DISTINCT scenarios as possible. Each scenario should have at least 8-15 detailed test cases. Aim for 10-20+ total scenarios depending on the complexity of the input.
-
-Remember: Return ONLY the JSON object, no additional text."""
-        else:
-            system_message = """You are an expert QA testing agent. Your task is to analyze the given input (either a description or an image of a software feature/interface) and generate comprehensive test scenarios and test cases.
+        print(f"generate_test_scenarios_and_cases called with description={description is not None}, image_path={image_path is not None}, scenarios_only={scenarios_only}")
+        
+        # Prepare the system message
+        system_message = """You are an expert QA testing agent. Your task is to generate comprehensive test scenarios from a given description or image.
 
 CRITICAL: You must respond with ONLY valid JSON. Do not include any explanatory text, comments, or formatting outside of the JSON structure. Start your response directly with '{' and end with '}'.
 
@@ -232,20 +173,14 @@ Required JSON format:
             "title": "Scenario Title",
             "description": "Brief description of the scenario",
             "preconditions": ["Precondition 1", "Precondition 2"],
-            "test_cases": [
-                {
-                    "id": "TC001",
-                    "title": "Test Case Title",
-                    "description": "Detailed test case description",
-                    "steps": ["Step 1", "Step 2", "Step 3"],
-                    "expected_result": "Expected outcome",
-                    "priority": "High/Medium/Low",
-                    "test_data": "Any required test data"
-                }
-            ]
+            "test_cases": []
         }
     ]
 }
+
+For each feature or UI, generate a list of test scenarios.
+- If `scenarios_only` is true, return only the scenario title, description, and preconditions.
+- If `scenarios_only` is false, also generate detailed test cases for each scenario.
 
 Focus on:
 - Functional testing
@@ -254,77 +189,52 @@ Focus on:
 - Error handling
 - Data validation
 - User workflows
-- Performance considerations
-- Security aspects
 
 Remember: Return ONLY the JSON object, no additional text."""
 
-        # Build user message
-        if description:
-            user_message = (
-                "Please analyze this software feature description and generate test scenarios "
-                "and test cases:\n\n" + description
-            )
-        else:
-            user_message = "Please analyze the input and generate comprehensive test scenarios and test cases."
+        # Prepare user message
+        user_message_content = []
+        model = OPENAI_MODEL_TEXT
 
-        content = None  # Response content
+        if description:
+            user_message_content.append({"type": "text", "text": f"Generate test scenarios for this feature:\n\n{description}"})
 
         if image_path:
-            # Image analysis via GPT-4o Vision
             base64_image = encode_image_to_base64(image_path)
-            response = client.chat.completions.create(
-                model=OPENAI_MODEL_VISION,
-                messages=[
-                    {"role": "system", "content": system_message},
-                    {
-                        "role": "user",
-                        "content": [
-                            {"type": "text", "text": user_message},
-                            {
-                                "type": "image_url",
-                                "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"},
-                            },
-                        ],
-                    },
-                ],
-                max_tokens=8000,
-                temperature=0.1,
-            )
-            content = response.choices[0].message.content
-        else:
-            # Text-only analysis (description path)
-            response = client.chat.completions.create(
-                model=OPENAI_MODEL_TEXT,
-                messages=[
-                    {"role": "system", "content": system_message},
-                    {"role": "user", "content": user_message},
-                ],
-                max_tokens=8000,
-                temperature=0.1,
-            )
-            content = response.choices[0].message.content
+            user_message_content.append({
+                "type": "image_url",
+                "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}
+            })
+            model = OPENAI_MODEL_VISION
 
-        # Parse the JSON response
+        if not scenarios_only:
+            user_message_content.append({"type": "text", "text": "\n\nPlease also generate detailed test cases for each scenario."})
+
+        # Make API call
+        response = client.chat.completions.create(
+            model=model,
+            messages=[
+                {"role": "system", "content": system_message},
+                {"role": "user", "content": user_message_content}
+            ],
+            max_tokens=4000,
+            temperature=0.3,
+            timeout=300.0,
+        )
+
+        content = response.choices[0].message.content.strip()
+
+        # Parse JSON response
         try:
-            # First try to parse the entire response as JSON
             result = json.loads(content)
+            print("Successfully parsed JSON response")
             return result
         except json.JSONDecodeError as e:
             print(f"Direct JSON parsing failed: {e}")
-            if content:
-                print(f"Raw content preview: {content[:500]}...")
-            else:
-                print("No content received from API")
 
-            # If direct parsing fails, try to extract JSON from the response
+            # Try to extract JSON from the response
             import re
-
-            # Look for JSON-like content between curly braces
-            if content:
-                json_match = re.search(r"\{.*\}", content, re.DOTALL)
-            else:
-                json_match = None
+            json_match = re.search(r'\{.*\}', content, re.DOTALL)
             if json_match:
                 try:
                     result = json.loads(json_match.group())
@@ -333,27 +243,8 @@ Remember: Return ONLY the JSON object, no additional text."""
                 except json.JSONDecodeError as e2:
                     print(f"Regex JSON parsing failed: {e2}")
 
-            # Try to find and parse JSON array if it exists
-            if content:
-                array_match = re.search(r"\[.*\]", content, re.DOTALL)
-            else:
-                array_match = None
-            if array_match:
-                try:
-                    scenarios = json.loads(array_match.group())
-                    print("Successfully parsed JSON array")
-                    return {"scenarios": scenarios}
-                except json.JSONDecodeError as e3:
-                    print(f"Array JSON parsing failed: {e3}")
-
-            # If all parsing attempts fail, return error with raw response
-            print("All JSON parsing attempts failed")
-            raw_response = content[:1000] if content else "No response received"
-            return {
-                "error": "Failed to parse AI response - invalid JSON format",
-                "raw_response": raw_response,  # Limit response size for error display
-                "scenarios": [],
-            }
+            # If all parsing fails, return error
+            return {"error": f"Failed to parse AI response as JSON: {content[:500]}"}
 
     except Exception as e:
         return {"error": f"Error generating test cases: {str(e)}", "scenarios": []}
@@ -367,11 +258,13 @@ def health():
 @app.route("/analyze", methods=["POST"])
 def analyze():
     try:
+        print("Analyze endpoint called")
         data = {}
 
         # Check if description is provided
         if "description" in request.form and request.form["description"].strip():
             description = request.form["description"].strip()
+            print(f"Description received: {description[:100]}...")
             data["description"] = description
         elif "image" in request.files and request.files["image"].filename:
             # Handle image upload
@@ -403,10 +296,12 @@ def analyze():
                 400,
             )
 
+        print("About to call generate_test_scenarios_and_cases")
         # Generate test scenarios only
         result = generate_test_scenarios_and_cases(
             description=data.get("description"), image_path=data.get("image_path"), scenarios_only=True
         )
+        print(f"Function returned result with keys: {result.keys() if isinstance(result, dict) else 'Not a dict'}")
 
         # Clean up temporary image file if it exists
         if "image_path" in data and os.path.exists(data["image_path"]):
@@ -415,6 +310,9 @@ def analyze():
         return jsonify(result)
 
     except Exception as e:
+        print(f"Exception in analyze endpoint: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
 

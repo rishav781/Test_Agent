@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const isWebsiteTab = activeTab.id === 'website-tab';
 
         let formData = new FormData();
-        let apiUrl = 'http://localhost:5000/analyze';
+        let apiUrl = 'http://localhost:5050/analyze';
 
         if (isDescriptionTab) {
             // Handle description form
@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             formData.append('api_file', apiFile);
-            apiUrl = 'http://localhost:5000/generate_api_tests';
+            apiUrl = 'http://localhost:5050/generate_api_tests';
         } else if (isWebsiteTab) {
             // Handle website URL
             let websiteUrl = document.getElementById('websiteUrl').value.trim();
@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             formData.append('url', websiteUrl);
-            apiUrl = 'http://localhost:5000/analyze_website';
+            apiUrl = 'http://localhost:5050/analyze_website';
         }
 
     // Show loading state (spinner on button only)
@@ -236,7 +236,7 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             // Send request to backend API with timeout
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 second timeout
+            const timeoutId = setTimeout(() => controller.abort(), 300000); // 5 minute timeout
 
             const response = await fetch(apiUrl, {
                 method: 'POST',

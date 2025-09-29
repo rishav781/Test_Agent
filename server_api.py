@@ -38,7 +38,7 @@ def run_frontend_server(port=None):
     """Run the frontend HTTP server"""
     # Use environment variable if port not specified
     if port is None:
-        port = int(os.getenv('FRONTEND_PORT', 8000))
+        port = int(os.getenv('FRONTEND_PORT', 8080))
     try:
         with socketserver.TCPServer(("", port), CustomHTTPRequestHandler) as httpd:
             print(f"🚀 Frontend server running at http://localhost:{port}")

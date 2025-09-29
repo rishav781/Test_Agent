@@ -55,7 +55,7 @@ def main():
 
     print("\n✅ Services Started Successfully!")
     frontend_url = os.getenv('FRONTEND_URL', 'http://localhost:8000')
-    backend_url = os.getenv('BACKEND_URL', 'http://localhost:5000')
+    backend_url = os.getenv('BACKEND_URL', 'http://localhost:5050')
     print(f"📱 Frontend: {frontend_url}")
     print(f"🔧 Backend API: {backend_url}")
 
