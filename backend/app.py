@@ -11,6 +11,8 @@ from datetime import datetime
 from dotenv import load_dotenv
 import requests
 from urllib.parse import urlparse
+from website_analyzer import analyze_website
+from api_test_generator import generate_api_tests_from_file
 
 # Load environment variables from root .env file
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
@@ -18,7 +20,7 @@ load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
 app = Flask(__name__)
 
 # Configure CORS dynamically based on frontend port
-frontend_port = os.getenv("FRONTEND_PORT", "3000")
+frontend_port = os.getenv("FRONTEND_PORT", "8000")
 CORS(
     app,
     origins=[f"http://localhost:{frontend_port}", f"http://127.0.0.1:{frontend_port}"],
@@ -351,194 +353,6 @@ Remember: Return ONLY the JSON object, no additional text."""
         return {"error": f"Error generating test cases: {str(e)}", "scenarios": []}
 
 
-def extract_api_endpoints(html_content, base_url):
-    """
-    Extract potential API endpoints from HTML content
-    """
-    endpoints = set()
-    import re
-    from urllib.parse import urljoin, urlparse
-
-    # Parse base URL
-    parsed_base = urlparse(base_url)
-    base_domain = parsed_base.netloc
-
-    # Extract fetch() calls
-    fetch_matches = re.findall(r'fetch\s*\(\s*["\']([^"\']+)["\']', html_content, re.IGNORECASE)
-    for match in fetch_matches:
-        if match.startswith(('http://', 'https://')):
-            parsed = urlparse(match)
-            if parsed.netloc and parsed.netloc != base_domain:
-                endpoints.add(match)
-
-    # Extract XMLHttpRequest calls (simplified)
-    xhr_matches = re.findall(r'open\s*\(\s*["\'](?:GET|POST|PUT|DELETE)["\']\s*,\s*["\']([^"\']+)["\']', html_content, re.IGNORECASE)
-    for match in xhr_matches:
-        if match.startswith(('http://', 'https://')):
-            parsed = urlparse(match)
-            if parsed.netloc and parsed.netloc != base_domain:
-                endpoints.add(match)
-
-    # Extract script src attributes that look like APIs
-    script_matches = re.findall(r'<script[^>]*src=["\']([^"\']+)["\'][^>]*>', html_content, re.IGNORECASE)
-    for match in script_matches:
-        full_url = urljoin(base_url, match)
-        parsed = urlparse(full_url)
-        if parsed.netloc and parsed.netloc != base_domain:
-            # Check if it looks like an API endpoint (contains api, v1, v2, etc.)
-            if any(keyword in full_url.lower() for keyword in ['api', 'v1', 'v2', 'v3', 'graphql', 'rest']):
-                endpoints.add(full_url)
-
-    # Extract link href attributes for external resources
-    link_matches = re.findall(r'<link[^>]*href=["\']([^"\']+)["\'][^>]*>', html_content, re.IGNORECASE)
-    for match in link_matches:
-        full_url = urljoin(base_url, match)
-        parsed = urlparse(full_url)
-        if parsed.netloc and parsed.netloc != base_domain:
-            endpoints.add(full_url)
-
-    return list(endpoints)[:10]  # Limit to 10 endpoints to avoid too many requests
-
-
-def test_api_performance(api_endpoints):
-    """
-    Test API endpoints for response times and performance metrics
-    """
-    performance_data = {}
-
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-    }
-
-    for endpoint in api_endpoints[:5]:  # Test max 5 endpoints
-        try:
-            import time
-            start_time = time.time()
-            response = requests.get(endpoint, headers=headers, timeout=5)
-            end_time = time.time()
-
-            response_time = round((end_time - start_time) * 1000, 2)  # Convert to milliseconds
-
-            performance_data[endpoint] = {
-                "response_time_ms": response_time,
-                "status_code": response.status_code,
-                "content_length": len(response.content),
-                "success": response.status_code < 400
-            }
-
-        except Exception as e:
-            performance_data[endpoint] = {
-                "error": str(e),
-                "success": False
-            }
-
-    return performance_data
-
-
-def analyze_website(url):
-    """
-    Analyze a website on multiple parameters using OpenAI
-    """
-    try:
-        # Validate URL
-        parsed = urlparse(url)
-        if not parsed.scheme or not parsed.netloc:
-            return {"error": "Invalid URL format"}
-
-        # Fetch website content
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-        }
-        response = requests.get(url, headers=headers, timeout=10)
-        response.raise_for_status()
-
-        # Extract basic info
-        html_content = response.text[:20000]  # Increased limit for better parsing
-        title = ""
-        meta_desc = ""
-
-        # Simple parsing for title and meta
-        import re
-        title_match = re.search(r'<title[^>]*>(.*?)</title>', html_content, re.IGNORECASE | re.DOTALL)
-        if title_match:
-            title = title_match.group(1).strip()
-
-        meta_match = re.search(r'<meta[^>]*name=["\']description["\'][^>]*content=["\']([^"\']*)["\'][^>]*>', html_content, re.IGNORECASE)
-        if meta_match:
-            meta_desc = meta_match.group(1).strip()
-
-        # Parse HTML for API endpoints and external resources
-        api_endpoints = extract_api_endpoints(html_content, url)
-
-        # Test API endpoints for performance
-        api_performance = test_api_performance(api_endpoints)
-
-        # Prepare prompt for OpenAI
-        system_message = """You are an expert web analyst. Analyze the provided website content and rate it on multiple parameters out of 5 stars.
-
-CRITICAL: Respond with ONLY valid JSON. Start directly with '{' and end with '}'.
-
-Required JSON format:
-{
-    "overall_rating": 4,
-    "parameters": {
-        "performance": {"rating": 4, "explanation": "Brief explanation"},
-        "seo": {"rating": 3, "explanation": "Brief explanation"},
-        "usability": {"rating": 5, "explanation": "Brief explanation"},
-        "accessibility": {"rating": 4, "explanation": "Brief explanation"},
-        "security": {"rating": 3, "explanation": "Brief explanation"}
-    },
-    "report": "Detailed analysis report summarizing strengths and weaknesses",
-    "recommendations": ["Recommendation 1", "Recommendation 2", "Recommendation 3"]
-}
-
-Rate each parameter 1-5 stars based on:
-- Performance: Loading speed, optimization, mobile-friendliness, API response times
-- SEO: Meta tags, content quality, structure
-- Usability: Navigation, user experience, design
-- Accessibility: WCAG compliance, screen reader support
-- Security: HTTPS, vulnerabilities, best practices
-
-Overall rating should be the average of parameter ratings."""
-
-        user_message = f"""Website URL: {url}
-Title: {title}
-Meta Description: {meta_desc}
-
-API Performance Data:
-{json.dumps(api_performance, indent=2)}
-
-HTML Content Preview:
-{html_content[:10000]}"""
-
-        # Make API call
-        api_response = client.chat.completions.create(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": system_message},
-                {"role": "user", "content": user_message}
-            ],
-            max_tokens=2000,
-            temperature=0.3
-        )
-
-        content = api_response.choices[0].message.content.strip()
-
-        # Parse JSON response
-        result = json.loads(content)
-        result["analyzed_at"] = datetime.now().isoformat()
-        result["url"] = url
-        result["api_performance"] = api_performance  # Include raw API data
-        return result
-
-    except requests.exceptions.RequestException as e:
-        return {"error": f"Failed to fetch website: {str(e)}"}
-    except json.JSONDecodeError:
-        return {"error": "Failed to parse AI response"}
-    except Exception as e:
-        return {"error": f"Analysis error: {str(e)}"}
-
-
 @app.route("/health")
 def health():
     return jsonify({"status": "healthy", "timestamp": datetime.now().isoformat()})
@@ -690,6 +504,45 @@ def analyze_website_endpoint():
             return jsonify(result), 400
 
         return jsonify(result)
+
+    except Exception as e:
+        return jsonify({"error": f"Server error: {str(e)}"}), 500
+
+
+@app.route("/generate_api_tests", methods=["POST"])
+def generate_api_tests():
+    try:
+        # Check if API document file is provided
+        if "api_file" not in request.files:
+            return jsonify({"error": "Please upload an API document file (Swagger/OpenAPI JSON or Postman collection)"}), 400
+
+        api_file = request.files["api_file"]
+
+        if api_file.filename == "":
+            return jsonify({"error": "No file selected"}), 400
+
+        # Check file extension
+        if not api_file.filename.lower().endswith('.json'):
+            return jsonify({"error": "Please upload a JSON file"}), 400
+
+        # Save file temporarily
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.json') as temp_file:
+            api_file.save(temp_file.name)
+            temp_api_path = temp_file.name
+
+        try:
+            # Generate API test cases
+            result = generate_api_tests_from_file(temp_api_path)
+
+            if "error" in result:
+                return jsonify(result), 400
+
+            return jsonify(result)
+
+        finally:
+            # Clean up temporary file
+            if os.path.exists(temp_api_path):
+                os.unlink(temp_api_path)
 
     except Exception as e:
         return jsonify({"error": f"Server error: {str(e)}"}), 500

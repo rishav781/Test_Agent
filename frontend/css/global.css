@@ -100,6 +100,11 @@ button { font-family: inherit; }
 .textarea-wrapper { border:1px solid var(--color-border); border-radius: var(--radius-md); padding:16px; background:#fff; }
 .textarea-wrapper textarea { width:100%; border:none; resize:vertical; outline:none; font: 400 16px/24px var(--font-stack); color: var(--color-text-primary); background:transparent; }
 
+/* URL Input Styles */
+.input-wrapper { border:1px solid var(--color-border); border-radius: var(--radius-md); background:#fff; }
+.url-input { width:100%; padding:16px; border:none; outline:none; font: 400 16px/24px var(--font-stack); color: var(--color-text-primary); background:transparent; }
+.url-input:focus { outline:none; }
+
 .or-separator { display:flex; align-items:center; justify-content:center; font-weight:600; font-size:16px; color:#959EA7; }
 .or-separator::before, .or-separator::after { content:""; flex:1; border-top:1px dashed #959EA7; margin:0 12px; }
 
@@ -372,6 +377,85 @@ button { font-family: inherit; }
   font-size: 12px;
   color: var(--color-text-disabled);
   justify-content: center;
+}
+
+/* Analysis Info Sections */
+.website-analysis-info,
+.api-analysis-info {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+.website-analysis-info h3,
+.api-analysis-info h3 {
+  margin: 0 0 16px 0;
+  color: var(--color-text-primary);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.analysis-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.analysis-item {
+  padding: 12px;
+  background: var(--color-bg-page);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+}
+
+.analysis-item strong {
+  color: var(--color-text-primary);
+}
+
+.analysis-item a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.analysis-item a:hover {
+  text-decoration: underline;
+}
+
+.analysis-report,
+.analysis-recommendations,
+.api-description {
+  margin-top: 16px;
+  padding: 16px;
+  background: var(--color-bg-page);
+  border-radius: var(--radius-sm);
+}
+
+.analysis-report h4,
+.analysis-recommendations h4 {
+  margin: 0 0 8px 0;
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.analysis-report p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.analysis-recommendations ul {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--color-text-secondary);
+}
+
+.analysis-recommendations li {
+  margin-bottom: 4px;
+  line-height: 1.4;
 }
 
 /* Loading overlay removed; rely on button spinner only */

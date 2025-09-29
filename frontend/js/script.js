@@ -78,6 +78,67 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
     }
 
+    // API file upload functionality
+    const apiUploadArea = document.getElementById('apiUploadArea');
+    const apiFileInput = document.getElementById('apiFile');
+    const apiUploadLink = document.querySelector('.api-upload-link');
+
+    // Click to browse API files
+    apiUploadArea.addEventListener('click', function() {
+        apiFileInput.click();
+    });
+
+    apiUploadLink.addEventListener('click', function(e) {
+        e.stopPropagation();
+        apiFileInput.click();
+    });
+
+    // API file input change
+    apiFileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            updateApiUploadArea(file.name);
+        }
+    });
+
+    // API file drag and drop functionality
+    apiUploadArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        apiUploadArea.classList.add('dragover');
+    });
+
+    apiUploadArea.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        apiUploadArea.classList.remove('dragover');
+    });
+
+    apiUploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        apiUploadArea.classList.remove('dragover');
+
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            const file = files[0];
+            if (file.name.toLowerCase().endsWith('.json')) {
+                apiFileInput.files = files;
+                updateApiUploadArea(file.name);
+            } else {
+                alert('Please drop a JSON file.');
+            }
+        }
+    });
+
+    function updateApiUploadArea(filename) {
+        const uploadContent = apiUploadArea.querySelector('.upload-content');
+        uploadContent.innerHTML = `
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 9H16V11H8V9ZM8 13H16V15H8V13ZM10 17H14V19H10V17ZM20 5H4C3.45 5 3 5.45 3 6V18C3 18.55 3.45 19 4 19H20C20.55 19 21 18.55 21 18V6C21 5.45 20.55 5 20 5ZM19 17H5V7H19V17Z" fill="#10b981"/>
+            </svg>
+            <p><strong>${filename}</strong> selected</p>
+            <p class="upload-hint">Click to change file or drag a new one</p>
+        `;
+    }
+
     // Generate button functionality
     const generateBtn = document.getElementById('generateBtn');
     // Full-page loading overlay removed; keep only button spinner
@@ -101,8 +162,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // Check which tab is active
         const activeTab = document.querySelector('.tab-content.active');
         const isDescriptionTab = activeTab.id === 'description-tab';
+        const isUploadTab = activeTab.id === 'upload-tab';
+        const isApiTab = activeTab.id === 'api-tab';
+        const isWebsiteTab = activeTab.id === 'website-tab';
 
         let formData = new FormData();
+        let apiUrl = 'http://localhost:5000/analyze';
 
         if (isDescriptionTab) {
             // Handle description form
@@ -112,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             formData.append('description', description);
-        } else {
+        } else if (isUploadTab) {
             // Handle upload form
             const imageFile = document.getElementById('image').files[0];
             if (!imageFile) {
@@ -120,28 +185,73 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             formData.append('image', imageFile);
+        } else if (isApiTab) {
+            // Handle API document upload
+            const apiFile = document.getElementById('apiFile').files[0];
+            if (!apiFile) {
+                alert('Please select an API document file.');
+                return;
+            }
+            formData.append('api_file', apiFile);
+            apiUrl = 'http://localhost:5000/generate_api_tests';
+        } else if (isWebsiteTab) {
+            // Handle website URL
+            const websiteUrl = document.getElementById('websiteUrl').value.trim();
+            if (!websiteUrl) {
+                alert('Please enter a website URL.');
+                return;
+            }
+            // Validate URL format
+            try {
+                new URL(websiteUrl);
+            } catch (e) {
+                alert('Please enter a valid URL (including http:// or https://).');
+                return;
+            }
+            formData.append('url', websiteUrl);
+            apiUrl = 'http://localhost:5000/analyze_website';
         }
 
     // Show loading state (spinner on button only)
         generateBtn.disabled = true;
         generateBtn.classList.add('loading');
+
+        // Show specific loading message for website analysis
+        if (isWebsiteTab) {
+            generateBtn.textContent = 'Analyzing website... (this may take up to 60 seconds)';
+        } else {
+            generateBtn.textContent = 'Analyzing...';
+        }
         resultsSection.style.display = 'none';
         scenariosSection.style.display = 'none';
 
         try {
-            // Send request to backend API to get scenarios
-            const apiUrl = 'http://localhost:5000/analyze';
+            // Send request to backend API with timeout
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 second timeout
+
             const response = await fetch(apiUrl, {
                 method: 'POST',
-                body: formData
+                body: formData,
+                signal: controller.signal
             });
+
+            clearTimeout(timeoutId);
 
             const result = await response.json();
 
             if (response.ok) {
-                availableScenarios = result.scenarios || [];
-                displayScenarios(availableScenarios);
-                
+                // Check if this is API test generation (returns scenarios directly)
+                if (isApiTab && result.scenarios) {
+                    // API test generation returns scenarios directly
+                    availableScenarios = result.scenarios || [];
+                    displayScenarios(availableScenarios);
+                } else {
+                    // Regular analysis returns scenarios
+                    availableScenarios = result.scenarios || [];
+                    displayScenarios(availableScenarios);
+                }
+
                 // Hide input section and show scenarios in full body
                 inputSection.style.display = 'none';
                 // Keep stepper visible to reflect current phase
@@ -151,39 +261,59 @@ document.addEventListener('DOMContentLoaded', function() {
                 const headerBlock = document.querySelector('.header-block');
                 if (headerBlock) headerBlock.style.display = 'none';
 
-                // Update stepper to show analysis phase
-                updateStepper(2); // Analysis phase
+                // Stepper is updated by displayScenarios function
             } else {
                 displayError(result.error || 'An error occurred while analyzing input.');
             }
         } catch (error) {
-            displayError('Network error: ' + error.message);
+            let errorMessage = 'Network error: ' + error.message;
+
+            if (error.name === 'AbortError') {
+                if (isWebsiteTab) {
+                    errorMessage = 'Website analysis timed out. The website may be slow to respond or the analysis is taking longer than expected. Please try a different URL or try again later.';
+                } else {
+                    errorMessage = 'Request timed out. Please try again.';
+                }
+            } else if (error.message.includes('Failed to fetch')) {
+                errorMessage = 'Cannot connect to the server. Please check that the backend server is running and try again.';
+            } else if (isWebsiteTab && error.message.includes('NetworkError')) {
+                errorMessage = 'Cannot access the website. Please check the URL and ensure the website is accessible.';
+            }
+
+            displayError(errorMessage);
         } finally {
             // Reset button state
             generateBtn.disabled = false;
             generateBtn.classList.remove('loading');
+            generateBtn.textContent = 'Analyze'; // Reset to original text
             // No full-page loading overlay
         }
     });
 
     function updateStepper(activeStep) {
+        console.log('Updating stepper to step:', activeStep);
         const steps = document.querySelectorAll('.step');
         steps.forEach((step, index) => {
-            if (index + 1 === activeStep) {
-                step.classList.remove('inactive');
+            const stepNum = index + 1;
+            console.log(`Step ${stepNum} before:`, step.className);
+            // Remove all state classes first
+            step.classList.remove('active', 'inactive', 'completed');
+
+            // Add the appropriate class
+            if (stepNum === activeStep) {
                 step.classList.add('active');
-            } else if (index + 1 < activeStep) {
-                step.classList.remove('inactive', 'active');
+            } else if (stepNum < activeStep) {
                 step.classList.add('completed');
             } else {
-                step.classList.remove('active', 'completed');
                 step.classList.add('inactive');
             }
+            console.log(`Step ${stepNum} after:`, step.className);
         });
     }
 
     function displayResults(data) {
         resultsSection.style.display = 'block';
+        updateStepper(3);
 
         if (data.error) {
             resultsContent.innerHTML = `<div class="error-message">${data.error}</div>`;
@@ -242,6 +372,62 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
 
+        // Add website analysis info if available
+        if (data.document_type === 'website' && data.website_info) {
+            const info = data.website_info;
+            html += `
+                <div class="website-analysis-info">
+                    <h3>Website Analysis Results</h3>
+                    <div class="analysis-grid">
+                        <div class="analysis-item">
+                            <strong>Website:</strong> <a href="${info.url}" target="_blank">${info.title || info.url}</a>
+                        </div>
+                        <div class="analysis-item">
+                            <strong>Overall Rating:</strong> ${info.overall_rating || 0}/5 ⭐
+                        </div>
+                        <div class="analysis-item">
+                            <strong>API Endpoints Found:</strong> ${info.api_endpoints_found || 0}
+                        </div>
+                        <div class="analysis-item">
+                            <strong>Analyzed At:</strong> ${new Date(info.analyzed_at).toLocaleString()}
+                        </div>
+                    </div>
+                    ${info.report ? `<div class="analysis-report"><h4>Analysis Report:</h4><p>${info.report}</p></div>` : ''}
+                    ${info.recommendations && info.recommendations.length > 0 ? `
+                        <div class="analysis-recommendations">
+                            <h4>Recommendations:</h4>
+                            <ul>${info.recommendations.map(rec => `<li>${rec}</li>`).join('')}</ul>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        // Add API analysis info if available
+        if ((data.document_type === 'swagger' || data.document_type === 'postman') && data.api_info) {
+            const info = data.api_info;
+            html += `
+                <div class="api-analysis-info">
+                    <h3>API Analysis Results</h3>
+                    <div class="analysis-grid">
+                        <div class="analysis-item">
+                            <strong>API:</strong> ${info.title || 'Unknown API'}
+                        </div>
+                        <div class="analysis-item">
+                            <strong>Endpoints:</strong> ${info.endpoints_count || 0}
+                        </div>
+                        <div class="analysis-item">
+                            <strong>Document Type:</strong> ${data.document_type}
+                        </div>
+                        <div class="analysis-item">
+                            <strong>Parsed At:</strong> ${new Date(info.parsed_at).toLocaleString()}
+                        </div>
+                    </div>
+                    ${info.description ? `<div class="api-description"><p>${info.description}</p></div>` : ''}
+                </div>
+            `;
+        }
+
         data.scenarios.forEach((scenario, sIndex) => {
             const scenarioId = scenario.id || `SC${String(sIndex + 1).padStart(3, '0')}`;
             html += `
@@ -296,8 +482,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         html += `<div class="expected-result"><strong>Expected Result:</strong> ${testCase.expected_result}</div>`;
                     }
 
-                    if (testCase.test_data) {
-                        html += `<div class="test-data"><strong>Test Data:</strong> ${testCase.test_data}</div>`;
+                    if (testCase.test_data && Object.keys(testCase.test_data).length > 0) {
+                        html += `<div class="test-data"><strong>Test Data:</strong> ${JSON.stringify(testCase.test_data, null, 2)}</div>`;
                     }
 
                     html += '</div>';
@@ -348,6 +534,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function displayError(message) {
         resultsSection.style.display = 'block';
+        updateStepper(3);
         resultsContent.innerHTML = `<div class="error-message">${message}</div>`;
         resultsSection.scrollIntoView({ behavior: 'smooth' });
     }
@@ -429,6 +616,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Results back button functionality
     const resultsBackBtn = document.getElementById('resultsBackBtn');
     resultsBackBtn.addEventListener('click', function() {
+        console.log('Results back button clicked');
         resultsSection.style.display = 'none';
         scenariosSection.style.display = 'block';
         const headerBlock2 = document.querySelector('.header-block');
@@ -442,6 +630,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const scenariosBackBtn = document.getElementById('backBtn');
     if (scenariosBackBtn) {
         scenariosBackBtn.addEventListener('click', function() {
+            console.log('Scenarios back button clicked');
             // Hide scenarios and results; show input & stepper
             scenariosSection.style.display = 'none';
             resultsSection.style.display = 'none';
@@ -509,6 +698,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         scenariosSection.style.display = 'block';
         updateSelectedCount();
+        updateStepper(2);
     }
 
     function updateSelectedCount() {

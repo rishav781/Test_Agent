@@ -53,6 +53,18 @@
                     </svg>
                     Upload Image
                 </button>
+                <button class="tab-btn" data-tab="api">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 9H16V11H8V9ZM8 13H16V15H8V13ZM10 17H14V19H10V17ZM20 5H4C3.45 5 3 5.45 3 6V18C3 18.55 3.45 19 4 19H20C20.55 19 21 18.55 21 18V6C21 5.45 20.55 5 20 5ZM19 17H5V7H19V17Z" fill="currentColor"/>
+                    </svg>
+                    API Document
+                </button>
+                <button class="tab-btn" data-tab="website">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM8 10H10V12H8V10ZM12 10H14V12H12V10ZM16 10H18V12H16V10Z" fill="currentColor"/>
+                    </svg>
+                    Website URL
+                </button>
             </div>
 
             <!-- Tab Content -->
@@ -93,6 +105,56 @@
                         </div>
                         <input type="file" id="image" name="image" accept="image/*" style="display: none;">
                     </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="api-tab">
+                <div class="file-upload-description">
+                    <p><strong>Upload a Swagger/OpenAPI specification or Postman collection</strong> to generate comprehensive API test cases automatically.</p>
+                    <ul>
+                        <li><strong>Swagger/OpenAPI:</strong> JSON specifications with API endpoints, parameters, and schemas</li>
+                        <li><strong>Postman Collections:</strong> Exported Postman collections with API requests and tests</li>
+                        <li><strong>Supported formats:</strong> JSON files only</li>
+                    </ul>
+                </div>
+
+                <div class="input-group">
+                    <div class="upload-dropzone" id="apiUploadArea">
+                        <div class="upload-content">
+                            <svg class="upload-icon" width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 9H16V11H8V9ZM8 13H16V15H8V13ZM10 17H14V19H10V17ZM20 5H4C3.45 5 3 5.45 3 6V18C3 18.55 3.45 19 4 19H20C20.55 19 21 18.55 21 18V6C21 5.45 20.55 5 20 5ZM19 17H5V7H19V17Z" fill="currentColor"/>
+                            </svg>
+                            <p class="upload-primary">Drop your API document here or <span class="api-upload-link">browse files</span></p>
+                            <p class="upload-secondary">Supported: Swagger/OpenAPI JSON, Postman Collections (max 16MB)</p>
+                        </div>
+                        <input type="file" id="apiFile" name="api_file" accept=".json" style="display: none;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="website-tab">
+                <div class="file-upload-description">
+                    <p><strong>Analyze a website</strong> to generate comprehensive test cases automatically.</p>
+                    <ul>
+                        <li><strong>Website Analysis:</strong> Performance, SEO, security, accessibility, and usability testing</li>
+                        <li><strong>API Detection:</strong> Automatically finds and tests external API endpoints</li>
+                        <li><strong>Comprehensive Testing:</strong> Functional, performance, security, and accessibility test cases</li>
+                        <li><strong>Note:</strong> Website analysis may take up to 60 seconds to complete</li>
+                    </ul>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label" for="websiteUrl">Website URL</label>
+                    <div class="input-wrapper">
+                        <input
+                            type="url"
+                            id="websiteUrl"
+                            name="website_url"
+                            placeholder="https://example.com"
+                            class="url-input"
+                        >
+                    </div>
+                    <p class="input-hint">Enter a complete URL including https:// or http://. The website will be analyzed for performance, security, accessibility, and functionality.</p>
                 </div>
             </div>
 
