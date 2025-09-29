@@ -196,16 +196,24 @@ document.addEventListener('DOMContentLoaded', function() {
             apiUrl = 'http://localhost:5000/generate_api_tests';
         } else if (isWebsiteTab) {
             // Handle website URL
-            const websiteUrl = document.getElementById('websiteUrl').value.trim();
+            let websiteUrl = document.getElementById('websiteUrl').value.trim();
             if (!websiteUrl) {
                 alert('Please enter a website URL.');
                 return;
             }
+
+            // Auto-add https:// if no protocol is specified
+            if (!websiteUrl.startsWith('http://') && !websiteUrl.startsWith('https://')) {
+                websiteUrl = 'https://' + websiteUrl;
+                // Update the input field to show the full URL
+                document.getElementById('websiteUrl').value = websiteUrl;
+            }
+
             // Validate URL format
             try {
                 new URL(websiteUrl);
             } catch (e) {
-                alert('Please enter a valid URL (including http:// or https://).');
+                alert('Please enter a valid URL. The URL will automatically be prefixed with https:// if no protocol is specified.');
                 return;
             }
             formData.append('url', websiteUrl);
@@ -316,12 +324,12 @@ document.addEventListener('DOMContentLoaded', function() {
         updateStepper(3);
 
         if (data.error) {
-            resultsContent.innerHTML = `<div class="error-message">${data.error}</div>`;
+            displayError(data.error);
             return;
         }
 
         if (!data.scenarios || data.scenarios.length === 0) {
-            resultsContent.innerHTML = '<div class="error-message">No test scenarios were generated. Please try with a different input.</div>';
+            displayError('No test scenarios were generated. Please try with a different input.');
             return;
         }
 
@@ -533,10 +541,72 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function displayError(message) {
-        resultsSection.style.display = 'block';
-        updateStepper(3);
-        resultsContent.innerHTML = `<div class="error-message">${message}</div>`;
-        resultsSection.scrollIntoView({ behavior: 'smooth' });
+        // Create a new window with error message instead of showing on current page
+        const errorWindow = window.open('', '_blank', 'width=600,height=400,scrollbars=yes,resizable=yes');
+        if (errorWindow) {
+            errorWindow.document.write(`
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Test Case Generation Error</title>
+                    <style>
+                        body {
+                            font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+                            background: #F8F9FA;
+                            margin: 0;
+                            padding: 20px;
+                            color: #2B2F35;
+                        }
+                        .error-container {
+                            max-width: 500px;
+                            margin: 0 auto;
+                            background: white;
+                            border: 1px solid #DEE2E6;
+                            border-radius: 8px;
+                            padding: 24px;
+                            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+                        }
+                        .error-title {
+                            color: #DC3545;
+                            font-size: 18px;
+                            font-weight: 600;
+                            margin-bottom: 16px;
+                        }
+                        .error-message {
+                            color: #606872;
+                            line-height: 1.5;
+                            margin-bottom: 20px;
+                        }
+                        .close-btn {
+                            background: #012B38;
+                            color: white;
+                            border: none;
+                            padding: 8px 16px;
+                            border-radius: 6px;
+                            cursor: pointer;
+                            font-weight: 500;
+                        }
+                        .close-btn:hover {
+                            background: #011A20;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="error-container">
+                        <h2 class="error-title">❌ Test Case Generation Error</h2>
+                        <div class="error-message">${message}</div>
+                        <button class="close-btn" onclick="window.close()">Close Window</button>
+                    </div>
+                </body>
+                </html>
+            `);
+            errorWindow.document.close();
+        } else {
+            // Fallback if popup is blocked
+            alert('Error: ' + message + '\n\nPlease allow popups for this site to see error details in a new window.');
+        }
     }
 
     // Export functionality

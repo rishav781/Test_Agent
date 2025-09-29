@@ -10,9 +10,10 @@
   --color-text-disabled: #B8C0C8;
   --color-primary: #0080FF;
   --color-primary-hover: #0066CC;
-  --color-step-active-bg: #E6F5F8;
+  --color-success: #10B981;
+  --color-step-active-bg: #012B38;
   --color-step-inactive-bg: #E9ECEF;
-  --color-step-active-text: #00687A;
+  --color-step-active-text: #FFFFFF;
   --radius-sm: 6px;
   --radius-md: 8px;
   --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
@@ -77,15 +78,15 @@ button { font-family: inherit; }
 /* Stepper */
 .stepper { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 24px 0; flex-wrap: nowrap; }
 .step { display: flex; align-items: center; gap: 8px; }
-.step-circle { width: 27px; height: 27px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight:500; }
-.step.active .step-circle { background: var(--color-step-active-bg); border: 1px solid var(--color-step-active-bg); color: var(--color-step-active-text); }
-.step.inactive .step-circle { background: var(--color-step-inactive-bg); border: 1px solid var(--color-step-inactive-bg); color: var(--color-text-disabled); }
-.step-label { font-size:14px; line-height:22px; font-weight:600; }
+.step-circle { width: 27px; height: 27px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight:500; transition: all 0.2s ease; }
+.step.active .step-circle { background: var(--color-step-active-bg); border: 1px solid var(--color-step-active-bg); color: var(--color-step-active-text); box-shadow: 0 2px 4px rgba(1, 43, 56, 0.2); }
+.step.inactive .step-circle { background: var(--color-step-inactive-bg); border: 1px solid var(--color-border); color: var(--color-text-disabled); }
+.step-label { font-size:14px; line-height:22px; font-weight:600; transition: all 0.2s ease; }
 .step.inactive .step-label { font-weight:500; color: var(--color-text-disabled); }
-.step.active .step-label { color: var(--color-step-active-text); }
-.step.completed .step-circle { background: var(--color-success); border: 1px solid var(--color-success); color: white; }
+.step.active .step-label { color: #012B38; font-weight: 600; }
+.step.completed .step-circle { background: var(--color-success); border: 1px solid var(--color-success); color: white; box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2); }
 .step.completed .step-circle::after { content: '✓'; }
-.step.completed .step-label { color: var(--color-success); }
+.step.completed .step-label { color: var(--color-success); font-weight: 600; }
 .step-connector { width:315px; border-top:1px dashed #959EA7; }
 
 /* Input area */

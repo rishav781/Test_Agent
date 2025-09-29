@@ -136,10 +136,12 @@
                 <div class="file-upload-description">
                     <p><strong>Analyze a website</strong> to generate comprehensive test cases automatically.</p>
                     <ul>
+                        <li><strong>HTTPS Support:</strong> Automatically handles both HTTP and HTTPS websites</li>
                         <li><strong>Website Analysis:</strong> Performance, SEO, security, accessibility, and usability testing</li>
                         <li><strong>API Detection:</strong> Automatically finds and tests external API endpoints</li>
                         <li><strong>Comprehensive Testing:</strong> Functional, performance, security, and accessibility test cases</li>
                         <li><strong>Note:</strong> Website analysis may take up to 60 seconds to complete</li>
+                        <li><strong>⚠️ Bot Protection:</strong> Some websites have bot protection that may block automated analysis or return unexpected responses</li>
                     </ul>
                 </div>
 
@@ -150,11 +152,11 @@
                             type="url"
                             id="websiteUrl"
                             name="website_url"
-                            placeholder="https://example.com"
+                            placeholder="example.com (https:// will be added automatically)"
                             class="url-input"
                         >
                     </div>
-                    <p class="input-hint">Enter a complete URL including https:// or http://. The website will be analyzed for performance, security, accessibility, and functionality.</p>
+                    <p class="input-hint">Enter a website URL. HTTPS will be added automatically if no protocol is specified. The website will be analyzed for performance, security, accessibility, and functionality.</p>
                 </div>
             </div>
 
@@ -229,6 +231,6 @@
 
     </div>
 
-    <script src="js/script.js"></script>
+    <script src="js/script.js?v=1.1"></script>
 </body>
 </html>
