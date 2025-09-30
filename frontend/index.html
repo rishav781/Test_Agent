@@ -33,6 +33,11 @@
             <div class="step-connector"></div>
             <div class="step inactive">
                 <div class="step-circle">3</div>
+                <div class="step-label">Selection</div>
+            </div>
+            <div class="step-connector"></div>
+            <div class="step inactive">
+                <div class="step-circle">4</div>
                 <div class="step-label">Generation</div>
             </div>
         </div>
@@ -168,6 +173,31 @@
             </div>
         </div>
 
+        <!-- Scenario Selection Section -->
+        <div id="scenario-selection-section" class="scenario-selection-section" style="display: none;">
+            <div class="scenario-header">
+                <div class="scenario-nav">
+                    <button id="scenarioBackBtn" class="back-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Back to Input
+                    </button>
+                </div>
+                <h3>Select Test Scenarios</h3>
+                <div class="scenario-actions">
+                    <button class="secondary-btn" id="selectAllBtn">Select All</button>
+                    <button class="primary-btn" id="generateTestCasesBtn" disabled>
+                        Generate Test Cases
+                        <span id="scenarioSelectedCount">(0 selected)</span>
+                    </button>
+                </div>
+            </div>
+            <div id="scenario-content" class="scenario-content">
+                <!-- Scenarios will be populated here -->
+            </div>
+        </div>
+
         <!-- Results Section -->
         <div id="results-section" class="results-section" style="display: none;">
             <div class="results-header">
@@ -200,34 +230,7 @@
             </div>
         </div>
 
-        <!-- Scenarios Selection -->
-        <div id="scenarios-section" class="scenarios-section" style="display: none;">
-            <div class="scenarios-header">
-                <h3>Select Test Scenarios</h3>
-                <p class="scenarios-subtitle">Choose the scenarios you want to generate test cases for. Our AI has analyzed your input and identified the following test scenarios:</p>
-            </div>
 
-            <div id="scenarios-list" class="scenarios-list">
-                <!-- Scenarios will be populated here -->
-            </div>
-
-            <div class="scenarios-footer">
-                <button id="backBtn" class="back-btn">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    Back
-                </button>
-                <div class="scenarios-actions">
-                    <button id="generateSelectedBtn" class="primary-btn" disabled>
-                        Generate Selected (<span id="selectedCount">0</span>)
-                    </button>
-                    <button id="generateAllBtn" class="secondary-btn">
-                        Generate All Scenarios
-                    </button>
-                </div>
-            </div>
-        </div>
 
     </div>
 

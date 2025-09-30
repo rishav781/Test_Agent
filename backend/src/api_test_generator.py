@@ -140,6 +140,208 @@ def parse_postman_collection(postman_data: Dict[str, Any]) -> Dict[str, Any]:
     return parsed_data
 
 
+def generate_api_scenarios(api_data: Dict[str, Any], document_type: str) -> List[Dict[str, Any]]:
+    """
+    Generate API test scenarios without detailed test cases (first step)
+    """
+    try:
+        # Prepare the system message for scenarios only
+        system_message = """You are an expert API testing specialist. Your task is to generate comprehensive test scenarios for API endpoints based on the provided API documentation.
+
+CRITICAL: You must respond with ONLY valid JSON. Do not include any explanatory text, comments, or formatting outside of the JSON structure. Start your response directly with '[' and end with ']'.
+
+Required JSON format for each test scenario:
+{
+    "id": "API_SC001",
+    "title": "API Endpoint Test Scenario",
+    "description": "Detailed description of what this scenario tests",
+    "category": "functional|negative|performance|security|integration",
+    "endpoints": ["/api/endpoint1", "/api/endpoint2"],
+    "test_types": ["authentication", "data_validation", "error_handling"],
+    "priority": "high|medium|low",
+    "estimated_test_cases": 5
+}
+
+For each API endpoint or group of related endpoints, generate scenarios covering:
+1. Functional Testing: Happy path, data validation, CRUD operations
+2. Negative Testing: Invalid inputs, error conditions, boundary values  
+3. Security Testing: Authentication, authorization, input validation
+4. Performance Testing: Response times, load handling
+5. Integration Testing: Dependencies, data flow
+
+Focus on scenario-level descriptions without detailed test case steps. Each scenario should represent a logical group of related test cases."""
+
+        # Prepare the user message
+        user_message = f"""
+Please analyze this {document_type} API specification and generate comprehensive test scenarios:
+
+API Title: {api_data.get('title', 'Unknown')}
+API Description: {api_data.get('description', 'No description')}
+
+Endpoints Summary:
+"""
+        
+        # Add endpoint information
+        for endpoint in api_data.get('endpoints', [])[:10]:  # Limit to first 10 for prompt size
+            user_message += f"- {endpoint.get('method', 'GET')} {endpoint.get('path', '/unknown')}: {endpoint.get('summary', 'No summary')}\n"
+        
+        if len(api_data.get('endpoints', [])) > 10:
+            user_message += f"... and {len(api_data.get('endpoints', [])) - 10} more endpoints\n"
+
+        user_message += "\nGenerate 8-12 comprehensive test scenarios covering all major testing aspects."
+
+        # Make API call
+        response = client.chat.completions.create(
+            model=OPENAI_MODEL_API,
+            messages=[
+                {"role": "system", "content": system_message},
+                {"role": "user", "content": user_message}
+            ],
+            max_tokens=3000,
+            temperature=0.3
+        )
+
+        content = response.choices[0].message.content.strip()
+        
+        # Parse JSON response
+        try:
+            scenarios = json.loads(content)
+            print(f"Successfully generated {len(scenarios)} API scenarios")
+            return scenarios
+        except json.JSONDecodeError as e:
+            print(f"JSON parsing failed: {e}")
+            # Try to extract JSON array from response
+            import re
+            json_match = re.search(r'\[.*\]', content, re.DOTALL)
+            if json_match:
+                try:
+                    scenarios = json.loads(json_match.group())
+                    print(f"Successfully parsed {len(scenarios)} scenarios from regex match")
+                    return scenarios
+                except json.JSONDecodeError:
+                    pass
+            
+            return [{"error": f"Failed to parse AI response as JSON: {content[:500]}"}]
+
+    except Exception as e:
+        print(f"Error generating API scenarios: {str(e)}")
+        return [{"error": f"Error generating scenarios: {str(e)}"}]
+
+
+def generate_api_test_cases_for_scenarios(scenarios: List[Dict[str, Any]], api_data: Dict[str, Any], document_type: str) -> List[Dict[str, Any]]:
+    """
+    Generate detailed test cases for selected API scenarios (second step)
+    """
+    try:
+        # If we have many scenarios, process them in batches to avoid token limits
+        if len(scenarios) > 5:
+            print(f"Processing {len(scenarios)} scenarios in batches to avoid token limits")
+            all_detailed_scenarios = []
+            batch_size = 3  # Process 3 scenarios at a time
+            
+            for i in range(0, len(scenarios), batch_size):
+                batch = scenarios[i:i + batch_size]
+                print(f"Processing batch {i//batch_size + 1}: scenarios {i+1}-{min(i+batch_size, len(scenarios))}")
+                batch_result = _generate_batch_test_cases(batch, api_data, document_type)
+                if isinstance(batch_result, list) and len(batch_result) > 0:
+                    all_detailed_scenarios.extend(batch_result)
+                
+            return all_detailed_scenarios
+        else:
+            # Process all scenarios at once if there are 5 or fewer
+            return _generate_batch_test_cases(scenarios, api_data, document_type)
+
+    except Exception as e:
+        print(f"Error generating detailed API test cases: {str(e)}")
+        return [{"error": f"Error generating detailed test cases: {str(e)}"}]
+
+
+def _generate_batch_test_cases(scenarios: List[Dict[str, Any]], api_data: Dict[str, Any], document_type: str) -> List[Dict[str, Any]]:
+    """
+    Generate test cases for a batch of scenarios
+    """
+    try:
+        # Prepare the system message for detailed test cases (more concise)
+        system_message = """You are an expert API testing specialist. Generate detailed test cases for the provided API scenarios.
+
+CRITICAL: Respond with ONLY valid JSON. Start with '[' and end with ']'.
+
+JSON format:
+{
+    "id": "API_SC001",
+    "title": "Scenario Title",
+    "description": "Brief description",
+    "category": "functional|negative|security",
+    "test_cases": [
+        {
+            "id": "API_TC001",
+            "title": "Test Case Title",
+            "description": "Test description",
+            "priority": "high|medium|low",
+            "category": "functional|negative|security",
+            "steps": ["Step 1", "Step 2", "Step 3"],
+            "test_data": {
+                "method": "GET|POST|PUT|DELETE",
+                "endpoint": "/api/endpoint",
+                "expected_status_code": 200
+            },
+            "expected_result": "Expected outcome"
+        }
+    ]
+}
+
+Generate 3-5 test cases per scenario."""
+
+        # Prepare user message (more concise)
+        user_message = f"""
+Generate detailed test cases for these {len(scenarios)} API scenarios:
+
+{json.dumps(scenarios, indent=1)}
+
+Document Type: {document_type}
+Generate test cases for ALL {len(scenarios)} scenarios.
+"""
+
+        # Make API call with appropriate token limit
+        response = client.chat.completions.create(
+            model=OPENAI_MODEL_API,
+            messages=[
+                {"role": "system", "content": system_message},
+                {"role": "user", "content": user_message}
+            ],
+            max_tokens=4000,
+            temperature=0.3
+        )
+
+        content = response.choices[0].message.content.strip()
+        
+        # Parse JSON response
+        print(f"Batch AI Response length: {len(content)} characters")
+        
+        try:
+            detailed_scenarios = json.loads(content)
+            print(f"Successfully generated detailed test cases for {len(detailed_scenarios)} scenarios in batch")
+            return detailed_scenarios
+        except json.JSONDecodeError as e:
+            print(f"JSON parsing failed: {e}")
+            # Try to extract JSON array from response
+            import re
+            json_match = re.search(r'\[.*\]', content, re.DOTALL)
+            if json_match:
+                try:
+                    detailed_scenarios = json.loads(json_match.group())
+                    print(f"Successfully parsed {len(detailed_scenarios)} detailed scenarios from regex match")
+                    return detailed_scenarios
+                except json.JSONDecodeError:
+                    pass
+            
+            return [{"error": f"Failed to parse AI response as JSON: {content[:500]}"}]
+
+    except Exception as e:
+        print(f"Error generating batch test cases: {str(e)}")
+        return [{"error": f"Error in batch generation: {str(e)}"}]
+
+
 def generate_api_test_cases(api_data: Dict[str, Any], document_type: str) -> List[Dict[str, Any]]:
     """
     Generate comprehensive test cases for API endpoints using OpenAI

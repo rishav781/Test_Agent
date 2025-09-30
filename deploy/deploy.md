@@ -13,7 +13,7 @@ This folder contains the enhanced production deployment script that provides uni
 🔧 **Automatic Setup**: Creates virtual environment and installs dependencies automatically  
 🎯 **Interactive Configuration**: User-friendly port selection and configuration  
 🛡️ **Robust Fallbacks**: Multiple dependency installation strategies ensure success  
-📦 **Self-Contained**: Single script handles entire deployment lifecycle  
+📦 **Self-Contained**: Single script handles entire deployment lifecycle
 
 ## Quick Start
 
@@ -26,6 +26,7 @@ python deploy/deploy.py
 ```
 
 The script will:
+
 1. ✅ Check Python 3.12+ compatibility
 2. 🔧 Create virtual environment (`.venv`)
 3. 📦 Install all dependencies with pip
@@ -44,7 +45,7 @@ python deploy/deploy.py --skip-setup
 # Start backend only
 python deploy/deploy.py --backend-only
 
-# Start frontend only  
+# Start frontend only
 python deploy/deploy.py --frontend-only
 
 # Custom host and worker configuration
@@ -59,19 +60,23 @@ python deploy/deploy.py --help
 The enhanced deployment script follows this workflow:
 
 1. **Environment Validation** 🔍
+
    - Checks Python 3.12+ compatibility
    - Validates system requirements
 
 2. **Virtual Environment Setup** 🏗️
+
    - Creates `.venv` directory if not exists
    - Uses Python's built-in `venv` module
 
 3. **Dependency Installation** 📦
+
    - Primary: Installs from `requirements.txt` (root)
    - Fallback: Uses `backend/requirements.txt` + production deps
    - Last resort: Installs core dependencies directly
 
 4. **Server Configuration** ⚙️
+
    - Interactive port selection for frontend/backend
    - Environment variable configuration
    - Production settings validation
@@ -126,7 +131,7 @@ BACKEND_HOST=0.0.0.0
 FRONTEND_HOST=0.0.0.0
 
 # These ports can be overridden by interactive deployment
-BACKEND_PORT=8000  
+BACKEND_PORT=8000
 FRONTEND_PORT=3000
 
 # Gunicorn worker configuration
@@ -182,23 +187,28 @@ server {
 ### Common Issues
 
 1. **Python Version Compatibility**
+
    - Ensure Python 3.12+ is installed: `python --version`
    - The script will automatically check and warn about version issues
 
 2. **Port Already in Use**
+
    - The deployment script will prompt for different ports interactively
    - Check for existing services: `netstat -ano | findstr :8080` (Windows) or `lsof -i :8080` (Linux/Mac)
 
 3. **Virtual Environment Issues**
+
    - Delete `.venv` folder and run `python deploy/deploy.py` again
    - Ensure sufficient disk space for virtual environment creation
 
 4. **Dependency Installation Failures**
+
    - The script has multiple fallback strategies for dependency installation
    - Check internet connectivity for package downloads
    - Manually install core dependencies: `pip install Flask openai Pillow`
 
 5. **Permission Denied**
+
    - Ensure proper file permissions in project directory
    - Ports < 1024 may require administrator/root access
    - Use ports > 1024 for non-privileged deployment

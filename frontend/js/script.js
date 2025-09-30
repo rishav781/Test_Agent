@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const generateBtn = document.getElementById('generateBtn');
     // Full-page loading overlay removed; keep only button spinner
     const resultsSection = document.getElementById('results-section');
-    const scenariosSection = document.getElementById('scenarios-section');
+    const scenariosSection = document.getElementById('scenario-selection-section');
     const resultsContent = document.getElementById('results-content');
 
     // Global variables
@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             formData.append('api_file', apiFile);
-            apiUrl = `${window.BACKEND_URL}/generate_api_tests`;
+            apiUrl = `${window.BACKEND_URL}/analyze_api`;
         } else if (isWebsiteTab) {
             // Handle website URL
             let websiteUrl = document.getElementById('websiteUrl').value.trim();
@@ -249,27 +249,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const result = await response.json();
 
             if (response.ok) {
-                // Check if this is API test generation (returns scenarios directly)
-                if (isApiTab && result.scenarios) {
-                    // API test generation returns scenarios directly
-                    availableScenarios = result.scenarios || [];
-                    displayScenarios(availableScenarios);
-                } else {
-                    // Regular analysis returns scenarios
-                    availableScenarios = result.scenarios || [];
-                    displayScenarios(availableScenarios);
-                }
-
-                // Hide input section and show scenarios in full body
-                inputSection.style.display = 'none';
-                // Keep stepper visible to reflect current phase
-                stepper.style.display = 'flex';
-
-                // Hide header on scenarios/results; show only on homepage
-                const headerBlock = document.querySelector('.header-block');
-                if (headerBlock) headerBlock.style.display = 'none';
-
-                // Stepper is updated by displayScenarios function
+                // Use the new scenario display function for all workflows
+                displayScenarios(result);
             } else {
                 displayError(result.error || 'An error occurred while analyzing input.');
             }
@@ -321,7 +302,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function displayResults(data) {
         resultsSection.style.display = 'block';
-        updateStepper(3);
+        updateStepper(4);
 
         if (data.error) {
             displayError(data.error);
@@ -688,133 +669,252 @@ document.addEventListener('DOMContentLoaded', function() {
     resultsBackBtn.addEventListener('click', function() {
         console.log('Results back button clicked');
         resultsSection.style.display = 'none';
-        scenariosSection.style.display = 'block';
+        scenarioSection.style.display = 'block';
         const headerBlock2 = document.querySelector('.header-block');
         if (headerBlock2) headerBlock2.style.display = 'none';
-        // Keep stepper visible and show analysis phase
+        // Keep stepper visible and show selection phase
         stepper.style.display = 'flex';
-        updateStepper(2);
+        updateStepper(3);
     });
 
-    // Scenarios back button functionality (return to input)
-    const scenariosBackBtn = document.getElementById('backBtn');
-    if (scenariosBackBtn) {
-        scenariosBackBtn.addEventListener('click', function() {
-            console.log('Scenarios back button clicked');
-            // Hide scenarios and results; show input & stepper
-            scenariosSection.style.display = 'none';
-            resultsSection.style.display = 'none';
-            inputSection.style.display = 'block';
-            stepper.style.display = 'flex';
 
-            // Show header on homepage
-            const headerBlock3 = document.querySelector('.header-block');
-            if (headerBlock3) headerBlock3.style.display = 'flex';
 
-            // Reset selection state
-            selectedScenarios.clear();
-            // Reset accepted test cases when going back to input
-            if (typeof acceptedTestCases !== 'undefined') {
-                acceptedTestCases.clear();
-            }
-            const selectedEls = document.querySelectorAll('.scenario-item.selected');
-            selectedEls.forEach(el => el.classList.remove('selected'));
-            updateSelectedCount();
 
-            // Stepper back to Input
-            updateStepper(1);
+
+
+
+    // Scenario Selection Functionality
+    const scenarioSection = document.getElementById('scenario-selection-section');
+    const scenarioContent = document.getElementById('scenario-content');
+    const scenarioBackBtn = document.getElementById('scenarioBackBtn');
+    const selectAllBtn = document.getElementById('selectAllBtn');
+    const generateTestCasesBtn = document.getElementById('generateTestCasesBtn');
+    const scenarioSelectedCount = document.getElementById('scenarioSelectedCount');
+    
+    let allScenarios = [];
+    let scenarioSelections = [];
+    let currentApiInfo = null;
+    let currentDocumentType = null;
+
+    // Back to input from scenarios
+    scenarioBackBtn.addEventListener('click', function() {
+        scenarioSection.style.display = 'none';
+        inputSection.style.display = 'block';
+        updateStepper(1);
+        
+        // Show header
+        const headerBlock = document.querySelector('.header-block');
+        if (headerBlock) headerBlock.style.display = 'block';
+    });
+
+    // Select all/deselect all scenarios
+    selectAllBtn.addEventListener('click', function() {
+        if (scenarioSelections.length === allScenarios.length) {
+            // All are selected, so deselect all
+            scenarioSelections = [];
+            selectAllBtn.textContent = 'Select All';
+        } else {
+            // Not all are selected, so select all
+            scenarioSelections = [...allScenarios];
+            selectAllBtn.textContent = 'Deselect All';
+        }
+        updateScenarioSelection();
+    });
+
+    // Generate test cases for selected scenarios
+    generateTestCasesBtn.addEventListener('click', function() {
+        if (scenarioSelections.length === 0) {
+            alert('Please select at least one scenario');
+            return;
+        }
+        
+        generateTestCasesBtn.disabled = true;
+        generateTestCasesBtn.innerHTML = 'Generating...';
+        
+        generateDetailedTestCases();
+    });
+
+    function displayScenarios(data) {
+        allScenarios = data.scenarios || [];
+        scenarioSelections = [];
+        currentApiInfo = data.api_info;
+        currentDocumentType = data.document_type;
+        
+        // Hide input section and show scenario selection
+        inputSection.style.display = 'none';
+        scenarioSection.style.display = 'block';
+        updateStepper(3);
+        
+        // Hide header
+        const headerBlock = document.querySelector('.header-block');
+        if (headerBlock) headerBlock.style.display = 'none';
+        
+        // Populate scenarios
+        let html = '';
+        
+        if (allScenarios.length === 0) {
+            html = '<div class="no-scenarios">No scenarios generated. Please try again with different input.</div>';
+        } else {
+            allScenarios.forEach((scenario, index) => {
+                const priority = scenario.priority || 'medium';
+                const category = scenario.category || 'functional';
+                const estimatedCases = scenario.estimated_test_cases || scenario.test_cases?.length || 5;
+                
+                html += `
+                    <div class="scenario-card" data-index="${index}">
+                        <div class="scenario-card-header">
+                            <div class="scenario-checkbox" data-index="${index}">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" stroke="currentColor" stroke-width="2" fill="currentColor"/>
+                                </svg>
+                            </div>
+                            <h4 class="scenario-card-title">${scenario.title || scenario.name || `Scenario ${index + 1}`}</h4>
+                        </div>
+                        <p class="scenario-card-description">${scenario.description || 'No description available'}</p>
+                        <div class="scenario-card-meta">
+                            <div class="scenario-meta-item">
+                                <span>Priority:</span>
+                                <span class="priority-${priority}">${priority.charAt(0).toUpperCase() + priority.slice(1)}</span>
+                            </div>
+                            <div class="scenario-meta-item">
+                                <span>Category:</span>
+                                <span>${category.charAt(0).toUpperCase() + category.slice(1)}</span>
+                            </div>
+                            <div class="scenario-meta-item">
+                                <span>Est. Test Cases:</span>
+                                <span>${estimatedCases}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        
+        scenarioContent.innerHTML = html;
+        
+        // Add click handlers for scenario cards and checkboxes
+        document.querySelectorAll('.scenario-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                if (!e.target.closest('.scenario-checkbox')) {
+                    toggleScenarioSelection(parseInt(this.dataset.index));
+                }
+            });
         });
+        
+        document.querySelectorAll('.scenario-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('click', function(e) {
+                e.stopPropagation();
+                toggleScenarioSelection(parseInt(this.dataset.index));
+            });
+        });
+        
+        updateScenarioSelection();
     }
 
-    // Scenario selection functionality
-    let selectedScenarios = new Set();
+    function toggleScenarioSelection(index) {
+        const scenario = allScenarios[index];
+        const existingIndex = scenarioSelections.findIndex(s => 
+            (s.id && s.id === scenario.id) || 
+            (s.title === scenario.title && s.description === scenario.description)
+        );
+        
+        if (existingIndex >= 0) {
+            scenarioSelections.splice(existingIndex, 1);
+        } else {
+            scenarioSelections.push(scenario);
+        }
+        
+        updateScenarioSelection();
+    }
 
-    function displayScenarios(scenarios) {
-        const scenariosList = document.getElementById('scenarios-list');
-        scenariosList.innerHTML = '';
+    function updateScenarioSelection() {
+        // Update UI
+        document.querySelectorAll('.scenario-card').forEach((card, index) => {
+            const checkbox = card.querySelector('.scenario-checkbox');
+            const checkmark = checkbox.querySelector('svg');
+            const scenario = allScenarios[index];
+            
+            const isSelected = scenarioSelections.some(s => 
+                (s.id && s.id === scenario.id) || 
+                (s.title === scenario.title && s.description === scenario.description)
+            );
+            
+            if (isSelected) {
+                card.classList.add('selected');
+                checkbox.classList.add('checked');
+                checkmark.style.display = 'block';
+            } else {
+                card.classList.remove('selected');
+                checkbox.classList.remove('checked');
+                checkmark.style.display = 'none';
+            }
+        });
+        
+        // Update button and counter
+        scenarioSelectedCount.textContent = `(${scenarioSelections.length} selected)`;
+        generateTestCasesBtn.disabled = scenarioSelections.length === 0;
+        
+        // Update Select All button text
+        if (scenarioSelections.length === allScenarios.length) {
+            selectAllBtn.textContent = 'Deselect All';
+        } else {
+            selectAllBtn.textContent = 'Select All';
+        }
+    }
 
-        scenarios.forEach((scenario, index) => {
-            const scenarioElement = document.createElement('div');
-            scenarioElement.className = 'scenario-item';
-            scenarioElement.dataset.id = index;
-
-            const testCaseCount = scenario.test_cases ? scenario.test_cases.length : 0;
-
-            scenarioElement.innerHTML = `
-                <div class="scenario-checkbox"></div>
-                <div class="scenario-content">
-                    <h4 class="scenario-title">${scenario.title}</h4>
-                    <p class="scenario-description">${scenario.description}</p>
-                    <div class="scenario-meta">
-                        <span class="test-case-count">${testCaseCount} test cases</span>
-                    </div>
-                </div>
-            `;
-
-            scenarioElement.addEventListener('click', function() {
-                const scenarioId = parseInt(this.dataset.id);
-                if (selectedScenarios.has(scenarioId)) {
-                    selectedScenarios.delete(scenarioId);
-                    this.classList.remove('selected');
-                } else {
-                    selectedScenarios.add(scenarioId);
-                    this.classList.add('selected');
-                }
-                updateSelectedCount();
+    async function generateDetailedTestCases() {
+        try {
+            let endpoint, requestData;
+            
+            // Determine which endpoint to use based on current context
+            if (currentApiInfo) {
+                // API workflow
+                endpoint = `${window.BACKEND_URL}/generate_api_test_cases`;
+                requestData = {
+                    scenarios: scenarioSelections,
+                    api_info: currentApiInfo,
+                    document_type: currentDocumentType
+                };
+            } else {
+                // Regular workflow (text/image)
+                endpoint = `${window.BACKEND_URL}/generate_test_cases`;
+                requestData = {
+                    scenarios: scenarioSelections
+                };
+            }
+            
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData)
             });
 
-            scenariosList.appendChild(scenarioElement);
-        });
-
-        scenariosSection.style.display = 'block';
-        updateSelectedCount();
-        updateStepper(2);
+            const result = await response.json();
+            
+            if (result.error) {
+                throw new Error(result.error);
+            }
+            
+            // Hide scenario selection and show results
+            scenarioSection.style.display = 'none'; 
+            displayResults(result);
+            
+        } catch (error) {
+            console.error('Error generating test cases:', error);
+            console.error('Error details:', {
+                endpoint: endpoint,
+                requestData: requestData,
+                backendUrl: window.BACKEND_URL
+            });
+            alert('Error generating test cases: ' + error.message);
+        } finally {
+            generateTestCasesBtn.disabled = false;
+            generateTestCasesBtn.innerHTML = 'Generate Test Cases <span id="scenarioSelectedCount">(0 selected)</span>';
+        }
     }
 
-    function updateSelectedCount() {
-        const selectedCount = document.getElementById('selectedCount');
-        const generateSelectedBtn = document.getElementById('generateSelectedBtn');
-
-        selectedCount.textContent = selectedScenarios.size;
-        generateSelectedBtn.disabled = selectedScenarios.size === 0;
-    }
-
-    // Generate selected scenarios button
-    const generateSelectedBtn = document.getElementById('generateSelectedBtn');
-    generateSelectedBtn.addEventListener('click', function() {
-        const selectedScenarioData = Array.from(selectedScenarios).map(index => availableScenarios[index]);
-        generateTestCases(selectedScenarioData);
-    });
-
-    // Generate all scenarios button
-    const generateAllBtn = document.getElementById('generateAllBtn');
-    generateAllBtn.addEventListener('click', function() {
-        generateTestCases(availableScenarios);
-    });
-
-    function generateTestCases(scenarios) {
-        // Since we already have test cases from analyze, just display them
-        const resultData = {
-            scenarios: scenarios,
-            generated_at: new Date().toISOString(),
-            input_type: "selected_scenarios"
-        };
-        // Reset accepted selections on new generation BEFORE rendering
-        acceptedTestCases.clear();
-
-        displayResults(resultData);
-        lastGeneratedResults = resultData;
-        
-    // Hide scenarios section
-        scenariosSection.style.display = 'none';
-
-    // Hide header on results
-    const headerBlock4 = document.querySelector('.header-block');
-    if (headerBlock4) headerBlock4.style.display = 'none';
-    // Ensure stepper is visible on results and highlight is updated
-    stepper.style.display = 'flex';
-        
-        // Update stepper to show generation phase
-        updateStepper(3);
-    }
+    // Update existing analyze functions to show scenarios instead of results directly
+    window.displayScenarios = displayScenarios;
 });

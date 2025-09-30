@@ -8,8 +8,8 @@
   --color-text-primary: #2B2F35;
   --color-text-secondary: #606872;
   --color-text-disabled: #B8C0C8;
-  --color-primary: #0080FF;
-  --color-primary-hover: #0066CC;
+  --color-primary: #012B38;
+  --color-primary-hover: #01202A;
   --color-success: #10B981;
   --color-step-active-bg: #012B38;
   --color-step-inactive-bg: #E9ECEF;
@@ -233,6 +233,151 @@ button { font-family: inherit; }
 }
 
 /* Results Section */
+/* Scenario Selection Section */  
+.scenario-selection-section {
+  margin-top: 32px;
+  margin-bottom: 64px; /* Add footer space */
+  padding-bottom: 32px; /* Extra padding for better visual separation */
+}
+
+.scenario-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.scenario-nav {
+  flex: 0 0 auto;
+}
+
+.scenario-header h3 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  flex: 1;
+  text-align: center;
+}
+
+.scenario-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.scenario-content {
+  display: grid;
+  gap: 16px;
+  padding-bottom: 24px; /* Add footer space to scenario content */
+}
+
+.scenario-card {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.scenario-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.scenario-card.selected {
+  border-color: var(--color-primary);
+  background: #f8fbff;
+}
+
+.scenario-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.scenario-checkbox {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--color-border);
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+  transition: all 0.2s ease;
+}
+
+.scenario-checkbox.checked {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+}
+
+.scenario-checkbox:hover {
+  border-color: var(--color-primary);
+}
+
+.scenario-card-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+  flex: 1;
+}
+
+.scenario-card-description {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 12px 32px;
+}
+
+.scenario-card-meta {
+  display: flex;
+  gap: 16px;
+  margin-left: 32px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.scenario-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.scenario-meta-item .priority-high {
+  color: #dc3545;
+  font-weight: 600;
+}
+
+.scenario-meta-item .priority-medium {
+  color: #fd7e14;
+  font-weight: 600;
+}
+
+.scenario-meta-item .priority-low {
+  color: #28a745;
+  font-weight: 600;
+}
+
+.no-scenarios {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--color-text-secondary);
+  font-size: 16px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
 .results-section {
   margin-top: 32px;
 }

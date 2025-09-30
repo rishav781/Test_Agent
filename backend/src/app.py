@@ -257,6 +257,37 @@ def analyze():
         return jsonify({"error": str(e)}), 500
 
 
+@app.route("/generate_test_cases", methods=["POST"])
+def generate_test_cases():
+    """Generate detailed test cases for selected scenarios"""
+    try:
+        if not request.is_json:
+            return jsonify({"error": "Content-Type must be application/json"}), 400
+            
+        json_data = request.get_json()
+        if "scenarios" not in json_data:
+            return jsonify({"error": "Missing 'scenarios' field in request"}), 400
+        
+        scenarios = json_data["scenarios"]
+        if not scenarios or len(scenarios) == 0:
+            return jsonify({"error": "No scenarios provided"}), 400
+        
+        print(f"Generating test cases for {len(scenarios)} selected scenarios")
+        
+        # Generate test cases for selected scenarios
+        result = generate_test_cases_for_scenarios(scenarios)
+        result["generated_at"] = datetime.now().isoformat()
+        result["input_type"] = "selected_scenarios"
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        print(f"Exception in generate_test_cases endpoint: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": str(e)}), 500
+
+
 @app.route("/generate", methods=["POST"])
 def generate():
     try:
@@ -264,12 +295,8 @@ def generate():
         if request.is_json:
             json_data = request.get_json()
             if "scenarios" in json_data:
-                # Generate test cases for selected scenarios
-                scenarios = json_data["scenarios"]
-                result = generate_test_cases_for_scenarios(scenarios)
-                result["generated_at"] = datetime.now().isoformat()
-                result["input_type"] = "selected_scenarios"
-                return jsonify(result)
+                # Redirect to the dedicated endpoint
+                return generate_test_cases()
             else:
                 return jsonify({"error": "Invalid JSON data. Expected 'scenarios' field"}), 400
 
@@ -354,8 +381,9 @@ def analyze_website_endpoint():
         return jsonify({"error": f"Server error: {str(e)}"}), 500
 
 
-@app.route("/generate_api_tests", methods=["POST"])
-def generate_api_tests():
+@app.route("/analyze_api", methods=["POST"])
+def analyze_api():
+    """Generate API test scenarios only (first step)"""
     try:
         # Check if API document file is provided
         if "api_file" not in request.files:
@@ -376,7 +404,140 @@ def generate_api_tests():
             temp_api_path = temp_file.name
 
         try:
-            # Generate API test cases
+            # Import the new functions
+            from api_test_generator import generate_api_scenarios, detect_api_document_type, parse_swagger_spec, parse_postman_collection
+            
+            # Read and parse the JSON file
+            with open(temp_api_path, 'r', encoding='utf-8') as f:
+                api_data = json.load(f)
+
+            # Detect document type
+            document_type = detect_api_document_type(api_data)
+
+            if document_type == "unknown":
+                return jsonify({"error": "Unable to detect API document type. Please upload a valid Swagger/OpenAPI specification or Postman collection."}), 400
+
+            # Parse the document based on type
+            if document_type == "swagger":
+                parsed_data = parse_swagger_spec(api_data)
+            elif document_type == "postman":
+                parsed_data = parse_postman_collection(api_data)
+            else:
+                return jsonify({"error": "Unsupported document type"}), 400
+
+            # Generate scenarios only
+            scenarios = generate_api_scenarios(parsed_data, document_type)
+
+            # Prepare result
+            result = {
+                "document_type": document_type,
+                "api_info": {
+                    "title": parsed_data.get("title", ""),
+                    "description": parsed_data.get("description", ""),
+                    "endpoints_count": len(parsed_data.get("endpoints", [])),
+                    "parsed_at": datetime.now().isoformat()
+                },
+                "scenarios": scenarios,
+                "generated_at": datetime.now().isoformat(),
+                "input_type": f"api_document_{document_type}",
+                "workflow_step": "scenarios_only"
+            }
+
+            return jsonify(result)
+
+        finally:
+            # Clean up temporary file
+            if os.path.exists(temp_api_path):
+                os.unlink(temp_api_path)
+
+    except Exception as e:
+        print(f"Exception in analyze_api endpoint: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": f"Server error: {str(e)}"}), 500
+
+
+@app.route("/generate_api_test_cases", methods=["POST"])
+def generate_api_test_cases_endpoint():
+    """Generate detailed API test cases for selected scenarios (second step)"""
+    try:
+        if not request.is_json:
+            return jsonify({"error": "Content-Type must be application/json"}), 400
+            
+        json_data = request.get_json()
+        
+        if "scenarios" not in json_data:
+            return jsonify({"error": "Missing 'scenarios' field in request"}), 400
+        
+        if "api_info" not in json_data:
+            return jsonify({"error": "Missing 'api_info' field in request"}), 400
+            
+        scenarios = json_data["scenarios"]
+        api_info = json_data["api_info"]
+        
+        if not scenarios or len(scenarios) == 0:
+            return jsonify({"error": "No scenarios provided"}), 400
+        
+        print(f"Generating detailed API test cases for {len(scenarios)} selected scenarios")
+        
+        # Import the new function
+        from api_test_generator import generate_api_test_cases_for_scenarios
+        
+        # Create mock API data for context (in real implementation, you might store this)
+        mock_api_data = {
+            "title": api_info.get("title", "API"),
+            "description": api_info.get("description", ""),
+            "endpoints": []  # This would ideally be stored from the first step
+        }
+        
+        document_type = json_data.get("document_type", "swagger")
+        
+        # Generate detailed test cases
+        detailed_scenarios = generate_api_test_cases_for_scenarios(scenarios, mock_api_data, document_type)
+        
+        # Prepare result
+        result = {
+            "document_type": document_type,
+            "api_info": api_info,
+            "scenarios": detailed_scenarios,
+            "generated_at": datetime.now().isoformat(),
+            "input_type": f"selected_api_scenarios_{document_type}",
+            "workflow_step": "detailed_test_cases"
+        }
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        print(f"Exception in generate_api_test_cases endpoint: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/generate_api_tests", methods=["POST"])
+def generate_api_tests():
+    """Legacy endpoint - generates both scenarios and test cases in one step"""
+    try:
+        # Check if API document file is provided
+        if "api_file" not in request.files:
+            return jsonify({"error": "Please upload an API document file (Swagger/OpenAPI JSON or Postman collection)"}), 400
+
+        api_file = request.files["api_file"]
+
+        if api_file.filename == "":
+            return jsonify({"error": "No file selected"}), 400
+
+        # Check file extension
+        if not api_file.filename.lower().endswith('.json'):
+            return jsonify({"error": "Please upload a JSON file"}), 400
+
+        # Save file temporarily
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.json') as temp_file:
+            api_file.save(temp_file.name)
+            temp_api_path = temp_file.name
+
+        try:
+            # Generate API test cases (legacy behavior)
             result = generate_api_tests_from_file(temp_api_path)
 
             if "error" in result:
