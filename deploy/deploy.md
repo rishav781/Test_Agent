@@ -1,51 +1,85 @@
-# Deployment Guide
+# Enhanced Deployment Guide
 
-This folder contains production deployment scripts and documentation for the AI Testing Agent.
+This folder contains the enhanced production deployment script that provides universal compatibility and automated environment setup for the AI Testing Agent.
 
 ## Files
 
-- `deploy.py` - Production deployment script
+- `deploy.py` - Enhanced production deployment script with automatic virtual environment setup
+- `deploy.md` - This deployment documentation
+
+## Key Features
+
+🚀 **Universal Compatibility**: Works on any system with Python 3.12+ without requiring UV or external tools  
+🔧 **Automatic Setup**: Creates virtual environment and installs dependencies automatically  
+🎯 **Interactive Configuration**: User-friendly port selection and configuration  
+🛡️ **Robust Fallbacks**: Multiple dependency installation strategies ensure success  
+📦 **Self-Contained**: Single script handles entire deployment lifecycle  
 
 ## Quick Start
 
-### Production Deployment
+### Simple Deployment (Recommended)
 
-1. Set production environment:
-
-   ```bash
-   # Update .env file with ENV=production
-   ```
-
-2. Install production dependencies:
-
-   ```bash
-   uv sync --extra production
-   ```
-
-3. Run deployment:
-
-   ```bash
-   python deploy/deploy.py
-   ```
-
-### Deployment Options
+Just run the deployment script - it handles everything automatically:
 
 ```bash
-# Start both services
 python deploy/deploy.py
+```
 
-# Start backend only (recommended for production)
-python deploy/deploy.py --backend-only --workers 8
+The script will:
+1. ✅ Check Python 3.12+ compatibility
+2. 🔧 Create virtual environment (`.venv`)
+3. 📦 Install all dependencies with pip
+4. 🎯 Prompt for frontend and backend ports
+5. 🚀 Start both servers in production mode
 
-# Start frontend only
+### Advanced Deployment Options
+
+```bash
+# Setup environment only (no server start)
+python deploy/deploy.py --setup-only
+
+# Skip setup, just start servers (if already setup)
+python deploy/deploy.py --skip-setup
+
+# Start backend only
+python deploy/deploy.py --backend-only
+
+# Start frontend only  
 python deploy/deploy.py --frontend-only
 
-# Install dependencies first
-python deploy/deploy.py --install-deps production
+# Custom host and worker configuration
+python deploy/deploy.py --host 192.168.1.100 --workers 8
 
-# Custom configuration
-python deploy/deploy.py --host 0.0.0.0 --backend-port 8000 --workers 4
+# Help and all options
+python deploy/deploy.py --help
 ```
+
+### Deployment Workflow
+
+The enhanced deployment script follows this workflow:
+
+1. **Environment Validation** 🔍
+   - Checks Python 3.12+ compatibility
+   - Validates system requirements
+
+2. **Virtual Environment Setup** 🏗️
+   - Creates `.venv` directory if not exists
+   - Uses Python's built-in `venv` module
+
+3. **Dependency Installation** 📦
+   - Primary: Installs from `requirements.txt` (root)
+   - Fallback: Uses `backend/requirements.txt` + production deps
+   - Last resort: Installs core dependencies directly
+
+4. **Server Configuration** ⚙️
+   - Interactive port selection for frontend/backend
+   - Environment variable configuration
+   - Production settings validation
+
+5. **Service Startup** 🚀
+   - Starts gunicorn backend with gevent workers
+   - Starts production frontend server
+   - Graceful shutdown handling
 
 ## Production Checklist
 
@@ -87,12 +121,27 @@ SECRET_KEY=your-production-secret-key
 ### Optional Configuration
 
 ```env
+# Server binding (deployment script will prompt for ports interactively)
 BACKEND_HOST=0.0.0.0
-BACKEND_PORT=8000
 FRONTEND_HOST=0.0.0.0
+
+# These ports can be overridden by interactive deployment
+BACKEND_PORT=8000  
 FRONTEND_PORT=3000
+
+# Gunicorn worker configuration
 WORKERS=4
 ```
+
+## No External Dependencies Required
+
+The enhanced deployment script uses only Python built-in modules and pip:
+
+- ✅ **Python 3.12+**: Only requires standard Python installation
+- ✅ **Built-in venv**: Uses Python's native virtual environment
+- ✅ **Standard pip**: No UV, poetry, or other tools required
+- ✅ **Cross-platform**: Works on Windows, Linux, and macOS
+- ✅ **Automatic fallbacks**: Multiple dependency installation strategies
 
 ## Nginx Configuration
 
@@ -132,24 +181,39 @@ server {
 
 ### Common Issues
 
-1. **Port already in use**
+1. **Python Version Compatibility**
+   - Ensure Python 3.12+ is installed: `python --version`
+   - The script will automatically check and warn about version issues
 
-   - Check if services are already running
-   - Use different ports with `--backend-port` and `--frontend-port`
+2. **Port Already in Use**
+   - The deployment script will prompt for different ports interactively
+   - Check for existing services: `netstat -ano | findstr :8080` (Windows) or `lsof -i :8080` (Linux/Mac)
 
-2. **Permission denied**
+3. **Virtual Environment Issues**
+   - Delete `.venv` folder and run `python deploy/deploy.py` again
+   - Ensure sufficient disk space for virtual environment creation
 
-   - Ensure proper file permissions
-   - Check if ports < 1024 require root access
+4. **Dependency Installation Failures**
+   - The script has multiple fallback strategies for dependency installation
+   - Check internet connectivity for package downloads
+   - Manually install core dependencies: `pip install Flask openai Pillow`
 
-3. **Dependencies not found**
+5. **Permission Denied**
+   - Ensure proper file permissions in project directory
+   - Ports < 1024 may require administrator/root access
+   - Use ports > 1024 for non-privileged deployment
 
-   - Run `python deploy/deploy.py --install-deps production`
-   - Check virtual environment activation
+6. **Environment Configuration**
+   - Copy `.env.template` to `.env` and configure
+   - Set `ENV=production` for production deployment
+   - Ensure OpenAI API key is configured
 
-4. **Environment not set**
-   - Ensure `ENV=production` in `.env` file
-   - Check environment variable loading
+### Debug Steps
+
+1. **Run Setup Only**: `python deploy/deploy.py --setup-only`
+2. **Check Virtual Environment**: Verify `.venv` directory exists
+3. **Test Manual Start**: Activate venv and test individual components
+4. **Check Logs**: Review console output for specific error messages
 
 ## Performance Tuning
 

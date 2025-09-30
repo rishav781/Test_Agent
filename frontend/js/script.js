@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const isWebsiteTab = activeTab.id === 'website-tab';
 
         let formData = new FormData();
-        let apiUrl = 'http://localhost:5050/analyze';
+        let apiUrl = `${window.BACKEND_URL}/analyze`;
 
         if (isDescriptionTab) {
             // Handle description form
@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             formData.append('api_file', apiFile);
-            apiUrl = 'http://localhost:5050/generate_api_tests';
+            apiUrl = `${window.BACKEND_URL}/generate_api_tests`;
         } else if (isWebsiteTab) {
             // Handle website URL
             let websiteUrl = document.getElementById('websiteUrl').value.trim();
@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             formData.append('url', websiteUrl);
-            apiUrl = 'http://localhost:5050/analyze_website';
+            apiUrl = `${window.BACKEND_URL}/analyze_website`;
         }
 
     // Show loading state (spinner on button only)

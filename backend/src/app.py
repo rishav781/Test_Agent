@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import openai
 import os
+import sys
 import tempfile
 import base64
 from PIL import Image
@@ -20,14 +21,18 @@ load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
 app = Flask(__name__)
 
 # Configure CORS dynamically based on frontend port
-frontend_port = os.getenv("FRONTEND_PORT", "8080")
+frontend_port = os.getenv("FRONTEND_PORT")
+if not frontend_port:
+    print("❌ Error: FRONTEND_PORT is not set in the .env file.", file=sys.stderr)
+    sys.exit(1)
+
 CORS(
     app,
     origins=[f"http://localhost:{frontend_port}", f"http://127.0.0.1:{frontend_port}"],
 )
 
 # Configure OpenAI
-client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY", "your-openai-api-key-here"))
+client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # Configure LLM Models
 OPENAI_MODEL_TEXT = os.getenv("OPENAI_MODEL_TEXT", "gpt-4")
@@ -60,42 +65,7 @@ def generate_test_cases_for_scenarios(scenarios):
     """
     try:
         # Prepare the system message
-        system_message = """You are an expert QA testing agent. Your task is to generate detailed test cases for the provided test scenarios.
-
-CRITICAL: You must respond with ONLY valid JSON. Do not include any explanatory text, comments, or formatting outside of the JSON structure. Start your response directly with '{' and end with '}'.
-
-Required JSON format:
-{
-    "scenarios": [
-        {
-            "id": "SC001",
-            "title": "Scenario Title",
-            "description": "Brief description of the scenario",
-            "preconditions": ["Precondition 1", "Precondition 2"],
-            "test_cases": [
-                {
-                    "id": "TC001",
-                    "title": "Test Case Title",
-                    "description": "Detailed test case description",
-                    "steps": ["Step 1", "Step 2", "Step 3"],
-                    "expected_result": "Expected outcome",
-                    "priority": "High/Medium/Low",
-                    "test_data": "Any required test data"
-                }
-            ]
-        }
-    ]
-}
-
-For each scenario provided, generate comprehensive test cases covering:
-- Functional testing
-- UI/UX testing
-- Edge cases
-- Error handling
-- Data validation
-- User workflows
-
-Remember: Return ONLY the JSON object, no additional text."""
+        system_message = """You are an expert QA testing agent. Your task is to generate detailed test cases for the provided test scenarios.\n\nCRITICAL: You must respond with ONLY valid JSON. Do not include any explanatory text, comments, or formatting outside of the JSON structure. Start your response directly with '{' and end with '}'.\n\nRequired JSON format:\n{\n    "scenarios": [\n        {\n            "id": "SC001",\n            "title": "Scenario Title",\n            "description": "Brief description of the scenario",\n            "preconditions": ["Precondition 1", "Precondition 2"],\n            "test_cases": [\n                {\n                    "id": "TC001",\n                    "title": "Test Case Title",\n                    "description": "Detailed test case description",\n                    "steps": ["Step 1", "Step 2", "Step 3"],\n                    "expected_result": "Expected outcome",\n                    "priority": "High/Medium/Low",\n                    "test_data": "Any required test data"\n                }\n            ]\n        }\n    ]\n}\n\nFor each scenario provided, generate comprehensive test cases covering:\n- Functional testing\n- UI/UX testing\n- Edge cases\n- Error handling\n- Data validation\n- User workflows\n\nRemember: Return ONLY the JSON object, no additional text."""
 
         user_message = f"Please generate detailed test cases for these scenarios:\n\n{json.dumps(scenarios, indent=2)}"
 
@@ -161,36 +131,7 @@ def generate_test_scenarios_and_cases(description=None, image_path=None, scenari
         print(f"generate_test_scenarios_and_cases called with description={description is not None}, image_path={image_path is not None}, scenarios_only={scenarios_only}")
         
         # Prepare the system message
-        system_message = """You are an expert QA testing agent. Your task is to generate comprehensive test scenarios from a given description or image.
-
-CRITICAL: You must respond with ONLY valid JSON. Do not include any explanatory text, comments, or formatting outside of the JSON structure. Start your response directly with '{' and end with '}'.
-
-Required JSON format:
-{
-    "scenarios": [
-        {
-            "id": "SC001",
-            "title": "Scenario Title",
-            "description": "Brief description of the scenario",
-            "preconditions": ["Precondition 1", "Precondition 2"],
-            "test_cases": []
-        }
-    ]
-}
-
-For each feature or UI, generate a list of test scenarios.
-- If `scenarios_only` is true, return only the scenario title, description, and preconditions.
-- If `scenarios_only` is false, also generate detailed test cases for each scenario.
-
-Focus on:
-- Functional testing
-- UI/UX testing
-- Edge cases
-- Error handling
-- Data validation
-- User workflows
-
-Remember: Return ONLY the JSON object, no additional text."""
+        system_message = """You are an expert QA testing agent. Your task is to generate comprehensive test scenarios from a given description or image.\n\nCRITICAL: You must respond with ONLY valid JSON. Do not include any explanatory text, comments, or formatting outside of the JSON structure. Start your response directly with '{' and end with '}'.\n\nRequired JSON format:\n{\n    "scenarios": [\n        {\n            "id": "SC001",\n            "title": "Scenario Title",\n            "description": "Brief description of the scenario",\n            "preconditions": ["Precondition 1", "Precondition 2"],\n            "test_cases": []\n        }\n    ]\n}\n\nFor each feature or UI, generate a list of test scenarios.\n- If `scenarios_only` is true, return only the scenario title, description, and preconditions.\n- If `scenarios_only` is false, also generate detailed test cases for each scenario.\n\nFocus on:\n- Functional testing\n- UI/UX testing\n- Edge cases\n- Error handling\n- Data validation\n- User workflows\n\nRemember: Return ONLY the JSON object, no additional text."""
 
         # Prepare user message
         user_message_content = []
@@ -454,17 +395,23 @@ def generate_api_tests():
 
 def main():
     """Main entry point for the backend server"""
-    # Create necessary directories if they don't exist
-    os.makedirs("../frontend/static", exist_ok=True)
-    os.makedirs("../frontend/templates", exist_ok=True)
-
     # Get environment settings
     env = os.getenv("ENV", "development")
     is_production = env == "production"
 
     # Get server configuration from environment
     host = os.getenv("BACKEND_HOST", "0.0.0.0")
-    port = int(os.getenv("BACKEND_PORT", 5000))
+    port_str = os.getenv("BACKEND_PORT")
+    if not port_str:
+        print("❌ Error: BACKEND_PORT is not set in the .env file.", file=sys.stderr)
+        sys.exit(1)
+
+    try:
+        port = int(port_str)
+    except ValueError:
+        print(f"❌ Error: Invalid BACKEND_PORT '{port_str}'. Must be a number.", file=sys.stderr)
+        sys.exit(1)
+
     debug = (
         os.getenv("FLASK_DEBUG", "False" if is_production else "True").lower() == "true"
     )
@@ -474,7 +421,7 @@ def main():
         print(f"🔒 Debug mode: DISABLED")
         print(f"🌐 Host: {host}:{port}")
         print("⚠️  Using production WSGI server recommended (gunicorn, uwsgi)")
-        print("   Example: gunicorn --bind 0.0.0.0:8000 backend.app:app")
+        print("   Example: gunicorn --bind 0.0.0.0:8000 backend.src.app:app")
     else:
         print("🛠️  Starting DEVELOPMENT server...")
         print(f"🔧 Debug mode: ENABLED")
