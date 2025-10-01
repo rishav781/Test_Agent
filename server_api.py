@@ -85,6 +85,9 @@ def run_frontend_server(port):
 
 def main():
     """Main entry point for the frontend server"""
+    # Reload environment variables (in case .env was switched after module import)
+    load_dotenv()
+    
     # Get environment settings
     env = os.getenv('ENV', 'development')
     is_production = env == 'production'

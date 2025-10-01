@@ -648,7 +648,7 @@ wheels = [
 ]
 
 [[package]]
-name = "pcloudy-testing-agent"
+name = "pcloudy-test-case-agent"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
@@ -660,7 +660,7 @@ dependencies = [
     { name = "requests" },
 ]
 
-[package.optional-dependencies]
+[package.dev-dependencies]
 development = [
     { name = "black" },
     { name = "flake8" },
@@ -679,23 +679,30 @@ testing = [
 
 [package.metadata]
 requires-dist = [
-    { name = "black", marker = "extra == 'development'", specifier = ">=23.0.0" },
-    { name = "flake8", marker = "extra == 'development'", specifier = ">=6.0.0" },
     { name = "flask", specifier = ">=2.3.0" },
     { name = "flask-cors", specifier = ">=4.0.0" },
-    { name = "gevent", marker = "extra == 'production'", specifier = ">=23.9.0" },
-    { name = "gunicorn", marker = "extra == 'production'", specifier = ">=21.2.0" },
-    { name = "isort", marker = "extra == 'development'", specifier = ">=5.12.0" },
-    { name = "mypy", marker = "extra == 'development'", specifier = ">=1.0.0" },
     { name = "openai", specifier = ">=1.3.0" },
     { name = "pillow", specifier = ">=10.0.0" },
-    { name = "pytest", marker = "extra == 'testing'", specifier = ">=7.0.0" },
-    { name = "pytest-cov", marker = "extra == 'testing'", specifier = ">=4.0.0" },
     { name = "python-dotenv", specifier = ">=1.0.0" },
     { name = "requests", specifier = ">=2.31.0" },
-    { name = "ruff", marker = "extra == 'development'", specifier = ">=0.1.0" },
 ]
-provides-extras = ["production", "development", "testing"]
+
+[package.metadata.requires-dev]
+development = [
+    { name = "black", specifier = ">=23.0.0" },
+    { name = "flake8", specifier = ">=6.0.0" },
+    { name = "isort", specifier = ">=5.12.0" },
+    { name = "mypy", specifier = ">=1.0.0" },
+    { name = "ruff", specifier = ">=0.1.0" },
+]
+production = [
+    { name = "gevent", specifier = ">=23.9.0" },
+    { name = "gunicorn", specifier = ">=21.2.0" },
+]
+testing = [
+    { name = "pytest", specifier = ">=7.0.0" },
+    { name = "pytest-cov", specifier = ">=4.0.0" },
+]
 
 [[package]]
 name = "pillow"

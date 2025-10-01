@@ -32,13 +32,18 @@ An intelligent AI-powered test case generation platform that creates comprehensi
 2. Install dependencies:
 
    ```bash
-   # Install all dependencies (development + production + testing)
+   # Install all dependencies (production + development + testing)
    uv sync
 
    # Or install specific groups
-   uv sync --extra development  # Development tools only
-   uv sync --extra production   # Production dependencies only
-   uv sync --extra testing      # Testing dependencies only
+   uv sync --group development    # Development tools + core dependencies
+   uv sync --group production     # Production server + core dependencies
+   uv sync --group testing        # Testing tools + core dependencies
+
+   # Install only specific groups (without core dependencies)
+   uv sync --only-group development
+   uv sync --only-group production
+   uv sync --only-group testing
    ```
 
 3. Copy and configure environment:
@@ -53,11 +58,29 @@ An intelligent AI-powered test case generation platform that creates comprehensi
    OPENAI_API_KEY=your-openai-api-key-here
    ```
 
-4. Start the development servers:
+4. Start the application:
 
    ```bash
    python start.py
    ```
+
+   The script will:
+   - Show available environments (development/production)
+   - Ask you to select which environment to start
+   - Automatically configure the environment
+   - Start both frontend and backend servers
+
+   **Note:** `start.py` uses Flask's development server suitable for development and testing. For production deployment on Linux servers, use the deployment script:
+
+   ```bash
+   python deploy/deploy.py
+   ```
+
+   The deployment script uses gunicorn with multiple workers for production workloads.
+
+   **Available Environments:**
+   - `development`: Debug mode enabled, local development servers
+   - `production`: Optimized for production deployment
 
 The application will be available at (fully configurable in `.env`):
 
@@ -405,7 +428,6 @@ Test_Agent/
 │   │   ├── api_test_generator.py  # API document test generation logic
 │   │   ├── website_analyzer.py    # Website analysis and performance testing
 │   │   └── server.py         # Additional server utilities
-│   └── requirements.txt      # Backend-specific dependencies
 ├── frontend/                 # Static frontend files
 │   ├── index.html           # Main web interface
 │   ├── css/                 # Stylesheets
@@ -420,7 +442,7 @@ Test_Agent/
 ├── logs/                   # Application logs directory
 ├── pyproject.toml         # Python project configuration with dependencies
 ├── uv.lock               # UV lock file for reproducible builds
-├── start.py              # Development startup script (starts both servers)
+├── start.py              # Interactive startup script (environment selection + starts both servers)
 ├── server_api.py         # Frontend HTTP server with API injection
 ├── .env.template         # Environment variables template
 └── README.md            # Project documentation

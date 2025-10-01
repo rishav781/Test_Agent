@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 Enhanced Production Deployment Script for Pcloudy Test Case Agent
-This script creates virtual environment, installs dependencies with pip, and starts servers
-Works on any system with Python 3.12+ without requiring UV or other external tools
+This script creates virtual environment, installs dependencies with UV (preferred) or pip, and starts servers
+Works on any system with Python 3.12+ with automatic fallback from UV to pip
 """
 
 import os
@@ -62,8 +62,33 @@ def create_virtual_environment():
         print(f"❌ Failed to create virtual environment: {e}")
         return False
 
+def install_dependencies_with_uv():
+    """Install dependencies using UV (preferred method)"""
+    project_root = get_project_root()
+    
+    # Check if UV is available
+    try:
+        subprocess.run(["uv", "--version"], check=True, capture_output=True)
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        print("ℹ️  UV not available, falling back to pip")
+        return False
+    
+    print("📦 Installing dependencies with UV...")
+    
+    try:
+        # Install production dependencies with UV
+        subprocess.run([
+            "uv", "sync", "--group", "production"
+        ], check=True, cwd=project_root)
+        print("✅ All dependencies installed with UV")
+        return True
+    except subprocess.CalledProcessError as e:
+        print(f"⚠️  Warning: Failed to install with UV: {e}")
+        print("ℹ️  Falling back to pip")
+        return False
+
 def install_dependencies_with_pip():
-    """Install dependencies using pip from requirements.txt files"""
+    """Install dependencies using pip from pyproject.toml (primary) or fallback methods"""
     project_root = get_project_root()
     pip_executable = get_pip_executable()
     
@@ -82,69 +107,41 @@ def install_dependencies_with_pip():
     except subprocess.CalledProcessError as e:
         print(f"⚠️  Warning: Failed to upgrade pip: {e}")
     
-    # Try to install from root requirements.txt first
-    root_requirements = project_root / "requirements.txt"
-    if root_requirements.exists():
-        print(f"📋 Installing from: {root_requirements}")
+    # Primary: Try to install from pyproject.toml (editable mode)
+    pyproject_toml = project_root / "pyproject.toml"
+    if pyproject_toml.exists():
+        print("📋 Installing from pyproject.toml (editable mode)...")
         try:
             subprocess.run([
-                str(pip_executable), "install", "-r", str(root_requirements)
+                str(pip_executable), "install", "-e", "."
             ], check=True, cwd=project_root)
-            print("✅ All dependencies installed from root requirements.txt")
+            print("✅ All dependencies installed from pyproject.toml")
             return True
         except subprocess.CalledProcessError as e:
-            print(f"⚠️  Warning: Failed to install from root requirements.txt: {e}")
+            print(f"⚠️  Warning: Failed to install from pyproject.toml: {e}")
+            print("ℹ️  Falling back to manual dependency installation")
     
-    # Fallback: Try to install from backend requirements.txt
-    backend_requirements = project_root / "backend" / "requirements.txt"
-    if backend_requirements.exists():
-        print(f"📋 Fallback: Installing from: {backend_requirements}")
-        try:
-            subprocess.run([
-                str(pip_executable), "install", "-r", str(backend_requirements)
-            ], check=True, cwd=project_root)
-            print("✅ Backend dependencies installed from backend/requirements.txt")
-        except subprocess.CalledProcessError as e:
-            print(f"❌ Failed to install from backend requirements.txt: {e}")
-            return False
-        
-        # Install additional production dependencies
-        production_deps = [
-            "gunicorn>=21.2.0",
-            "gevent>=23.9.0"
-        ]
-        
-        print("📦 Installing additional production dependencies...")
-        try:
-            subprocess.run([
-                str(pip_executable), "install"
-            ] + production_deps, check=True, cwd=project_root)
-            print("✅ Production dependencies installed")
-        except subprocess.CalledProcessError as e:
-            print(f"❌ Failed to install production dependencies: {e}")
-            return False
-    else:
-        # Last resort: Install core dependencies directly
-        print("📦 No requirements.txt found, installing core dependencies...")
-        core_deps = [
-            "Flask>=2.3.0",
-            "Flask-CORS>=4.0.0", 
-            "openai>=1.3.0",
-            "Pillow>=10.0.0",
-            "python-dotenv>=1.0.0",
-            "requests>=2.31.0",
-            "gunicorn>=21.2.0",
-            "gevent>=23.9.0"
-        ]
-        
-        try:
-            subprocess.run([
-                str(pip_executable), "install"
-            ] + core_deps, check=True, cwd=project_root)
-            print("✅ Core dependencies installed directly")
-        except subprocess.CalledProcessError as e:
-            print(f"❌ Failed to install core dependencies: {e}")
-            return False
+    # Fallback: Install core dependencies directly (if pyproject.toml fails)
+    print("📦 Installing core dependencies directly...")
+    core_deps = [
+        "Flask>=2.3.0",
+        "Flask-CORS>=4.0.0", 
+        "openai>=1.3.0",
+        "Pillow>=10.0.0",
+        "python-dotenv>=1.0.0",
+        "requests>=2.31.0",
+        "gunicorn>=21.2.0",
+        "gevent>=23.9.0"
+    ]
+    
+    try:
+        subprocess.run([
+            str(pip_executable), "install"
+        ] + core_deps, check=True, cwd=project_root)
+        print("✅ Core dependencies installed directly")
+    except subprocess.CalledProcessError as e:
+        print(f"❌ Failed to install core dependencies: {e}")
+        return False
     
     return True
 
@@ -250,9 +247,10 @@ def setup_deployment_environment():
     if not create_virtual_environment():
         return False
     
-    # Install dependencies
-    if not install_dependencies_with_pip():
-        return False
+    # Install dependencies (try UV first, fallback to pip)
+    if not install_dependencies_with_uv():
+        if not install_dependencies_with_pip():
+            return False
     
     print("✅ Deployment environment setup complete!")
     return True

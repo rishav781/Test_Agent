@@ -11,3 +11,8 @@ wheels/
 
 # Environment variables
 .env
+env/
+!env/.gitkeep
+!env/README.md
+!env/.env.template
+!env/ENVIRONMENT.md

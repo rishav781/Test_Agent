@@ -1,6 +1,19 @@
 # Enhanced Deployment Guide
 
-This folder contains the enhanced production deployment script that provides universal compatibility and automated environment setup for the AI Testing Agent.
+This folder contains the enhanced **production deployment** script for Linux servers. For development and testing on any platform, use `python start.py` instead.
+
+**When to use this script:**
+
+- ✅ Production deployment on Linux servers
+- ✅ Need for gunicorn WSGI server with multiple workers
+- ✅ Automated virtual environment and dependency setup
+- ✅ Proper production server configuration
+
+**When to use `start.py`:**
+
+- ✅ Development and testing on any platform (Windows/Mac/Linux)
+- ✅ Quick environment switching and server startup
+- ✅ Flask development server for debugging
 
 ## Files
 
@@ -71,8 +84,8 @@ The enhanced deployment script follows this workflow:
 
 3. **Dependency Installation** 📦
 
-   - Primary: Installs from `requirements.txt` (root)
-   - Fallback: Uses `backend/requirements.txt` + production deps
+   - Primary: Installs from `pyproject.toml` (editable mode)
+   - Fallback: Direct pip installation of core dependencies
    - Last resort: Installs core dependencies directly
 
 4. **Server Configuration** ⚙️
@@ -205,7 +218,9 @@ server {
 
    - The script has multiple fallback strategies for dependency installation
    - Check internet connectivity for package downloads
-   - Manually install core dependencies: `pip install Flask openai Pillow`
+   - Manually install dependencies:
+     - With UV: `uv sync --group production`
+     - With pip: `pip install -e .`
 
 5. **Permission Denied**
 

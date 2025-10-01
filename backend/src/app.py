@@ -9,44 +9,31 @@ from PIL import Image
 import io
 import json
 from datetime import datetime
-from dotenv import load_dotenv
-import requests
-from urllib.parse import urlparse
 from website_analyzer import analyze_website
 from api_test_generator import generate_api_tests_from_file
 
-# Load environment variables from root .env file
-load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
+# Import configuration
+from config import config
 
 app = Flask(__name__)
 
-# Configure CORS dynamically based on frontend port
-frontend_port = os.getenv("FRONTEND_PORT")
-if not frontend_port:
-    print("❌ Error: FRONTEND_PORT is not set in the .env file.", file=sys.stderr)
-    sys.exit(1)
+# Apply configuration to Flask app
+app.config.update(config.get_flask_config())
 
-CORS(
-    app,
-    origins=[f"http://localhost:{frontend_port}", f"http://127.0.0.1:{frontend_port}"],
-)
+# Configure CORS with environment-specific origins
+CORS(app, origins=config.get_cors_origins())
 
 # Configure OpenAI
-client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+client = openai.OpenAI(api_key=config.openai_api_key)
 
 # Configure LLM Models
-OPENAI_MODEL_TEXT = os.getenv("OPENAI_MODEL_TEXT", "gpt-4")
-OPENAI_MODEL_VISION = os.getenv("OPENAI_MODEL_VISION", "gpt-4o")
-OPENAI_MODEL_WEBSITE = os.getenv("OPENAI_MODEL_WEBSITE", "gpt-4")
-OPENAI_MODEL_API = os.getenv("OPENAI_MODEL_API", "gpt-4")
+OPENAI_MODEL_TEXT = config.openai_model_text
+OPENAI_MODEL_VISION = config.openai_model_vision
+OPENAI_MODEL_WEBSITE = config.openai_model_website
+OPENAI_MODEL_API = config.openai_model_api
 
 # Configure upload settings
-app.config["MAX_CONTENT_LENGTH"] = int(
-    os.getenv("MAX_CONTENT_LENGTH", 16 * 1024 * 1024)
-)  # Default 16MB
-ALLOWED_EXTENSIONS = set(
-    os.getenv("ALLOWED_EXTENSIONS", "png,jpg,jpeg,gif,bmp,webp").split(",")
-)
+ALLOWED_EXTENSIONS = config.allowed_extensions
 
 
 def allowed_file(filename):

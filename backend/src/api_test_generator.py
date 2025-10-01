@@ -11,8 +11,13 @@ from typing import Dict, List, Any, Optional
 import openai
 from dotenv import load_dotenv
 
-# Load environment variables
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
+
+# Configure OpenAI client
+client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY", "your-openai-api-key-here"))
+
+# Configure LLM Model
+OPENAI_MODEL_API = os.getenv("OPENAI_MODEL_API", "gpt-4")
 
 # Configure OpenAI client
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY", "your-openai-api-key-here"))
@@ -266,7 +271,7 @@ def _generate_batch_test_cases(scenarios: List[Dict[str, Any]], api_data: Dict[s
 
 CRITICAL: Respond with ONLY valid JSON. Start with '[' and end with ']'.
 
-JSON format:
+JSON format for each scenario:
 {
     "id": "API_SC001",
     "title": "Scenario Title",
@@ -290,13 +295,15 @@ JSON format:
     ]
 }
 
-Generate 3-5 test cases per scenario."""
+IMPORTANT: For each scenario, you MUST generate EXACTLY the number of test cases specified in the scenario's "estimated_test_cases" field. Do not generate more or fewer test cases than specified."""
 
         # Prepare user message (more concise)
         user_message = f"""
 Generate detailed test cases for these {len(scenarios)} API scenarios:
 
 {json.dumps(scenarios, indent=1)}
+
+CRITICAL INSTRUCTION: For each scenario, you MUST generate EXACTLY the number of test cases specified in its 'estimated_test_cases' field. Each scenario should have exactly the number of test cases specified in its 'estimated_test_cases' field.
 
 Document Type: {document_type}
 Generate test cases for ALL {len(scenarios)} scenarios.

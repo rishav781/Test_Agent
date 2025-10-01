@@ -385,7 +385,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     ${info.recommendations && info.recommendations.length > 0 ? `
                         <div class="analysis-recommendations">
                             <h4>Recommendations:</h4>
-                            <ul>${info.recommendations.map(rec => `<li>${rec}</li>`).join('')}</ul>
+                            <ul>${info.recommendations.filter(rec => rec != null && rec !== '').map(rec => `<li>${rec}</li>`).join('')}</ul>
                         </div>
                     ` : ''}
                 </div>
@@ -430,7 +430,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="preconditions">
                         <h4>Preconditions:</h4>
                         <ul>
-                            ${scenario.preconditions.map(pre => `<li>${pre}</li>`).join('')}
+                            ${scenario.preconditions.filter(pre => pre != null && pre !== '').map(pre => `<li>${pre}</li>`).join('')}
                         </ul>
                     </div>
                 `;
@@ -461,7 +461,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <div class="test-case-steps">
                                 <h5>Steps:</h5>
                                 <ol>
-                                    ${testCase.steps.map(step => `<li>${step}</li>`).join('')}
+                                    ${testCase.steps.filter(step => step != null && step !== '').map(step => `<li>${step}</li>`).join('')}
                                 </ol>
                             </div>
                         `;
@@ -709,14 +709,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Select all/deselect all scenarios
     selectAllBtn.addEventListener('click', function() {
-        if (scenarioSelections.length === allScenarios.length) {
+        if (selectAllBtn.classList.contains('all-selected')) {
             // All are selected, so deselect all
             scenarioSelections = [];
-            selectAllBtn.textContent = 'Select All';
         } else {
             // Not all are selected, so select all
             scenarioSelections = [...allScenarios];
-            selectAllBtn.textContent = 'Deselect All';
         }
         updateScenarioSelection();
     });
@@ -854,11 +852,11 @@ document.addEventListener('DOMContentLoaded', function() {
         scenarioSelectedCount.textContent = `(${scenarioSelections.length} selected)`;
         generateTestCasesBtn.disabled = scenarioSelections.length === 0;
         
-        // Update Select All button text
-        if (scenarioSelections.length === allScenarios.length) {
-            selectAllBtn.textContent = 'Deselect All';
+        // Update Select All button visual state
+        if (scenarioSelections.length === allScenarios.length && allScenarios.length > 0) {
+            selectAllBtn.classList.add('all-selected');
         } else {
-            selectAllBtn.textContent = 'Select All';
+            selectAllBtn.classList.remove('all-selected');
         }
     }
 
