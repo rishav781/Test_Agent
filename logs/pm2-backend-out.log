@@ -1,0 +1,1110 @@
+2025-10-03T08:23:09: 🏭 Pcloudy Test Case Agent - Enhanced Production Deployment
+2025-10-03T08:23:09: 
+2025-10-03T08:23:09: ============================================================
+2025-10-03T08:23:09: 🔧 Creates virtual environment, installs dependencies, and starts servers
+2025-10-03T08:23:09: 🌍 Compatible with any system running Python 3.12+
+2025-10-03T08:23:09: ============================================================
+2025-10-03T08:23:09: 
+2025-10-03T08:23:09: 🔌 Port Configuration
+2025-10-03T08:23:09: ==============================
+2025-10-03T08:23:09: 🔧 Configuring port for backend server only...
+2025-10-03T08:24:04: 🏭 Pcloudy Test Case Agent - Enhanced Production Deployment
+2025-10-03T08:24:04: ============================================================
+2025-10-03T08:24:04: 🔧 Creates virtual environment, installs dependencies, and starts servers
+2025-10-03T08:24:04: 🌍 Compatible with any system running Python 3.12+
+2025-10-03T08:24:04: ============================================================
+2025-10-03T08:24:04: 🔧 Setting up deployment environment...
+2025-10-03T08:24:04: ✅ Python version: 3.12.3
+2025-10-03T08:24:04: ✅ Virtual environment already exists at: /home/ubuntu/Test_Agent/.venv
+2025-10-03T08:24:04: 📦 Installing dependencies with UV...
+2025-10-03T08:24:04: ✅ All dependencies installed with UV
+2025-10-03T08:24:04: ✅ Deployment environment setup complete!
+2025-10-03T08:24:04: 
+2025-10-03T08:24:04: 🔌 Port Configuration
+2025-10-03T08:24:04: ==============================
+2025-10-03T08:24:04: 🔧 Configuring ports for both backend and frontend servers...
+2025-10-03T08:25:53: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T08:25:53: ✅ Configuration loaded successfully
+2025-10-03T08:25:53:    Environment: production
+2025-10-03T08:25:53:    Backend: https://testgen.pcloudy.com
+2025-10-03T08:25:53:    Frontend: https://testgen.pcloudy.com
+2025-10-03T08:25:53:    CORS Origins: 1 configured
+2025-10-03T08:25:53: ✅ All backend modules imported successfully
+2025-10-03T08:25:53: 
+2025-10-03T08:25:53: 📋 Configured Models:
+2025-10-03T08:25:53:    Text Analysis: gpt-4
+2025-10-03T08:25:53:    Vision Analysis: gpt-4o
+2025-10-03T08:25:53:    Website Analysis: gpt-4
+2025-10-03T08:25:53:    API Analysis: gpt-4
+2025-10-03T08:25:53: 🚀 Starting Pcloudy Test Case Agent Server...
+2025-10-03T08:25:53: 🌐 Host: 0.0.0.0:5321
+2025-10-03T08:25:53: 🔧 Debug mode: DISABLED
+2025-10-03T08:25:53: 🌍 Environment: production
+2025-10-03T08:25:53: 📁 Available endpoints:
+2025-10-03T08:25:53:    GET  /health - Health check
+2025-10-03T08:25:53:    POST /analyze - Text/Image analysis
+2025-10-03T08:25:53:    POST /generate_api_tests - API document analysis
+2025-10-03T08:25:53:    POST /analyze_website - Website analysis
+2025-10-03T08:25:53: Press Ctrl+C to stop the server
+2025-10-03T08:25:53:  * Serving Flask app 'app'
+2025-10-03T08:25:53:  * Debug mode: off
+2025-10-03T08:27:10: Analyze endpoint called
+2025-10-03T08:27:10: 
+2025-10-03T08:27:10: About to call generate_test_scenarios_and_cases
+2025-10-03T08:27:10: 
+2025-10-03T08:27:10: generate_test_scenarios_and_cases called with description=False, image_path=True, scenarios_only=True
+2025-10-03T08:27:46: Successfully parsed JSON response
+2025-10-03T08:27:46: Function returned result with keys: dict_keys(['scenarios'])
+2025-10-03T08:27:46: Number of scenarios: 4
+2025-10-03T08:27:52: Generating test cases for 4 selected scenarios
+2025-10-03T08:27:52: 
+2025-10-03T08:28:38: Successfully parsed JSON response
+2025-10-03T08:29:35: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T08:29:35: 
+2025-10-03T08:29:35: ✅ Configuration loaded successfully
+2025-10-03T08:29:35:    Environment: production
+2025-10-03T08:29:35:    Backend: https://testgen.pcloudy.com
+2025-10-03T08:29:35:    Frontend: https://testgen.pcloudy.com
+2025-10-03T08:29:35:    CORS Origins: 1 configured
+2025-10-03T08:29:35: ✅ All backend modules imported successfully
+2025-10-03T08:29:35: 📋 Configured Models:
+2025-10-03T08:29:35:    Text Analysis: gpt-4
+2025-10-03T08:29:35:    Vision Analysis: gpt-4o
+2025-10-03T08:29:35:    Website Analysis: gpt-4
+2025-10-03T08:29:35:    API Analysis: gpt-4
+2025-10-03T08:29:35: 🚀 Starting Pcloudy Test Case Agent Server...
+2025-10-03T08:29:35: 🌐 Host: 0.0.0.0:5321
+2025-10-03T08:29:35: 🔧 Debug mode: DISABLED
+2025-10-03T08:29:35: 🌍 Environment: production
+2025-10-03T08:29:35: 📁 Available endpoints:
+2025-10-03T08:29:35:    GET  /health - Health check
+2025-10-03T08:29:35:    POST /analyze - Text/Image analysis
+2025-10-03T08:29:35:    POST /generate_api_tests - API document analysis
+2025-10-03T08:29:35:    POST /analyze_website - Website analysis
+2025-10-03T08:29:35: Press Ctrl+C to stop the server
+2025-10-03T08:29:35:  * Serving Flask app 'app'
+2025-10-03T08:29:35:  * Debug mode: off
+2025-10-03T08:36:30: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T08:36:30: ✅ Configuration loaded successfully
+2025-10-03T08:36:30:    Environment: production
+2025-10-03T08:36:30:    Backend: https://testgen.pcloudy.com
+2025-10-03T08:36:30:    Frontend: https://testgen.pcloudy.com
+2025-10-03T08:36:30:    CORS Origins: 1 configured
+2025-10-03T08:36:30: 127.0.0.1 - - [03/Oct/2025:08:36:30 +0000] "GET /health HTTP/1.1" 200 62 "-" "curl/8.5.0"
+2025-10-03T08:42:00: 127.0.0.1 - - [03/Oct/2025:08:42:00 +0000] "GET /health HTTP/1.1" 200 62 "-" "curl/8.5.0"
+2025-10-03T08:50:28: Error generating API scenarios: Error code: 401 - {'error': {'message': 'Incorrect API key provided: your-ope************here. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+2025-10-03T08:50:28: 127.0.0.1 - - [03/Oct/2025:08:50:28 +0000] "POST /analyze_api HTTP/1.0" 200 617 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T08:50:32: Generating detailed API test cases for 1 selected scenarios
+2025-10-03T08:50:32: Error generating batch test cases: Error code: 401 - {'error': {'message': 'Incorrect API key provided: your-ope************here. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+2025-10-03T08:50:32: 127.0.0.1 - - [03/Oct/2025:08:50:32 +0000] "POST /generate_api_test_cases HTTP/1.0" 200 631 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T08:51:04: Analyze endpoint called
+2025-10-03T08:51:04: About to call generate_test_scenarios_and_cases
+2025-10-03T08:51:04: generate_test_scenarios_and_cases called with description=False, image_path=True, scenarios_only=True
+2025-10-03T08:51:04: Successfully parsed JSON response
+2025-10-03T08:51:04: Function returned result with keys: dict_keys(['scenarios'])
+2025-10-03T08:51:04: Number of scenarios: 4
+2025-10-03T08:51:04: 127.0.0.1 - - [03/Oct/2025:08:51:04 +0000] "POST /analyze HTTP/1.0" 200 2924 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T08:51:43: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T08:51:43: ✅ Configuration loaded successfully
+2025-10-03T08:51:43:    Environment: production
+2025-10-03T08:51:43:    Backend: https://testgen.pcloudy.com
+2025-10-03T08:51:43:    Frontend: https://testgen.pcloudy.com
+2025-10-03T08:51:43:    CORS Origins: 1 configured
+2025-10-03T08:51:43: Analyze endpoint called
+2025-10-03T08:51:43: About to call generate_test_scenarios_and_cases
+2025-10-03T08:51:43: generate_test_scenarios_and_cases called with description=False, image_path=True, scenarios_only=True
+2025-10-03T08:51:43: Successfully parsed JSON response
+2025-10-03T08:51:43: Function returned result with keys: dict_keys(['scenarios'])
+2025-10-03T08:51:43: Number of scenarios: 2
+2025-10-03T08:51:43: 127.0.0.1 - - [03/Oct/2025:08:51:43 +0000] "POST /analyze HTTP/1.0" 200 1922 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T08:52:13: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T08:52:13: ✅ Configuration loaded successfully
+2025-10-03T08:52:13:    Environment: production
+2025-10-03T08:52:13:    Backend: https://testgen.pcloudy.com
+2025-10-03T08:52:13:    Frontend: https://testgen.pcloudy.com
+2025-10-03T08:52:13:    CORS Origins: 1 configured
+2025-10-03T08:52:13: Generating test cases for 2 selected scenarios
+2025-10-03T08:52:13: Successfully parsed JSON response
+2025-10-03T08:52:13: 127.0.0.1 - - [03/Oct/2025:08:52:13 +0000] "POST /generate_test_cases HTTP/1.0" 200 2759 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T08:52:51: Error generating API scenarios: Error code: 401 - {'error': {'message': 'Incorrect API key provided: your-ope************here. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+2025-10-03T08:52:51: 127.0.0.1 - - [03/Oct/2025:08:52:51 +0000] "POST /analyze_api HTTP/1.0" 200 617 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T08:53:00: Generating detailed API test cases for 1 selected scenarios
+2025-10-03T08:53:00: Error generating batch test cases: Error code: 401 - {'error': {'message': 'Incorrect API key provided: your-ope************here. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+2025-10-03T08:53:00: 127.0.0.1 - - [03/Oct/2025:08:53:00 +0000] "POST /generate_api_test_cases HTTP/1.0" 200 631 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T08:53:17: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T08:53:17: ✅ Configuration loaded successfully
+2025-10-03T08:53:17:    Environment: production
+2025-10-03T08:53:17:    Backend: https://testgen.pcloudy.com
+2025-10-03T08:53:17:    Frontend: https://testgen.pcloudy.com
+2025-10-03T08:53:17:    CORS Origins: 1 configured
+2025-10-03T08:53:17: Error generating API scenarios: Error code: 401 - {'error': {'message': 'Incorrect API key provided: your-ope************here. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+2025-10-03T08:53:17: 127.0.0.1 - - [03/Oct/2025:08:53:17 +0000] "POST /analyze_api HTTP/1.0" 200 617 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T08:53:27: Generating detailed API test cases for 1 selected scenarios
+2025-10-03T08:53:27: Error generating batch test cases: Error code: 401 - {'error': {'message': 'Incorrect API key provided: your-ope************here. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+2025-10-03T08:53:27: 127.0.0.1 - - [03/Oct/2025:08:53:27 +0000] "POST /generate_api_test_cases HTTP/1.0" 200 631 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T08:54:46: Analyze endpoint called
+2025-10-03T08:54:46: Description received: You are an experienced QA engineer with expertise in comprehensive test coverage. Your task is to ge...
+2025-10-03T08:54:46: About to call generate_test_scenarios_and_cases
+2025-10-03T08:54:46: generate_test_scenarios_and_cases called with description=True, image_path=False, scenarios_only=True
+2025-10-03T08:54:46: Successfully parsed JSON response
+2025-10-03T08:54:46: Function returned result with keys: dict_keys(['scenarios'])
+2025-10-03T08:54:46: Number of scenarios: 4
+2025-10-03T08:54:46: 127.0.0.1 - - [03/Oct/2025:08:54:46 +0000] "POST /analyze HTTP/1.0" 200 1691 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T08:55:03: Generating test cases for 4 selected scenarios
+2025-10-03T08:55:03: Successfully parsed JSON response
+2025-10-03T08:55:03: 127.0.0.1 - - [03/Oct/2025:08:55:03 +0000] "POST /generate_test_cases HTTP/1.0" 200 1541 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T09:09:23: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T09:09:23: ✅ Configuration loaded successfully
+2025-10-03T09:09:23:    Environment: production
+2025-10-03T09:09:23:    Backend: https://testgen.pcloudy.com
+2025-10-03T09:09:23:    Frontend: https://testgen.pcloudy.com
+2025-10-03T09:09:23:    CORS Origins: 1 configured
+2025-10-03T09:09:23: 127.0.0.1 - - [03/Oct/2025:09:09:23 +0000] "GET /health HTTP/1.1" 200 62 "-" "curl/8.5.0"
+2025-10-03T09:12:30: Analyze endpoint called
+2025-10-03T09:12:30: Description received: Test a login form with email and password fields, remember me checkbox, and forgot password link. Th...
+2025-10-03T09:12:30: About to call generate_test_scenarios_and_cases
+2025-10-03T09:12:30: generate_test_scenarios_and_cases called with description=True, image_path=False, scenarios_only=True
+2025-10-03T09:12:30: Successfully parsed JSON response
+2025-10-03T09:12:30: Function returned result with keys: dict_keys(['scenarios'])
+2025-10-03T09:12:30: Number of scenarios: 5
+2025-10-03T09:12:30: 127.0.0.1 - - [03/Oct/2025:09:12:30 +0000] "POST /analyze HTTP/1.1" 200 2672 "-" "curl/8.5.0"
+2025-10-03T09:14:18: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T09:14:18: ✅ Configuration loaded successfully
+2025-10-03T09:14:18:    Environment: production
+2025-10-03T09:14:18:    Backend: https://testgen.pcloudy.com
+2025-10-03T09:14:18:    Frontend: https://testgen.pcloudy.com
+2025-10-03T09:14:18:    CORS Origins: 1 configured
+2025-10-03T09:14:18: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T09:14:18: ✅ Configuration loaded successfully
+2025-10-03T09:14:18:    Environment: production
+2025-10-03T09:14:18:    Backend: https://testgen.pcloudy.com
+2025-10-03T09:14:18:    Frontend: https://testgen.pcloudy.com
+2025-10-03T09:14:18:    CORS Origins: 1 configured
+2025-10-03T09:14:18: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T09:14:18: ✅ Configuration loaded successfully
+2025-10-03T09:14:18:    Environment: production
+2025-10-03T09:14:18:    Backend: https://testgen.pcloudy.com
+2025-10-03T09:14:18:    Frontend: https://testgen.pcloudy.com
+2025-10-03T09:14:18:    CORS Origins: 1 configured
+2025-10-03T09:15:19: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T09:15:19: ✅ Configuration loaded successfully
+2025-10-03T09:15:19:    Environment: production
+2025-10-03T09:15:19:    Backend: https://testgen.pcloudy.com
+2025-10-03T09:15:19:    Frontend: https://testgen.pcloudy.com
+2025-10-03T09:15:19:    CORS Origins: 1 configured
+2025-10-03T09:15:19: Analyze endpoint called
+2025-10-03T09:15:19: Description received: Test a login form with email and password fields, remember me checkbox, and forgot password link. Th...
+2025-10-03T09:15:19: About to call generate_test_scenarios_and_cases
+2025-10-03T09:15:19: generate_test_scenarios_and_cases called with description=True, image_path=False, scenarios_only=True
+2025-10-03T09:15:19: Successfully parsed JSON response
+2025-10-03T09:15:19: Function returned result with keys: dict_keys(['scenarios'])
+2025-10-03T09:15:19: Number of scenarios: 8
+2025-10-03T09:15:19: 127.0.0.1 - - [03/Oct/2025:09:15:19 +0000] "POST /analyze HTTP/1.1" 200 2932 "-" "curl/8.5.0"
+2025-10-03T09:16:17: Analyze endpoint called
+2025-10-03T09:16:17: Description received: E-commerce product page with: image gallery, add to cart button, quantity selector, size/color varia...
+2025-10-03T09:16:17: About to call generate_test_scenarios_and_cases
+2025-10-03T09:16:17: generate_test_scenarios_and_cases called with description=True, image_path=False, scenarios_only=True
+2025-10-03T09:16:17: Successfully parsed JSON response
+2025-10-03T09:16:17: Function returned result with keys: dict_keys(['scenarios'])
+2025-10-03T09:16:17: Number of scenarios: 8
+2025-10-03T09:16:17: 127.0.0.1 - - [03/Oct/2025:09:16:17 +0000] "POST /analyze HTTP/1.1" 200 4181 "-" "curl/8.5.0"
+2025-10-03T09:17:31: Analyze endpoint called
+2025-10-03T09:17:31: Description received: Login form with email, password, and submit button. Validate credentials and redirect to dashboard....
+2025-10-03T09:17:31: About to call generate_test_scenarios_and_cases
+2025-10-03T09:17:31: generate_test_scenarios_and_cases called with description=True, image_path=False, scenarios_only=True
+2025-10-03T09:17:31: Successfully parsed JSON response
+2025-10-03T09:17:31: Function returned result with keys: dict_keys(['scenarios'])
+2025-10-03T09:17:31: Number of scenarios: 8
+2025-10-03T09:17:31: 127.0.0.1 - - [03/Oct/2025:09:17:31 +0000] "POST /analyze HTTP/1.1" 200 4476 "-" "curl/8.5.0"
+2025-10-03T09:17:46: Generating test cases for 2 selected scenarios
+2025-10-03T09:17:46: Successfully parsed JSON response
+2025-10-03T09:17:46: 127.0.0.1 - - [03/Oct/2025:09:17:46 +0000] "POST /generate_test_cases HTTP/1.1" 200 1704 "-" "python-requests/2.32.5"
+2025-10-03T09:18:30: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T09:18:30: ✅ Configuration loaded successfully
+2025-10-03T09:18:30:    Environment: production
+2025-10-03T09:18:30:    Backend: https://testgen.pcloudy.com
+2025-10-03T09:18:30:    Frontend: https://testgen.pcloudy.com
+2025-10-03T09:18:30:    CORS Origins: 1 configured
+2025-10-03T09:18:30: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T09:18:30: ✅ Configuration loaded successfully
+2025-10-03T09:18:30:    Environment: production
+2025-10-03T09:18:30:    Backend: https://testgen.pcloudy.com
+2025-10-03T09:18:30:    Frontend: https://testgen.pcloudy.com
+2025-10-03T09:18:30:    CORS Origins: 1 configured
+2025-10-03T09:18:30: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T09:18:30: ✅ Configuration loaded successfully
+2025-10-03T09:18:30:    Environment: production
+2025-10-03T09:18:30:    Backend: https://testgen.pcloudy.com
+2025-10-03T09:18:30:    Frontend: https://testgen.pcloudy.com
+2025-10-03T09:18:30:    CORS Origins: 1 configured
+2025-10-03T09:19:28: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T09:19:28: ✅ Configuration loaded successfully
+2025-10-03T09:19:28:    Environment: production
+2025-10-03T09:19:28:    Backend: https://testgen.pcloudy.com
+2025-10-03T09:19:28:    Frontend: https://testgen.pcloudy.com
+2025-10-03T09:19:28:    CORS Origins: 1 configured
+2025-10-03T09:19:28: Analyze endpoint called
+2025-10-03T09:19:28: Description received: Login form with email, password, and submit button. Validate credentials and redirect to dashboard....
+2025-10-03T09:19:28: About to call generate_test_scenarios_and_cases
+2025-10-03T09:19:28: generate_test_scenarios_and_cases called with description=True, image_path=False, scenarios_only=True
+2025-10-03T09:19:28: Successfully parsed JSON response
+2025-10-03T09:19:28: Function returned result with keys: dict_keys(['scenarios'])
+2025-10-03T09:19:28: Number of scenarios: 8
+2025-10-03T09:19:28: 127.0.0.1 - - [03/Oct/2025:09:19:28 +0000] "POST /analyze HTTP/1.1" 200 3669 "-" "curl/8.5.0"
+2025-10-03T09:19:51: Generating test cases for 2 selected scenarios
+2025-10-03T09:19:51: Successfully parsed JSON response
+2025-10-03T09:19:51: 127.0.0.1 - - [03/Oct/2025:09:19:51 +0000] "POST /generate_test_cases HTTP/1.1" 200 2716 "-" "python-requests/2.32.5"
+2025-10-03T09:21:00: Analyze endpoint called
+2025-10-03T09:21:00: Description received: E-commerce checkout flow: shopping cart review, shipping address form, payment method selection (cre...
+2025-10-03T09:21:00: About to call generate_test_scenarios_and_cases
+2025-10-03T09:21:00: generate_test_scenarios_and_cases called with description=True, image_path=False, scenarios_only=True
+2025-10-03T09:21:00: Successfully parsed JSON response
+2025-10-03T09:21:00: Function returned result with keys: dict_keys(['scenarios'])
+2025-10-03T09:21:00: Number of scenarios: 8
+2025-10-03T09:21:00: 127.0.0.1 - - [03/Oct/2025:09:21:00 +0000] "POST /analyze HTTP/1.1" 200 5112 "-" "curl/8.5.0"
+2025-10-03T09:21:49: Generating test cases for 4 selected scenarios
+2025-10-03T09:21:49: Analyze endpoint called
+2025-10-03T09:21:49: About to call generate_test_scenarios_and_cases
+2025-10-03T09:21:49: generate_test_scenarios_and_cases called with description=False, image_path=True, scenarios_only=True
+2025-10-03T09:21:49: Successfully parsed JSON response
+2025-10-03T09:21:49: 127.0.0.1 - - [03/Oct/2025:09:21:49 +0000] "POST /generate_test_cases HTTP/1.1" 200 4567 "-" "python-requests/2.32.5"
+2025-10-03T09:22:03: Successfully parsed JSON response
+2025-10-03T09:22:03: Function returned result with keys: dict_keys(['scenarios'])
+2025-10-03T09:22:03: Number of scenarios: 8
+2025-10-03T09:22:03: 127.0.0.1 - - [03/Oct/2025:09:22:03 +0000] "POST /analyze HTTP/1.0" 200 2608 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T09:22:44: Generating test cases for 8 selected scenarios
+2025-10-03T09:22:44: Successfully parsed JSON response
+2025-10-03T09:22:44: 127.0.0.1 - - [03/Oct/2025:09:22:44 +0000] "POST /generate_test_cases HTTP/1.0" 200 2941 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T09:23:42: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T09:23:42: ✅ Configuration loaded successfully
+2025-10-03T09:23:42:    Environment: production
+2025-10-03T09:23:42:    Backend: https://testgen.pcloudy.com
+2025-10-03T09:23:42:    Frontend: https://testgen.pcloudy.com
+2025-10-03T09:23:42:    CORS Origins: 1 configured
+2025-10-03T09:23:42: Successfully generated 12 API scenarios
+2025-10-03T09:23:42: 127.0.0.1 - - [03/Oct/2025:09:23:42 +0000] "POST /analyze_api HTTP/1.0" 200 4260 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T09:24:38: Successfully generated 10 API scenarios
+2025-10-03T09:24:38: 127.0.0.1 - - [03/Oct/2025:09:24:38 +0000] "POST /analyze_api HTTP/1.0" 200 3888 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T09:28:13: Generating detailed API test cases for 10 selected scenarios
+2025-10-03T09:28:13: Processing 10 scenarios in batches to avoid token limits
+2025-10-03T09:28:13: Processing batch 1: scenarios 1-3
+2025-10-03T09:28:13: Batch AI Response length: 16685 characters
+2025-10-03T09:28:13: Successfully generated detailed test cases for 3 scenarios in batch
+2025-10-03T09:28:13: Processing batch 2: scenarios 4-6
+2025-10-03T09:28:13: Generating detailed API test cases for 10 selected scenarios
+2025-10-03T09:28:13: Processing 10 scenarios in batches to avoid token limits
+2025-10-03T09:28:13: Processing batch 1: scenarios 1-3
+2025-10-03T09:28:13: Batch AI Response length: 14161 characters
+2025-10-03T09:28:13: Successfully generated detailed test cases for 3 scenarios in batch
+2025-10-03T09:28:13: Processing batch 3: scenarios 7-9
+2025-10-03T09:28:13: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T09:28:13: ✅ Configuration loaded successfully
+2025-10-03T09:28:13:    Environment: production
+2025-10-03T09:28:13:    Backend: https://testgen.pcloudy.com
+2025-10-03T09:28:13:    Frontend: https://testgen.pcloudy.com
+2025-10-03T09:28:13:    CORS Origins: 1 configured
+2025-10-03T09:28:13: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T09:28:13: ✅ Configuration loaded successfully
+2025-10-03T09:28:13:    Environment: production
+2025-10-03T09:28:13:    Backend: https://testgen.pcloudy.com
+2025-10-03T09:28:13:    Frontend: https://testgen.pcloudy.com
+2025-10-03T09:28:13:    CORS Origins: 1 configured
+2025-10-03T09:28:13: Generating detailed API test cases for 10 selected scenarios
+2025-10-03T09:28:13: Processing 10 scenarios in batches to avoid token limits
+2025-10-03T09:28:13: Processing batch 1: scenarios 1-3
+2025-10-03T09:28:13: Batch AI Response length: 15765 characters
+2025-10-03T09:28:13: Successfully generated detailed test cases for 3 scenarios in batch
+2025-10-03T09:28:13: Processing batch 2: scenarios 4-6
+2025-10-03T09:29:15: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T09:29:15: ✅ Configuration loaded successfully
+2025-10-03T09:29:15:    Environment: production
+2025-10-03T09:29:15:    Backend: https://testgen.pcloudy.com
+2025-10-03T09:29:15:    Frontend: https://testgen.pcloudy.com
+2025-10-03T09:29:15:    CORS Origins: 1 configured
+2025-10-03T09:29:15: 127.0.0.1 - - [03/Oct/2025:09:29:15 +0000] "POST /analyze_website HTTP/1.0" 200 6325 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T09:29:47: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T09:29:47: ✅ Configuration loaded successfully
+2025-10-03T09:29:47:    Environment: production
+2025-10-03T09:29:47:    Backend: https://testgen.pcloudy.com
+2025-10-03T09:29:47:    Frontend: https://testgen.pcloudy.com
+2025-10-03T09:29:47:    CORS Origins: 1 configured
+2025-10-03T09:29:47: Generating test cases for 1 selected scenarios
+2025-10-03T09:29:47: Successfully parsed JSON response
+2025-10-03T09:29:47: 127.0.0.1 - - [03/Oct/2025:09:29:47 +0000] "POST /generate_test_cases HTTP/1.0" 200 2047 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T09:29:51: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T09:29:51: ✅ Configuration loaded successfully
+2025-10-03T09:29:51:    Environment: production
+2025-10-03T09:29:51:    Backend: https://testgen.pcloudy.com
+2025-10-03T09:29:51:    Frontend: https://testgen.pcloudy.com
+2025-10-03T09:29:51:    CORS Origins: 1 configured
+2025-10-03T09:29:51: Analyze endpoint called
+2025-10-03T09:29:51: Description received: User registration form with username, email, password, confirm password, terms checkbox....
+2025-10-03T09:29:51: About to call generate_test_scenarios_and_cases
+2025-10-03T09:29:51: generate_test_scenarios_and_cases called with description=True, image_path=False, scenarios_only=True
+2025-10-03T09:29:51: Successfully parsed JSON response
+2025-10-03T09:29:51: Function returned result with keys: dict_keys(['scenarios'])
+2025-10-03T09:29:51: Number of scenarios: 8
+2025-10-03T09:29:51: 127.0.0.1 - - [03/Oct/2025:09:29:51 +0000] "POST /analyze HTTP/1.1" 200 6637 "-" "curl/8.5.0"
+2025-10-03T09:30:35: Generating test cases for 3 selected scenarios
+2025-10-03T09:30:35: Generating test cases for 6 selected scenarios
+2025-10-03T09:30:35: Successfully parsed JSON response
+2025-10-03T09:30:35: 127.0.0.1 - - [03/Oct/2025:09:30:35 +0000] "POST /generate_test_cases HTTP/1.0" 200 4776 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T09:30:56: Successfully parsed JSON response
+2025-10-03T09:30:56: 127.0.0.1 - - [03/Oct/2025:09:30:56 +0000] "POST /generate_test_cases HTTP/1.1" 200 6755 "-" "python-requests/2.32.5"
+2025-10-03T09:31:25: Successfully generated 10 API scenarios
+2025-10-03T09:31:25: 127.0.0.1 - - [03/Oct/2025:09:31:25 +0000] "POST /analyze_api HTTP/1.0" 200 3948 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T09:36:15: Generating detailed API test cases for 10 selected scenarios
+2025-10-03T09:36:15: Processing 10 scenarios in batches to avoid token limits
+2025-10-03T09:36:15: Processing batch 1: scenarios 1-3
+2025-10-03T09:36:15: Batch AI Response length: 7755 characters
+2025-10-03T09:36:15: Successfully generated detailed test cases for 3 scenarios in batch
+2025-10-03T09:36:15: Processing batch 2: scenarios 4-6
+2025-10-03T09:36:15: Batch AI Response length: 13016 characters
+2025-10-03T09:36:15: Successfully generated detailed test cases for 3 scenarios in batch
+2025-10-03T09:36:15: Processing batch 3: scenarios 7-9
+2025-10-03T09:36:15: Analyze endpoint called
+2025-10-03T09:36:15: Description received: commerce checkout flow: shopping cart review, shipping address form, payment method selection (credi...
+2025-10-03T09:36:15: About to call generate_test_scenarios_and_cases
+2025-10-03T09:36:15: generate_test_scenarios_and_cases called with description=True, image_path=False, scenarios_only=True
+2025-10-03T09:36:15: Batch AI Response length: 12139 characters
+2025-10-03T09:36:15: Successfully generated detailed test cases for 3 scenarios in batch
+2025-10-03T09:36:15: Processing batch 4: scenarios 10-10
+2025-10-03T09:36:15: Batch AI Response length: 4131 characters
+2025-10-03T09:36:15: Successfully generated detailed test cases for 1 scenarios in batch
+2025-10-03T09:36:15: 127.0.0.1 - - [03/Oct/2025:09:36:15 +0000] "POST /generate_api_test_cases HTTP/1.0" 200 22755 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T09:36:30: Successfully parsed JSON response
+2025-10-03T09:36:30: Function returned result with keys: dict_keys(['scenarios'])
+2025-10-03T09:36:30: Number of scenarios: 8
+2025-10-03T09:36:30: 127.0.0.1 - - [03/Oct/2025:09:36:30 +0000] "POST /analyze HTTP/1.0" 200 6066 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T09:37:06: Analyze endpoint called
+2025-10-03T09:37:06: About to call generate_test_scenarios_and_cases
+2025-10-03T09:37:06: generate_test_scenarios_and_cases called with description=False, image_path=True, scenarios_only=True
+2025-10-03T09:37:06: Successfully parsed JSON response
+2025-10-03T09:37:06: Function returned result with keys: dict_keys(['scenarios'])
+2025-10-03T09:37:06: Number of scenarios: 10
+2025-10-03T09:37:06: 127.0.0.1 - - [03/Oct/2025:09:37:06 +0000] "POST /analyze HTTP/1.0" 200 2206 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T09:39:33: Generating detailed API test cases for 10 selected scenarios
+2025-10-03T09:39:33: Processing 10 scenarios in batches to avoid token limits
+2025-10-03T09:39:33: Processing batch 1: scenarios 1-3
+2025-10-03T09:39:33: Batch AI Response length: 16345 characters
+2025-10-03T09:39:33: Successfully generated detailed test cases for 3 scenarios in batch
+2025-10-03T09:39:33: Processing batch 2: scenarios 4-6
+2025-10-03T09:39:33: Batch AI Response length: 12738 characters
+2025-10-03T09:39:33: Successfully generated detailed test cases for 3 scenarios in batch
+2025-10-03T09:39:33: Processing batch 3: scenarios 7-9
+2025-10-03T09:39:33: Batch AI Response length: 12377 characters
+2025-10-03T09:39:33: Successfully generated detailed test cases for 3 scenarios in batch
+2025-10-03T09:39:33: Processing batch 4: scenarios 10-10
+2025-10-03T09:39:33: Batch AI Response length: 4350 characters
+2025-10-03T09:39:33: Successfully generated detailed test cases for 1 scenarios in batch
+2025-10-03T09:39:33: 127.0.0.1 - - [03/Oct/2025:09:39:33 +0000] "POST /generate_api_test_cases HTTP/1.0" 200 27962 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T09:40:22: Generating test cases for 10 selected scenarios
+2025-10-03T09:40:22: Generating test cases for 10 selected scenarios
+2025-10-03T09:40:22: Successfully parsed JSON response
+2025-10-03T09:40:22: 127.0.0.1 - - [03/Oct/2025:09:40:22 +0000] "POST /generate_test_cases HTTP/1.0" 200 21308 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T09:41:09: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T09:41:09: ✅ Configuration loaded successfully
+2025-10-03T09:41:09:    Environment: production
+2025-10-03T09:41:09:    Backend: https://testgen.pcloudy.com
+2025-10-03T09:41:09:    Frontend: https://testgen.pcloudy.com
+2025-10-03T09:41:09:    CORS Origins: 1 configured
+2025-10-03T09:41:09: Analyze endpoint called
+2025-10-03T09:41:09: Description received: Simple login form...
+2025-10-03T09:41:09: About to call generate_test_scenarios_and_cases
+2025-10-03T09:41:09: generate_test_scenarios_and_cases called with description=True, image_path=False, scenarios_only=True
+2025-10-03T09:41:09: Successfully parsed JSON response
+2025-10-03T09:41:09: Function returned result with keys: dict_keys(['scenarios'])
+2025-10-03T09:41:09: Number of scenarios: 8
+2025-10-03T09:41:09: 127.0.0.1 - - [03/Oct/2025:09:41:09 +0000] "POST /analyze HTTP/1.1" 200 4832 "-" "curl/8.5.0"
+2025-10-03T09:41:26: Successfully parsed JSON response
+2025-10-03T09:41:26: 127.0.0.1 - - [03/Oct/2025:09:41:26 +0000] "POST /generate_test_cases HTTP/1.0" 200 21410 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T09:41:38: Generating test cases for 1 selected scenarios
+2025-10-03T09:41:38: Successfully parsed JSON response
+2025-10-03T09:41:38: 127.0.0.1 - - [03/Oct/2025:09:41:38 +0000] "POST /generate_test_cases HTTP/1.0" 200 2249 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T09:45:25: Analyze endpoint called
+2025-10-03T09:45:25: Description received: commerce checkout flow: shopping cart review, shipping address form, payment method selection (credi...
+2025-10-03T09:45:25: About to call generate_test_scenarios_and_cases
+2025-10-03T09:45:25: generate_test_scenarios_and_cases called with description=True, image_path=False, scenarios_only=True
+2025-10-03T09:45:25: Successfully parsed JSON response
+2025-10-03T09:45:25: Function returned result with keys: dict_keys(['scenarios'])
+2025-10-03T09:45:25: Number of scenarios: 8
+2025-10-03T09:45:25: 127.0.0.1 - - [03/Oct/2025:09:45:25 +0000] "POST /analyze HTTP/1.0" 200 7640 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T09:45:38: Generating test cases for 10 selected scenarios
+2025-10-03T09:45:38: Successfully parsed JSON response
+2025-10-03T09:45:38: 127.0.0.1 - - [03/Oct/2025:09:45:38 +0000] "POST /generate_test_cases HTTP/1.0" 200 22296 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T09:57:51: Analyze endpoint called
+2025-10-03T09:57:51: Description received: commerce checkout flow: shopping cart review, shipping address form, payment method selection (credi...
+2025-10-03T09:57:51: About to call generate_test_scenarios_and_cases
+2025-10-03T09:57:51: generate_test_scenarios_and_cases called with description=True, image_path=False, scenarios_only=True
+2025-10-03T09:57:51: Successfully parsed JSON response
+2025-10-03T09:57:51: Function returned result with keys: dict_keys(['scenarios'])
+2025-10-03T09:57:51: Number of scenarios: 8
+2025-10-03T09:57:51: 127.0.0.1 - - [03/Oct/2025:09:57:51 +0000] "POST /analyze HTTP/1.0" 200 3510 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T09:57:53: Analyze endpoint called
+2025-10-03T09:57:53: Description received: Login form with username and password fields...
+2025-10-03T09:57:53: About to call generate_test_scenarios_and_cases
+2025-10-03T09:57:53: generate_test_scenarios_and_cases called with description=True, image_path=False, scenarios_only=True
+2025-10-03T09:57:53: Successfully parsed JSON response
+2025-10-03T09:57:53: Function returned result with keys: dict_keys(['scenarios'])
+2025-10-03T09:57:53: Number of scenarios: 8
+2025-10-03T09:57:53: 127.0.0.1 - - [03/Oct/2025:09:57:53 +0000] "POST /analyze HTTP/1.1" 200 3760 "-" "curl/8.5.0"
+2025-10-03T10:03:21: Analyze endpoint called
+2025-10-03T10:03:21: Description received: commerce checkout flow: shopping cart review, shipping address form, payment method selection (credi...
+2025-10-03T10:03:21: About to call generate_test_scenarios_and_cases
+2025-10-03T10:03:21: generate_test_scenarios_and_cases called with description=True, image_path=False, scenarios_only=True
+2025-10-03T10:03:21: Successfully parsed JSON response
+2025-10-03T10:03:21: Function returned result with keys: dict_keys(['scenarios'])
+2025-10-03T10:03:21: Number of scenarios: 8
+2025-10-03T10:03:21: 127.0.0.1 - - [03/Oct/2025:10:03:21 +0000] "POST /analyze HTTP/1.0" 200 4653 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T10:08:29: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T10:08:29: ✅ Configuration loaded successfully
+2025-10-03T10:08:29:    Environment: production
+2025-10-03T10:08:29:    Backend: https://testgen.pcloudy.com
+2025-10-03T10:08:29:    Frontend: https://testgen.pcloudy.com
+2025-10-03T10:08:29:    CORS Origins: 1 configured
+2025-10-03T10:08:29: Analyze endpoint called
+2025-10-03T10:08:29: About to call generate_test_scenarios_and_cases
+2025-10-03T10:08:29: generate_test_scenarios_and_cases called with description=False, image_path=True, scenarios_only=True
+2025-10-03T10:08:29: Successfully parsed JSON response
+2025-10-03T10:08:29: Function returned result with keys: dict_keys(['scenarios'])
+2025-10-03T10:08:29: Number of scenarios: 15
+2025-10-03T10:08:29: Cleared test_cases for scenario: SC001
+2025-10-03T10:08:29: Cleared test_cases for scenario: SC002
+2025-10-03T10:08:29: Cleared test_cases for scenario: SC003
+2025-10-03T10:08:29: Cleared test_cases for scenario: SC004
+2025-10-03T10:08:29: Cleared test_cases for scenario: SC005
+2025-10-03T10:08:29: Cleared test_cases for scenario: SC006
+2025-10-03T10:08:29: Cleared test_cases for scenario: SC007
+2025-10-03T10:08:29: Cleared test_cases for scenario: SC008
+2025-10-03T10:08:29: Cleared test_cases for scenario: SC009
+2025-10-03T10:08:29: Cleared test_cases for scenario: SC010
+2025-10-03T10:08:29: Cleared test_cases for scenario: SC011
+2025-10-03T10:08:29: Cleared test_cases for scenario: SC012
+2025-10-03T10:08:29: Cleared test_cases for scenario: SC013
+2025-10-03T10:08:29: Cleared test_cases for scenario: SC014
+2025-10-03T10:08:29: Cleared test_cases for scenario: SC015
+2025-10-03T10:08:29: 127.0.0.1 - - [03/Oct/2025:10:08:29 +0000] "POST /analyze HTTP/1.0" 200 3177 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T10:10:49: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T10:10:49: ✅ Configuration loaded successfully
+2025-10-03T10:10:49:    Environment: production
+2025-10-03T10:10:49:    Backend: https://testgen.pcloudy.com
+2025-10-03T10:10:49:    Frontend: https://testgen.pcloudy.com
+2025-10-03T10:10:49:    CORS Origins: 1 configured
+2025-10-03T10:10:49: Generating test cases for 1 selected scenarios
+2025-10-03T10:10:49: Successfully parsed JSON response
+2025-10-03T10:10:49: 127.0.0.1 - - [03/Oct/2025:10:10:49 +0000] "POST /generate_test_cases HTTP/1.0" 200 3347 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T10:11:55: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T10:11:55: ✅ Configuration loaded successfully
+2025-10-03T10:11:55:    Environment: production
+2025-10-03T10:11:55:    Backend: https://testgen.pcloudy.com
+2025-10-03T10:11:55:    Frontend: https://testgen.pcloudy.com
+2025-10-03T10:11:55:    CORS Origins: 1 configured
+2025-10-03T10:11:55: Generating test cases for 2 selected scenarios
+2025-10-03T10:11:55: Successfully parsed JSON response
+2025-10-03T10:11:55: 127.0.0.1 - - [03/Oct/2025:10:11:55 +0000] "POST /generate_test_cases HTTP/1.0" 200 5854 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T10:13:06: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T10:13:06: ✅ Configuration loaded successfully
+2025-10-03T10:13:06:    Environment: production
+2025-10-03T10:13:06:    Backend: https://testgen.pcloudy.com
+2025-10-03T10:13:06:    Frontend: https://testgen.pcloudy.com
+2025-10-03T10:13:06:    CORS Origins: 1 configured
+2025-10-03T10:13:06: Generating test cases for 15 selected scenarios
+2025-10-03T10:13:06: Direct JSON parsing failed: Unterminated string starting at: line 510 column 40 (char 31879)
+2025-10-03T10:13:06: Regex JSON parsing failed: Expecting ',' delimiter: line 504 column 18 (char 31469)
+2025-10-03T10:13:06: Array JSON parsing failed: Expecting ',' delimiter: line 508 column 144 (char 31819)
+2025-10-03T10:13:06: 127.0.0.1 - - [03/Oct/2025:10:13:06 +0000] "POST /generate_test_cases HTTP/1.0" 200 675 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T10:13:41: Analyze endpoint called
+2025-10-03T10:13:41: Description received: You are an experienced QA engineer with expertise in comprehensive test coverage. Your task is to ge...
+2025-10-03T10:13:41: About to call generate_test_scenarios_and_cases
+2025-10-03T10:13:41: generate_test_scenarios_and_cases called with description=True, image_path=False, scenarios_only=True
+2025-10-03T10:13:41: Successfully parsed JSON response
+2025-10-03T10:13:41: Function returned result with keys: dict_keys(['scenarios'])
+2025-10-03T10:13:41: Number of scenarios: 12
+2025-10-03T10:13:41: Cleared test_cases for scenario: SC001
+2025-10-03T10:13:41: Cleared test_cases for scenario: SC002
+2025-10-03T10:13:41: Cleared test_cases for scenario: SC003
+2025-10-03T10:13:41: Cleared test_cases for scenario: SC004
+2025-10-03T10:13:41: Cleared test_cases for scenario: SC005
+2025-10-03T10:13:41: Cleared test_cases for scenario: SC006
+2025-10-03T10:13:41: Cleared test_cases for scenario: SC007
+2025-10-03T10:13:41: Cleared test_cases for scenario: SC008
+2025-10-03T10:13:41: Cleared test_cases for scenario: SC009
+2025-10-03T10:13:41: Cleared test_cases for scenario: SC010
+2025-10-03T10:13:41: Cleared test_cases for scenario: SC011
+2025-10-03T10:13:41: Cleared test_cases for scenario: SC012
+2025-10-03T10:13:41: 127.0.0.1 - - [03/Oct/2025:10:13:41 +0000] "POST /analyze HTTP/1.0" 200 2621 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T10:14:58: Generating test cases for 2 selected scenarios
+2025-10-03T10:14:58: Successfully parsed JSON response
+2025-10-03T10:14:58: 127.0.0.1 - - [03/Oct/2025:10:14:58 +0000] "POST /generate_test_cases HTTP/1.0" 200 4934 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T10:15:55: Generating test cases for 2 selected scenarios
+2025-10-03T10:16:35: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T10:16:35: ✅ Configuration loaded successfully
+2025-10-03T10:16:35:    Environment: production
+2025-10-03T10:16:35:    Backend: https://testgen.pcloudy.com
+2025-10-03T10:16:35:    Frontend: https://testgen.pcloudy.com
+2025-10-03T10:16:35:    CORS Origins: 1 configured
+2025-10-03T10:16:35: Analyze endpoint called
+2025-10-03T10:16:35: Description received: You are an experienced QA engineer with expertise in comprehensive test coverage. Your task is to ge...
+2025-10-03T10:16:35: About to call generate_test_scenarios_and_cases
+2025-10-03T10:16:35: generate_test_scenarios_and_cases called with description=True, image_path=False, scenarios_only=True
+2025-10-03T10:16:35: Successfully parsed JSON response
+2025-10-03T10:16:35: Function returned result with keys: dict_keys(['scenarios'])
+2025-10-03T10:16:35: Number of scenarios: 15
+2025-10-03T10:16:35: Cleared test_cases for scenario: SC001
+2025-10-03T10:16:35: Cleared test_cases for scenario: SC002
+2025-10-03T10:16:35: Cleared test_cases for scenario: SC003
+2025-10-03T10:16:35: Cleared test_cases for scenario: SC004
+2025-10-03T10:16:35: Cleared test_cases for scenario: SC005
+2025-10-03T10:16:35: Cleared test_cases for scenario: SC006
+2025-10-03T10:16:35: Cleared test_cases for scenario: SC007
+2025-10-03T10:16:35: Cleared test_cases for scenario: SC008
+2025-10-03T10:16:35: Cleared test_cases for scenario: SC009
+2025-10-03T10:16:35: Cleared test_cases for scenario: SC010
+2025-10-03T10:16:35: Cleared test_cases for scenario: SC011
+2025-10-03T10:16:35: Cleared test_cases for scenario: SC012
+2025-10-03T10:16:35: Cleared test_cases for scenario: SC013
+2025-10-03T10:16:35: Cleared test_cases for scenario: SC014
+2025-10-03T10:16:35: Cleared test_cases for scenario: SC015
+2025-10-03T10:16:35: 127.0.0.1 - - [03/Oct/2025:10:16:35 +0000] "POST /analyze HTTP/1.0" 200 3665 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T10:17:07: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T10:17:07: ✅ Configuration loaded successfully
+2025-10-03T10:17:07:    Environment: production
+2025-10-03T10:17:07:    Backend: https://testgen.pcloudy.com
+2025-10-03T10:17:07:    Frontend: https://testgen.pcloudy.com
+2025-10-03T10:17:07:    CORS Origins: 1 configured
+2025-10-03T10:17:07: Generating test cases for 1 selected scenarios
+2025-10-03T10:17:07: Successfully parsed JSON response
+2025-10-03T10:17:07: 127.0.0.1 - - [03/Oct/2025:10:17:07 +0000] "POST /generate_test_cases HTTP/1.0" 200 2182 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T10:19:42: Successfully generated 12 API scenarios
+2025-10-03T10:19:42: 127.0.0.1 - - [03/Oct/2025:10:19:42 +0000] "POST /analyze_api HTTP/1.0" 200 4284 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T10:21:19: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T10:21:19: ✅ Configuration loaded successfully
+2025-10-03T10:21:19:    Environment: production
+2025-10-03T10:21:19:    Backend: https://testgen.pcloudy.com
+2025-10-03T10:21:19:    Frontend: https://testgen.pcloudy.com
+2025-10-03T10:21:19:    CORS Origins: 1 configured
+2025-10-03T10:21:19: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T10:21:19: ✅ Configuration loaded successfully
+2025-10-03T10:21:19:    Environment: production
+2025-10-03T10:21:19:    Backend: https://testgen.pcloudy.com
+2025-10-03T10:21:19:    Frontend: https://testgen.pcloudy.com
+2025-10-03T10:21:19:    CORS Origins: 1 configured
+2025-10-03T10:21:19: Generating detailed API test cases for 12 selected scenarios
+2025-10-03T10:21:19: Processing 12 scenarios in batches to avoid token limits
+2025-10-03T10:21:19: Processing batch 1: scenarios 1-3
+2025-10-03T10:22:03: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T10:22:03: ✅ Configuration loaded successfully
+2025-10-03T10:22:03:    Environment: production
+2025-10-03T10:22:03:    Backend: https://testgen.pcloudy.com
+2025-10-03T10:22:03:    Frontend: https://testgen.pcloudy.com
+2025-10-03T10:22:03:    CORS Origins: 1 configured
+2025-10-03T10:22:03: Analyze endpoint called
+2025-10-03T10:22:03: About to call generate_test_scenarios_and_cases
+2025-10-03T10:22:03: generate_test_scenarios_and_cases called with description=False, image_path=True, scenarios_only=True
+2025-10-03T10:22:03: Successfully parsed JSON response
+2025-10-03T10:22:03: Function returned result with keys: dict_keys(['scenarios'])
+2025-10-03T10:22:03: Number of scenarios: 15
+2025-10-03T10:22:03: Cleared test_cases for scenario: SC001
+2025-10-03T10:22:03: Cleared test_cases for scenario: SC002
+2025-10-03T10:22:03: Cleared test_cases for scenario: SC003
+2025-10-03T10:22:03: Cleared test_cases for scenario: SC004
+2025-10-03T10:22:03: Cleared test_cases for scenario: SC005
+2025-10-03T10:22:03: Cleared test_cases for scenario: SC006
+2025-10-03T10:22:03: Cleared test_cases for scenario: SC007
+2025-10-03T10:22:03: Cleared test_cases for scenario: SC008
+2025-10-03T10:22:03: Cleared test_cases for scenario: SC009
+2025-10-03T10:22:03: Cleared test_cases for scenario: SC010
+2025-10-03T10:22:03: Cleared test_cases for scenario: SC011
+2025-10-03T10:22:03: Cleared test_cases for scenario: SC012
+2025-10-03T10:22:03: Cleared test_cases for scenario: SC013
+2025-10-03T10:22:03: Cleared test_cases for scenario: SC014
+2025-10-03T10:22:03: Cleared test_cases for scenario: SC015
+2025-10-03T10:22:03: 127.0.0.1 - - [03/Oct/2025:10:22:03 +0000] "POST /analyze HTTP/1.0" 200 3307 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T10:25:10: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T10:25:10: ✅ Configuration loaded successfully
+2025-10-03T10:25:10:    Environment: production
+2025-10-03T10:25:10:    Backend: https://testgen.pcloudy.com
+2025-10-03T10:25:10:    Frontend: https://testgen.pcloudy.com
+2025-10-03T10:25:10:    CORS Origins: 1 configured
+2025-10-03T10:25:10: 127.0.0.1 - - [03/Oct/2025:10:25:10 +0000] "POST /analyze_website HTTP/1.0" 200 6312 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T10:26:07: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T10:26:07: ✅ Configuration loaded successfully
+2025-10-03T10:26:07:    Environment: production
+2025-10-03T10:26:07:    Backend: https://testgen.pcloudy.com
+2025-10-03T10:26:07:    Frontend: https://testgen.pcloudy.com
+2025-10-03T10:26:07:    CORS Origins: 1 configured
+2025-10-03T10:26:07: Generating test cases for 15 selected scenarios
+2025-10-03T10:26:07: Direct JSON parsing failed: Expecting property name enclosed in double quotes: line 587 column 35 (char 32394)
+2025-10-03T10:26:07: Regex JSON parsing failed: Expecting ',' delimiter: line 585 column 18 (char 32340)
+2025-10-03T10:26:07: Array JSON parsing failed: Expecting ',' delimiter: line 580 column 153 (char 32112)
+2025-10-03T10:26:07: 127.0.0.1 - - [03/Oct/2025:10:26:07 +0000] "POST /generate_test_cases HTTP/1.0" 200 675 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T10:30:53: 127.0.0.1 - - [03/Oct/2025:10:30:53 +0000] "GET /health HTTP/1.1" 200 62 "-" "curl/8.5.0"
+2025-10-03T10:35:14: 127.0.0.1 - - [03/Oct/2025:10:35:14 +0000] "GET /health HTTP/1.1" 200 62 "-" "curl/8.5.0"
+2025-10-03T10:36:09: 127.0.0.1 - - [03/Oct/2025:10:36:09 +0000] "GET /health HTTP/1.1" 200 62 "-" "curl/8.5.0"
+2025-10-03T10:36:30: 127.0.0.1 - - [03/Oct/2025:10:36:30 +0000] "GET /health HTTP/1.1" 200 62 "-" "curl/8.5.0"
+2025-10-03T11:17:04: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T11:17:04: ✅ Configuration loaded successfully
+2025-10-03T11:17:04:    Environment: production
+2025-10-03T11:17:04:    Backend: https://testgen.pcloudy.com
+2025-10-03T11:17:04:    Frontend: https://testgen.pcloudy.com
+2025-10-03T11:17:04:    CORS Origins: 1 configured
+2025-10-03T11:18:12: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T11:18:12: ✅ Configuration loaded successfully
+2025-10-03T11:18:12:    Environment: production
+2025-10-03T11:18:12:    Backend: https://testgen.pcloudy.com
+2025-10-03T11:18:12:    Frontend: https://testgen.pcloudy.com
+2025-10-03T11:18:12:    CORS Origins: 1 configured
+2025-10-03T11:18:12: Analyze endpoint called
+2025-10-03T11:18:12: Description received: You are an experienced QA engineer with expertise in comprehensive test coverage. Your task is to ge...
+2025-10-03T11:18:12: About to call generate_test_scenarios_and_cases
+2025-10-03T11:18:12: generate_test_scenarios_and_cases called with description=True, image_path=False, scenarios_only=True
+2025-10-03T11:18:12: Successfully parsed JSON response
+2025-10-03T11:18:12: Function returned result with keys: dict_keys(['scenarios'])
+2025-10-03T11:18:12: Number of scenarios: 12
+2025-10-03T11:18:12: Cleared test_cases for scenario: SC001
+2025-10-03T11:18:12: Cleared test_cases for scenario: SC002
+2025-10-03T11:18:12: Cleared test_cases for scenario: SC003
+2025-10-03T11:18:12: Cleared test_cases for scenario: SC004
+2025-10-03T11:18:12: Cleared test_cases for scenario: SC005
+2025-10-03T11:18:12: Cleared test_cases for scenario: SC006
+2025-10-03T11:18:12: Cleared test_cases for scenario: SC007
+2025-10-03T11:18:12: Cleared test_cases for scenario: SC008
+2025-10-03T11:18:12: Cleared test_cases for scenario: SC009
+2025-10-03T11:18:12: Cleared test_cases for scenario: SC010
+2025-10-03T11:18:12: Cleared test_cases for scenario: SC011
+2025-10-03T11:18:12: Cleared test_cases for scenario: SC012
+2025-10-03T11:18:12: 127.0.0.1 - - [03/Oct/2025:11:18:12 +0000] "POST /analyze HTTP/1.0" 200 2987 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T11:19:03: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T11:19:03: ✅ Configuration loaded successfully
+2025-10-03T11:19:03:    Environment: production
+2025-10-03T11:19:03:    Backend: https://testgen.pcloudy.com
+2025-10-03T11:19:03:    Frontend: https://testgen.pcloudy.com
+2025-10-03T11:19:03:    CORS Origins: 1 configured
+2025-10-03T11:19:03: Generating test cases for 1 selected scenarios
+2025-10-03T11:19:03: Successfully parsed JSON response
+2025-10-03T11:19:03: 127.0.0.1 - - [03/Oct/2025:11:19:03 +0000] "POST /generate_test_cases HTTP/1.0" 200 3838 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T11:23:14: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T11:23:14: ✅ Configuration loaded successfully
+2025-10-03T11:23:14:    Environment: production
+2025-10-03T11:23:14:    Backend: https://testgen.pcloudy.com
+2025-10-03T11:23:14:    Frontend: https://testgen.pcloudy.com
+2025-10-03T11:23:14:    CORS Origins: 1 configured
+2025-10-03T11:23:14: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T11:23:14: ✅ Configuration loaded successfully
+2025-10-03T11:23:14:    Environment: production
+2025-10-03T11:23:14:    Backend: https://testgen.pcloudy.com
+2025-10-03T11:23:14:    Frontend: https://testgen.pcloudy.com
+2025-10-03T11:23:14:    CORS Origins: 1 configured
+2025-10-03T11:23:56: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T11:23:56: ✅ Configuration loaded successfully
+2025-10-03T11:23:56:    Environment: production
+2025-10-03T11:23:56:    Backend: https://testgen.pcloudy.com
+2025-10-03T11:23:56:    Frontend: https://testgen.pcloudy.com
+2025-10-03T11:23:56:    CORS Origins: 1 configured
+2025-10-03T11:23:56: Analyze endpoint called
+2025-10-03T11:23:56: Description received: You are an experienced QA engineer with expertise in comprehensive test coverage. Your task is to ge...
+2025-10-03T11:23:56: About to call generate_test_scenarios_and_cases
+2025-10-03T11:23:56: generate_test_scenarios_and_cases called with description=True, image_path=False, scenarios_only=True
+2025-10-03T11:23:56: Successfully parsed JSON response
+2025-10-03T11:23:56: Function returned result with keys: dict_keys(['scenarios'])
+2025-10-03T11:23:56: Number of scenarios: 12
+2025-10-03T11:23:56: Cleared test_cases for scenario: SC001
+2025-10-03T11:23:56: Cleared test_cases for scenario: SC002
+2025-10-03T11:23:56: Cleared test_cases for scenario: SC003
+2025-10-03T11:23:56: Cleared test_cases for scenario: SC004
+2025-10-03T11:23:56: Cleared test_cases for scenario: SC005
+2025-10-03T11:23:56: Cleared test_cases for scenario: SC006
+2025-10-03T11:23:56: Cleared test_cases for scenario: SC007
+2025-10-03T11:23:56: Cleared test_cases for scenario: SC008
+2025-10-03T11:23:56: Cleared test_cases for scenario: SC009
+2025-10-03T11:23:56: Cleared test_cases for scenario: SC010
+2025-10-03T11:23:56: Cleared test_cases for scenario: SC011
+2025-10-03T11:23:56: Cleared test_cases for scenario: SC012
+2025-10-03T11:23:56: 127.0.0.1 - - [03/Oct/2025:11:23:56 +0000] "POST /analyze HTTP/1.0" 200 2774 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T11:24:37: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T11:24:37: ✅ Configuration loaded successfully
+2025-10-03T11:24:37:    Environment: production
+2025-10-03T11:24:37:    Backend: https://testgen.pcloudy.com
+2025-10-03T11:24:37:    Frontend: https://testgen.pcloudy.com
+2025-10-03T11:24:37:    CORS Origins: 1 configured
+2025-10-03T11:24:37: Generating test cases for 1 selected scenarios
+2025-10-03T11:24:37: Successfully parsed JSON response
+2025-10-03T11:24:37: 127.0.0.1 - - [03/Oct/2025:11:24:37 +0000] "POST /generate_test_cases HTTP/1.0" 200 3333 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T11:26:52: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T11:26:52: ✅ Configuration loaded successfully
+2025-10-03T11:26:52:    Environment: production
+2025-10-03T11:26:52:    Backend: https://testgen.pcloudy.com
+2025-10-03T11:26:52:    Frontend: https://testgen.pcloudy.com
+2025-10-03T11:26:52:    CORS Origins: 1 configured
+2025-10-03T11:26:52: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T11:26:52: ✅ Configuration loaded successfully
+2025-10-03T11:26:52:    Environment: production
+2025-10-03T11:26:52:    Backend: https://testgen.pcloudy.com
+2025-10-03T11:26:52:    Frontend: https://testgen.pcloudy.com
+2025-10-03T11:26:52:    CORS Origins: 1 configured
+2025-10-03T11:27:42: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T11:27:42: ✅ Configuration loaded successfully
+2025-10-03T11:27:42:    Environment: production
+2025-10-03T11:27:42:    Backend: https://testgen.pcloudy.com
+2025-10-03T11:27:42:    Frontend: https://testgen.pcloudy.com
+2025-10-03T11:27:42:    CORS Origins: 1 configured
+2025-10-03T11:27:42: Analyze endpoint called
+2025-10-03T11:27:42: Description received: You are an experienced QA engineer with expertise in comprehensive test coverage. Your task is to ge...
+2025-10-03T11:27:42: About to call generate_test_scenarios_and_cases
+2025-10-03T11:27:42: generate_test_scenarios_and_cases called with description=True, image_path=False, scenarios_only=True
+2025-10-03T11:27:42: Successfully parsed JSON response
+2025-10-03T11:27:42: Function returned result with keys: dict_keys(['scenarios'])
+2025-10-03T11:27:42: Number of scenarios: 12
+2025-10-03T11:27:42: Cleared test_cases for scenario: SC001
+2025-10-03T11:27:42: Cleared test_cases for scenario: SC002
+2025-10-03T11:27:42: Cleared test_cases for scenario: SC003
+2025-10-03T11:27:42: Cleared test_cases for scenario: SC004
+2025-10-03T11:27:42: Cleared test_cases for scenario: SC005
+2025-10-03T11:27:42: Cleared test_cases for scenario: SC006
+2025-10-03T11:27:42: Cleared test_cases for scenario: SC007
+2025-10-03T11:27:42: Cleared test_cases for scenario: SC008
+2025-10-03T11:27:42: Cleared test_cases for scenario: SC009
+2025-10-03T11:27:42: Cleared test_cases for scenario: SC010
+2025-10-03T11:27:42: Cleared test_cases for scenario: SC011
+2025-10-03T11:27:42: Cleared test_cases for scenario: SC012
+2025-10-03T11:27:42: 127.0.0.1 - - [03/Oct/2025:11:27:42 +0000] "POST /analyze HTTP/1.0" 200 2718 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T11:28:07: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T11:28:07: ✅ Configuration loaded successfully
+2025-10-03T11:28:07:    Environment: production
+2025-10-03T11:28:07:    Backend: https://testgen.pcloudy.com
+2025-10-03T11:28:07:    Frontend: https://testgen.pcloudy.com
+2025-10-03T11:28:07:    CORS Origins: 1 configured
+2025-10-03T11:28:07: Generating test cases for 1 selected scenarios
+2025-10-03T11:28:07: Successfully parsed JSON response
+2025-10-03T11:28:07: 127.0.0.1 - - [03/Oct/2025:11:28:07 +0000] "POST /generate_test_cases HTTP/1.0" 200 2294 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T11:31:04: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T11:31:04: ✅ Configuration loaded successfully
+2025-10-03T11:31:04:    Environment: production
+2025-10-03T11:31:04:    Backend: https://testgen.pcloudy.com
+2025-10-03T11:31:04:    Frontend: https://testgen.pcloudy.com
+2025-10-03T11:31:04:    CORS Origins: 1 configured
+2025-10-03T11:31:04: Generating test cases for 11 selected scenarios
+2025-10-03T11:31:04: Successfully parsed JSON response
+2025-10-03T11:31:04: 127.0.0.1 - - [03/Oct/2025:11:31:04 +0000] "POST /generate_test_cases HTTP/1.0" 200 15465 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T11:32:34: Generating test cases for 11 selected scenarios
+2025-10-03T11:32:34: Successfully parsed JSON response
+2025-10-03T11:32:34: 127.0.0.1 - - [03/Oct/2025:11:32:34 +0000] "POST /generate_test_cases HTTP/1.0" 200 16717 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T12:17:55: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T12:17:55: ✅ Configuration loaded successfully
+2025-10-03T12:17:55:    Environment: production
+2025-10-03T12:17:55:    Backend: https://testgen.pcloudy.com
+2025-10-03T12:17:55:    Frontend: https://testgen.pcloudy.com
+2025-10-03T12:17:55:    CORS Origins: 1 configured
+2025-10-03T12:18:51: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T12:18:51: ✅ Configuration loaded successfully
+2025-10-03T12:18:51:    Environment: production
+2025-10-03T12:18:51:    Backend: https://testgen.pcloudy.com
+2025-10-03T12:18:51:    Frontend: https://testgen.pcloudy.com
+2025-10-03T12:18:51:    CORS Origins: 1 configured
+2025-10-03T12:18:51: Analyze endpoint called
+2025-10-03T12:18:51: About to call generate_test_scenarios_and_cases
+2025-10-03T12:18:51: generate_test_scenarios_and_cases called with description=False, image_path=True, scenarios_only=True
+2025-10-03T12:18:51: Successfully parsed JSON response
+2025-10-03T12:18:51: Function returned result with keys: dict_keys(['scenarios'])
+2025-10-03T12:18:51: Number of scenarios: 15
+2025-10-03T12:18:51: Cleared test_cases for scenario: SC001
+2025-10-03T12:18:51: Cleared test_cases for scenario: SC002
+2025-10-03T12:18:51: Cleared test_cases for scenario: SC003
+2025-10-03T12:18:51: Cleared test_cases for scenario: SC004
+2025-10-03T12:18:51: Cleared test_cases for scenario: SC005
+2025-10-03T12:18:51: Cleared test_cases for scenario: SC006
+2025-10-03T12:18:51: Cleared test_cases for scenario: SC007
+2025-10-03T12:18:51: Cleared test_cases for scenario: SC008
+2025-10-03T12:18:51: Cleared test_cases for scenario: SC009
+2025-10-03T12:18:51: Cleared test_cases for scenario: SC010
+2025-10-03T12:18:51: Cleared test_cases for scenario: SC011
+2025-10-03T12:18:51: Cleared test_cases for scenario: SC012
+2025-10-03T12:18:51: Cleared test_cases for scenario: SC013
+2025-10-03T12:18:51: Cleared test_cases for scenario: SC014
+2025-10-03T12:18:51: Cleared test_cases for scenario: SC015
+2025-10-03T12:18:51: 127.0.0.1 - - [03/Oct/2025:12:18:51 +0000] "POST /analyze HTTP/1.0" 200 3381 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T12:20:01: Generating test cases for 2 selected scenarios
+2025-10-03T12:20:01: Successfully parsed JSON response
+2025-10-03T12:20:01: 127.0.0.1 - - [03/Oct/2025:12:20:01 +0000] "POST /generate_test_cases HTTP/1.0" 200 5059 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T12:21:54: Generating test cases for 2 selected scenarios
+2025-10-03T12:21:54: Analyze endpoint called
+2025-10-03T12:21:54: About to call generate_test_scenarios_and_cases
+2025-10-03T12:21:54: generate_test_scenarios_and_cases called with description=False, image_path=True, scenarios_only=True
+2025-10-03T12:21:54: Successfully parsed JSON response
+2025-10-03T12:21:54: 127.0.0.1 - - [03/Oct/2025:12:21:54 +0000] "POST /generate_test_cases HTTP/1.0" 200 5589 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T12:22:16: Successfully parsed JSON response
+2025-10-03T12:22:16: Function returned result with keys: dict_keys(['scenarios'])
+2025-10-03T12:22:16: Number of scenarios: 15
+2025-10-03T12:22:16: Cleared test_cases for scenario: SC001
+2025-10-03T12:22:16: Cleared test_cases for scenario: SC002
+2025-10-03T12:22:16: Cleared test_cases for scenario: SC003
+2025-10-03T12:22:16: Cleared test_cases for scenario: SC004
+2025-10-03T12:22:16: Cleared test_cases for scenario: SC005
+2025-10-03T12:22:16: Cleared test_cases for scenario: SC006
+2025-10-03T12:22:16: Cleared test_cases for scenario: SC007
+2025-10-03T12:22:16: Cleared test_cases for scenario: SC008
+2025-10-03T12:22:16: Cleared test_cases for scenario: SC009
+2025-10-03T12:22:16: Cleared test_cases for scenario: SC010
+2025-10-03T12:22:16: Cleared test_cases for scenario: SC011
+2025-10-03T12:22:16: Cleared test_cases for scenario: SC012
+2025-10-03T12:22:16: Cleared test_cases for scenario: SC013
+2025-10-03T12:22:16: Cleared test_cases for scenario: SC014
+2025-10-03T12:22:16: Cleared test_cases for scenario: SC015
+2025-10-03T12:22:16: 127.0.0.1 - - [03/Oct/2025:12:22:16 +0000] "POST /analyze HTTP/1.0" 200 2974 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T12:24:19: Successfully generated 15 API scenarios
+2025-10-03T12:24:19: 127.0.0.1 - - [03/Oct/2025:12:24:19 +0000] "POST /analyze_api HTTP/1.0" 200 6249 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T12:27:09: Generating detailed API test cases for 2 selected scenarios
+2025-10-03T12:27:09: Batch AI Response length: 16324 characters
+2025-10-03T12:27:09: Successfully generated detailed test cases for 2 scenarios in batch
+2025-10-03T12:27:09: 127.0.0.1 - - [03/Oct/2025:12:27:09 +0000] "POST /generate_api_test_cases HTTP/1.0" 200 10458 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T12:39:59: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T12:39:59: ✅ Configuration loaded successfully
+2025-10-03T12:39:59:    Environment: production
+2025-10-03T12:39:59:    Backend: https://testgen.pcloudy.com
+2025-10-03T12:39:59:    Frontend: https://testgen.pcloudy.com
+2025-10-03T12:39:59:    CORS Origins: 1 configured
+2025-10-03T12:39:59: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T12:39:59: ✅ Configuration loaded successfully
+2025-10-03T12:39:59:    Environment: production
+2025-10-03T12:39:59:    Backend: https://testgen.pcloudy.com
+2025-10-03T12:39:59:    Frontend: https://testgen.pcloudy.com
+2025-10-03T12:39:59:    CORS Origins: 1 configured
+2025-10-03T12:39:59: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T12:39:59: ✅ Configuration loaded successfully
+2025-10-03T12:39:59:    Environment: production
+2025-10-03T12:39:59:    Backend: https://testgen.pcloudy.com
+2025-10-03T12:39:59:    Frontend: https://testgen.pcloudy.com
+2025-10-03T12:39:59:    CORS Origins: 1 configured
+2025-10-03T12:41:02: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T12:41:02: ✅ Configuration loaded successfully
+2025-10-03T12:41:02:    Environment: production
+2025-10-03T12:41:02:    Backend: https://testgen.pcloudy.com
+2025-10-03T12:41:02:    Frontend: https://testgen.pcloudy.com
+2025-10-03T12:41:02:    CORS Origins: 1 configured
+2025-10-03T12:41:02: 127.0.0.1 - - [03/Oct/2025:12:41:02 +0000] "POST /analyze HTTP/1.0" 200 3203 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T12:44:55: 127.0.0.1 - - [03/Oct/2025:12:44:55 +0000] "POST /generate_test_cases HTTP/1.0" 200 673 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T12:49:37: 127.0.0.1 - - [03/Oct/2025:12:49:37 +0000] "POST /generate_test_cases HTTP/1.0" 200 673 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T12:56:19: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T12:56:19: ✅ Configuration loaded successfully
+2025-10-03T12:56:19:    Environment: production
+2025-10-03T12:56:19:    Backend: https://testgen.pcloudy.com
+2025-10-03T12:56:19:    Frontend: https://testgen.pcloudy.com
+2025-10-03T12:56:19:    CORS Origins: 1 configured
+2025-10-03T12:56:19: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T12:56:19: ✅ Configuration loaded successfully
+2025-10-03T12:56:19:    Environment: production
+2025-10-03T12:56:19:    Backend: https://testgen.pcloudy.com
+2025-10-03T12:56:19:    Frontend: https://testgen.pcloudy.com
+2025-10-03T12:56:19:    CORS Origins: 1 configured
+2025-10-03T12:56:19: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T12:56:19: ✅ Configuration loaded successfully
+2025-10-03T12:56:19:    Environment: production
+2025-10-03T12:56:19:    Backend: https://testgen.pcloudy.com
+2025-10-03T12:56:19:    Frontend: https://testgen.pcloudy.com
+2025-10-03T12:56:19:    CORS Origins: 1 configured
+2025-10-03T12:57:06: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T12:57:06: ✅ Configuration loaded successfully
+2025-10-03T12:57:06:    Environment: production
+2025-10-03T12:57:06:    Backend: https://testgen.pcloudy.com
+2025-10-03T12:57:06:    Frontend: https://testgen.pcloudy.com
+2025-10-03T12:57:06:    CORS Origins: 1 configured
+2025-10-03T12:57:06: 127.0.0.1 - - [03/Oct/2025:12:57:06 +0000] "POST /analyze HTTP/1.0" 200 3360 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T12:57:16: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T12:57:16: ✅ Configuration loaded successfully
+2025-10-03T12:57:16:    Environment: production
+2025-10-03T12:57:16:    Backend: https://testgen.pcloudy.com
+2025-10-03T12:57:16:    Frontend: https://testgen.pcloudy.com
+2025-10-03T12:57:16:    CORS Origins: 1 configured
+2025-10-03T12:57:16: 127.0.0.1 - - [03/Oct/2025:12:57:16 +0000] "POST /generate_test_cases HTTP/1.0" 200 95 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T12:57:28: 127.0.0.1 - - [03/Oct/2025:12:57:28 +0000] "POST /generate_test_cases HTTP/1.0" 200 95 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T12:57:59: 127.0.0.1 - - [03/Oct/2025:12:57:59 +0000] "POST /generate_test_cases HTTP/1.0" 200 95 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T12:58:56: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T12:58:56: ✅ Configuration loaded successfully
+2025-10-03T12:58:56:    Environment: production
+2025-10-03T12:58:56:    Backend: https://testgen.pcloudy.com
+2025-10-03T12:58:56:    Frontend: https://testgen.pcloudy.com
+2025-10-03T12:58:56:    CORS Origins: 1 configured
+2025-10-03T12:58:56: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T12:58:56: ✅ Configuration loaded successfully
+2025-10-03T12:58:56:    Environment: production
+2025-10-03T12:58:56:    Backend: https://testgen.pcloudy.com
+2025-10-03T12:58:56:    Frontend: https://testgen.pcloudy.com
+2025-10-03T12:58:56:    CORS Origins: 1 configured
+2025-10-03T13:00:13: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T13:00:13: ✅ Configuration loaded successfully
+2025-10-03T13:00:13:    Environment: production
+2025-10-03T13:00:13:    Backend: https://testgen.pcloudy.com
+2025-10-03T13:00:13:    Frontend: https://testgen.pcloudy.com
+2025-10-03T13:00:13:    CORS Origins: 1 configured
+2025-10-03T13:00:13: 127.0.0.1 - - [03/Oct/2025:13:00:13 +0000] "POST /analyze HTTP/1.0" 200 3548 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T13:03:44: 127.0.0.1 - - [03/Oct/2025:13:03:44 +0000] "POST /generate_test_cases HTTP/1.0" 200 32423 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T13:07:13: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T13:07:13: ✅ Configuration loaded successfully
+2025-10-03T13:07:13:    Environment: production
+2025-10-03T13:07:13:    Backend: https://testgen.pcloudy.com
+2025-10-03T13:07:13:    Frontend: https://testgen.pcloudy.com
+2025-10-03T13:07:13:    CORS Origins: 1 configured
+2025-10-03T13:07:13: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T13:07:13: ✅ Configuration loaded successfully
+2025-10-03T13:07:13:    Environment: production
+2025-10-03T13:07:13:    Backend: https://testgen.pcloudy.com
+2025-10-03T13:07:13:    Frontend: https://testgen.pcloudy.com
+2025-10-03T13:07:13:    CORS Origins: 1 configured
+2025-10-03T13:07:13: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T13:07:13: ✅ Configuration loaded successfully
+2025-10-03T13:07:13:    Environment: production
+2025-10-03T13:07:13:    Backend: https://testgen.pcloudy.com
+2025-10-03T13:07:13:    Frontend: https://testgen.pcloudy.com
+2025-10-03T13:07:13:    CORS Origins: 1 configured
+2025-10-03T13:08:04: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T13:08:04: ✅ Configuration loaded successfully
+2025-10-03T13:08:04:    Environment: production
+2025-10-03T13:08:04:    Backend: https://testgen.pcloudy.com
+2025-10-03T13:08:04:    Frontend: https://testgen.pcloudy.com
+2025-10-03T13:08:04:    CORS Origins: 1 configured
+2025-10-03T13:08:04: 127.0.0.1 - - [03/Oct/2025:13:08:04 +0000] "POST /analyze HTTP/1.0" 200 3345 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T13:09:08: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T13:09:08: ✅ Configuration loaded successfully
+2025-10-03T13:09:08:    Environment: production
+2025-10-03T13:09:08:    Backend: https://testgen.pcloudy.com
+2025-10-03T13:09:08:    Frontend: https://testgen.pcloudy.com
+2025-10-03T13:09:08:    CORS Origins: 1 configured
+2025-10-03T13:09:08: 127.0.0.1 - - [03/Oct/2025:13:09:08 +0000] "POST /generate_test_cases HTTP/1.0" 200 9112 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T13:14:50: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T13:14:50: ✅ Configuration loaded successfully
+2025-10-03T13:14:50:    Environment: production
+2025-10-03T13:14:50:    Backend: https://testgen.pcloudy.com
+2025-10-03T13:14:50:    Frontend: https://testgen.pcloudy.com
+2025-10-03T13:14:50:    CORS Origins: 1 configured
+2025-10-03T13:14:50: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T13:14:50: ✅ Configuration loaded successfully
+2025-10-03T13:14:50:    Environment: production
+2025-10-03T13:14:50:    Backend: https://testgen.pcloudy.com
+2025-10-03T13:14:50:    Frontend: https://testgen.pcloudy.com
+2025-10-03T13:14:50:    CORS Origins: 1 configured
+2025-10-03T13:15:41: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T13:15:41: ✅ Configuration loaded successfully
+2025-10-03T13:15:41:    Environment: production
+2025-10-03T13:15:41:    Backend: https://testgen.pcloudy.com
+2025-10-03T13:15:41:    Frontend: https://testgen.pcloudy.com
+2025-10-03T13:15:41:    CORS Origins: 1 configured
+2025-10-03T13:15:41: 127.0.0.1 - - [03/Oct/2025:13:15:41 +0000] "POST /analyze HTTP/1.0" 200 3273 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T13:16:24: 127.0.0.1 - - [03/Oct/2025:13:16:24 +0000] "POST /generate_test_cases HTTP/1.0" 200 5760 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T13:17:20: 127.0.0.1 - - [03/Oct/2025:13:17:20 +0000] "POST /analyze HTTP/1.0" 200 3439 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T13:20:39: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T13:20:39: ✅ Configuration loaded successfully
+2025-10-03T13:20:39:    Environment: production
+2025-10-03T13:20:39:    Backend: https://testgen.pcloudy.com
+2025-10-03T13:20:39:    Frontend: https://testgen.pcloudy.com
+2025-10-03T13:20:39:    CORS Origins: 1 configured
+2025-10-03T13:20:39: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T13:20:39: ✅ Configuration loaded successfully
+2025-10-03T13:20:39:    Environment: production
+2025-10-03T13:20:39:    Backend: https://testgen.pcloudy.com
+2025-10-03T13:20:39:    Frontend: https://testgen.pcloudy.com
+2025-10-03T13:20:39:    CORS Origins: 1 configured
+2025-10-03T13:20:39: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T13:20:39: ✅ Configuration loaded successfully
+2025-10-03T13:20:39:    Environment: production
+2025-10-03T13:20:39:    Backend: https://testgen.pcloudy.com
+2025-10-03T13:20:39:    Frontend: https://testgen.pcloudy.com
+2025-10-03T13:20:39:    CORS Origins: 1 configured
+2025-10-03T13:21:50: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T13:21:50: ✅ Configuration loaded successfully
+2025-10-03T13:21:50:    Environment: production
+2025-10-03T13:21:50:    Backend: https://testgen.pcloudy.com
+2025-10-03T13:21:50:    Frontend: https://testgen.pcloudy.com
+2025-10-03T13:21:50:    CORS Origins: 1 configured
+2025-10-03T13:21:50: 127.0.0.1 - - [03/Oct/2025:13:21:50 +0000] "POST /analyze HTTP/1.0" 200 3339 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T13:22:38: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T13:22:38: ✅ Configuration loaded successfully
+2025-10-03T13:22:38:    Environment: production
+2025-10-03T13:22:38:    Backend: https://testgen.pcloudy.com
+2025-10-03T13:22:38:    Frontend: https://testgen.pcloudy.com
+2025-10-03T13:22:38:    CORS Origins: 1 configured
+2025-10-03T13:22:38: 127.0.0.1 - - [03/Oct/2025:13:22:38 +0000] "POST /generate_test_cases HTTP/1.0" 200 6179 "https://testgen.pcloudy.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+2025-10-03T13:25:46: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T13:25:46: ✅ Configuration loaded successfully
+2025-10-03T13:25:46:    Environment: production
+2025-10-03T13:25:46:    Backend: https://testgen.pcloudy.com
+2025-10-03T13:25:46:    Frontend: https://testgen.pcloudy.com
+2025-10-03T13:25:46:    CORS Origins: 1 configured
+2025-10-03T13:25:46: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T13:25:46: ✅ Configuration loaded successfully
+2025-10-03T13:25:46:    Environment: production
+2025-10-03T13:25:46:    Backend: https://testgen.pcloudy.com
+2025-10-03T13:25:46:    Frontend: https://testgen.pcloudy.com
+2025-10-03T13:25:46:    CORS Origins: 1 configured
+2025-10-03T13:46:52: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T13:46:52: ✅ Configuration loaded successfully
+2025-10-03T13:46:52:    Environment: production
+2025-10-03T13:46:52:    Backend: https://testgen.pcloudy.com
+2025-10-03T13:46:52:    Frontend: http://localhost:8080
+2025-10-03T13:46:52:    CORS Origins: 1 configured
+2025-10-03T13:46:52: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T13:46:52: ✅ Configuration loaded successfully
+2025-10-03T13:46:52:    Environment: production
+2025-10-03T13:46:52:    Backend: https://testgen.pcloudy.com
+2025-10-03T13:46:52:    Frontend: http://localhost:8080
+2025-10-03T13:46:52:    CORS Origins: 1 configured
+2025-10-03T13:46:52: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T13:46:52: ✅ Configuration loaded successfully
+2025-10-03T13:46:52:    Environment: production
+2025-10-03T13:46:52:    Backend: https://testgen.pcloudy.com
+2025-10-03T13:46:52:    Frontend: http://localhost:8080
+2025-10-03T13:46:52:    CORS Origins: 1 configured
+2025-10-03T13:46:52: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T13:46:52: ✅ Configuration loaded successfully
+2025-10-03T13:46:52:    Environment: production
+2025-10-03T13:46:52:    Backend: https://testgen.pcloudy.com
+2025-10-03T13:46:52:    Frontend: http://localhost:8080
+2025-10-03T13:46:52:    CORS Origins: 1 configured
+2025-10-03T13:47:48: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T13:47:48: ✅ Configuration loaded successfully
+2025-10-03T13:47:48:    Environment: production
+2025-10-03T13:47:48:    Backend: https://testgen.pcloudy.com
+2025-10-03T13:47:48:    Frontend: http://localhost:8080
+2025-10-03T13:47:48:    CORS Origins: 1 configured
+2025-10-03T13:47:48: 127.0.0.1 - - [03/Oct/2025:13:47:48 +0000] "GET /health HTTP/1.1" 200 71 "-" "curl/8.5.0"
+2025-10-03T13:48:36: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T13:48:36: ✅ Configuration loaded successfully
+2025-10-03T13:48:36:    Environment: production
+2025-10-03T13:48:36:    Backend: https://testgen.pcloudy.com
+2025-10-03T13:48:36:    Frontend: http://localhost:8080
+2025-10-03T13:48:36:    CORS Origins: 1 configured
+2025-10-03T13:48:36: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T13:48:36: ✅ Configuration loaded successfully
+2025-10-03T13:48:36:    Environment: production
+2025-10-03T13:48:36:    Backend: https://testgen.pcloudy.com
+2025-10-03T13:48:36:    Frontend: http://localhost:8080
+2025-10-03T13:48:36:    CORS Origins: 1 configured
+2025-10-03T13:48:36: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T13:48:36: ✅ Configuration loaded successfully
+2025-10-03T13:48:36:    Environment: production
+2025-10-03T13:48:36:    Backend: https://testgen.pcloudy.com
+2025-10-03T13:48:36:    Frontend: http://localhost:8080
+2025-10-03T13:48:36:    CORS Origins: 1 configured
+2025-10-03T13:49:17: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T13:49:17: ✅ Configuration loaded successfully
+2025-10-03T13:49:17:    Environment: production
+2025-10-03T13:49:17:    Backend: https://testgen.pcloudy.com
+2025-10-03T13:49:17:    Frontend: http://localhost:8080
+2025-10-03T13:49:17:    CORS Origins: 1 configured
+2025-10-03T13:49:17: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T13:49:17: ✅ Configuration loaded successfully
+2025-10-03T13:49:17:    Environment: production
+2025-10-03T13:49:17:    Backend: https://testgen.pcloudy.com
+2025-10-03T13:49:17:    Frontend: http://localhost:8080
+2025-10-03T13:49:17:    CORS Origins: 1 configured
+2025-10-03T13:49:17: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T13:49:17: ✅ Configuration loaded successfully
+2025-10-03T13:49:17:    Environment: production
+2025-10-03T13:49:17:    Backend: https://testgen.pcloudy.com
+2025-10-03T13:49:17:    Frontend: http://localhost:8080
+2025-10-03T13:49:17:    CORS Origins: 1 configured
+2025-10-03T13:49:17: ✅ Loaded environment from: /home/ubuntu/Test_Agent/env/.env
+2025-10-03T13:49:17: ✅ Configuration loaded successfully
+2025-10-03T13:49:17:    Environment: production
+2025-10-03T13:49:17:    Backend: https://testgen.pcloudy.com
+2025-10-03T13:49:17:    Frontend: http://localhost:8080
+2025-10-03T13:49:17:    CORS Origins: 1 configured

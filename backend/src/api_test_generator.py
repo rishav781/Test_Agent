@@ -9,21 +9,15 @@ from datetime import datetime
 from typing import Dict, List, Any, Optional
 
 import openai
-from dotenv import load_dotenv
 
-load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
+# Import centralized configuration
+from config import config
 
-# Configure OpenAI client
-client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY", "your-openai-api-key-here"))
-
-# Configure LLM Model
-OPENAI_MODEL_API = os.getenv("OPENAI_MODEL_API", "gpt-4")
-
-# Configure OpenAI client
-client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY", "your-openai-api-key-here"))
+# Configure OpenAI client using centralized config
+client = openai.OpenAI(api_key=config.openai_api_key)
 
 # Configure LLM Model
-OPENAI_MODEL_API = os.getenv("OPENAI_MODEL_API", "gpt-4")
+OPENAI_MODEL_API = config.openai_model_api
 
 
 def detect_api_document_type(api_data: Dict[str, Any]) -> str:
@@ -151,7 +145,7 @@ def generate_api_scenarios(api_data: Dict[str, Any], document_type: str) -> List
     """
     try:
         # Prepare the system message for scenarios only
-        system_message = """You are an expert API testing specialist. Your task is to generate comprehensive test scenarios for API endpoints based on the provided API documentation.
+        system_message = """You are an expert API testing specialist. Your task is to generate MAXIMUM comprehensive test scenarios for API endpoints based on the provided API documentation.
 
 CRITICAL: You must respond with ONLY valid JSON. Do not include any explanatory text, comments, or formatting outside of the JSON structure. Start your response directly with '[' and end with ']'.
 
@@ -164,16 +158,21 @@ Required JSON format for each test scenario:
     "endpoints": ["/api/endpoint1", "/api/endpoint2"],
     "test_types": ["authentication", "data_validation", "error_handling"],
     "priority": "high|medium|low",
-    "estimated_test_cases": 5
+    "estimated_test_cases": 10
 }
 
-For each API endpoint or group of related endpoints, generate scenarios covering:
-1. Functional Testing: Happy path, data validation, CRUD operations
-2. Negative Testing: Invalid inputs, error conditions, boundary values  
-3. Security Testing: Authentication, authorization, input validation
-4. Performance Testing: Response times, load handling
-5. Integration Testing: Dependencies, data flow
+CRITICAL REQUIREMENT: Generate 12-15 comprehensive test scenarios covering MAXIMUM testing aspects. Each scenario must include:
 
+1. Functional Testing: Happy path, CRUD operations, data validation, business logic, state transitions
+2. Negative Testing: Invalid inputs, error conditions, boundary values, malformed requests
+3. Security Testing: Authentication, authorization, input validation, XSS, SQL injection, rate limiting
+4. Performance Testing: Response times, load handling, concurrent requests, resource usage
+5. Integration Testing: Dependencies, data flow, external services, chaining requests
+6. Edge Cases: Empty payloads, special characters, large data sets, timeout scenarios
+7. Data Validation: Required fields, data types, format checks, constraints, schema validation
+8. Error Handling: HTTP status codes, error messages, exception handling, recovery scenarios
+
+Set estimated_test_cases to 8-12 for each scenario to ensure thorough coverage.
 Focus on scenario-level descriptions without detailed test case steps. Each scenario should represent a logical group of related test cases."""
 
         # Prepare the user message
@@ -193,7 +192,7 @@ Endpoints Summary:
         if len(api_data.get('endpoints', [])) > 10:
             user_message += f"... and {len(api_data.get('endpoints', [])) - 10} more endpoints\n"
 
-        user_message += "\nGenerate 8-12 comprehensive test scenarios covering all major testing aspects."
+        user_message += "\nCRITICAL: Generate 12-15 comprehensive test scenarios covering MAXIMUM testing aspects. Set estimated_test_cases to 8-12 for each scenario."
 
         # Make API call
         response = client.chat.completions.create(
@@ -202,7 +201,7 @@ Endpoints Summary:
                 {"role": "system", "content": system_message},
                 {"role": "user", "content": user_message}
             ],
-            max_tokens=3000,
+            max_tokens=4000,
             temperature=0.3
         )
 
@@ -267,7 +266,7 @@ def _generate_batch_test_cases(scenarios: List[Dict[str, Any]], api_data: Dict[s
     """
     try:
         # Prepare the system message for detailed test cases (more concise)
-        system_message = """You are an expert API testing specialist. Generate detailed test cases for the provided API scenarios.
+        system_message = """You are an expert API testing specialist. Generate MAXIMUM detailed test cases for the provided API scenarios.
 
 CRITICAL: Respond with ONLY valid JSON. Start with '[' and end with ']'.
 
@@ -277,6 +276,7 @@ JSON format for each scenario:
     "title": "Scenario Title",
     "description": "Brief description",
     "category": "functional|negative|security",
+    "estimated_test_cases": 10,
     "test_cases": [
         {
             "id": "API_TC001",
@@ -288,35 +288,46 @@ JSON format for each scenario:
             "test_data": {
                 "method": "GET|POST|PUT|DELETE",
                 "endpoint": "/api/endpoint",
+                "headers": {"Content-Type": "application/json"},
+                "body": {},
                 "expected_status_code": 200
             },
-            "expected_result": "Expected outcome"
+            "expected_result": "Expected outcome",
+            "assertions": ["Assert 1", "Assert 2"]
         }
     ]
 }
 
-IMPORTANT: For each scenario, you MUST generate EXACTLY the number of test cases specified in the scenario's "estimated_test_cases" field. Do not generate more or fewer test cases than specified."""
+CRITICAL REQUIREMENT: For each scenario, if it has 'estimated_test_cases' field, you MUST generate EXACTLY that many test cases. If no estimate, generate 8-12 detailed test cases covering all aspects: functional, negative, security, edge cases, data validation, error handling, authentication, authorization, rate limiting, and integration scenarios."""
 
+        # Calculate total expected test cases
+        total_estimated = sum(scenario.get('estimated_test_cases', 8) for scenario in scenarios)
+        
         # Prepare user message (more concise)
         user_message = f"""
 Generate detailed test cases for these {len(scenarios)} API scenarios:
 
 {json.dumps(scenarios, indent=1)}
 
-CRITICAL INSTRUCTION: For each scenario, you MUST generate EXACTLY the number of test cases specified in its 'estimated_test_cases' field. Each scenario should have exactly the number of test cases specified in its 'estimated_test_cases' field.
+CRITICAL REQUIREMENT: You must generate EXACTLY {total_estimated} test cases total, matching each scenario's estimated_test_cases count.
+
+For scenarios with estimated_test_cases:
+- If estimated_test_cases = 10, generate EXACTLY 10 test cases
+- If estimated_test_cases = 8, generate EXACTLY 8 test cases
+- If no estimate, generate 8-12 test cases
 
 Document Type: {document_type}
-Generate test cases for ALL {len(scenarios)} scenarios.
+Generate MAXIMUM comprehensive test cases for ALL {len(scenarios)} scenarios.
 """
 
-        # Make API call with appropriate token limit
+        # Make API call with increased token limit for maximum test cases
         response = client.chat.completions.create(
             model=OPENAI_MODEL_API,
             messages=[
                 {"role": "system", "content": system_message},
                 {"role": "user", "content": user_message}
             ],
-            max_tokens=4000,
+            max_tokens=6000,
             temperature=0.3
         )
 

@@ -9,6 +9,7 @@ from PIL import Image
 import io
 import json
 from datetime import datetime
+import logging
 from website_analyzer import analyze_website
 from api_test_generator import generate_api_tests_from_file
 
@@ -19,6 +20,13 @@ app = Flask(__name__)
 
 # Apply configuration to Flask app
 app.config.update(config.get_flask_config())
+
+# Configure logging
+if not app.config.get("DEBUG"):
+    app.logger.setLevel(logging.ERROR)
+else:
+    app.logger.setLevel(logging.INFO)
+app.logger.info("Flask app initialized with logging.")
 
 # Configure CORS with environment-specific origins
 CORS(app, origins=config.get_cors_origins())
@@ -49,21 +57,87 @@ def encode_image_to_base64(image_path):
 def generate_test_cases_for_scenarios(scenarios):
     """
     Generate detailed test cases for selected scenarios using OpenAI
+    Process each scenario individually in parallel for maximum speed
+    """
+    try:
+        if not scenarios:
+            return {"scenarios": []}
+
+        app.logger.info(f"Processing {len(scenarios)} scenarios individually in parallel")
+
+        # Process each scenario individually in parallel
+        import concurrent.futures
+        import threading
+
+        def process_single_scenario(scenario):
+            """Process a single scenario and return the result"""
+            thread_id = threading.current_thread().ident
+            scenario_id = scenario.get('id', 'unknown')
+            app.logger.info(f"Thread {thread_id}: Processing scenario {scenario_id}")
+
+            # Call the batch function with a single scenario
+            result = generate_test_cases_for_batch([scenario])
+
+            if "scenarios" in result and result["scenarios"]:
+                app.logger.info(f"Thread {thread_id}: Successfully processed scenario {scenario_id}")
+                return result["scenarios"][0]  # Return the single scenario result
+            else:
+                app.logger.error(f"Thread {thread_id}: Failed to process scenario {scenario_id}: {result.get('error', 'Unknown error')}")
+                return None
+
+        # Process all scenarios in parallel using ThreadPoolExecutor
+        # Use up to 5 concurrent threads for good performance without overwhelming the API
+        all_results = []
+        with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+            # Submit all scenarios for parallel execution
+            future_to_scenario = {executor.submit(process_single_scenario, scenario): scenario for scenario in scenarios}
+
+            # Collect results as they complete
+            for future in concurrent.futures.as_completed(future_to_scenario):
+                scenario_result = future.result()
+                if scenario_result:
+                    all_results.append(scenario_result)
+
+        # Sort results back to original order
+        if all_results:
+            all_results.sort(key=lambda x: x.get('id', ''))
+
+        app.logger.info(f"Successfully processed {len(all_results)} out of {len(scenarios)} scenarios in parallel")
+        return {"scenarios": all_results}
+
+    except Exception as e:
+        app.logger.exception("An error occurred in generate_test_cases_for_scenarios")
+        return {"error": str(e)}
+
+
+def generate_test_cases_for_batch(scenarios):
+    """
+    Generate detailed test cases for a batch of scenarios using OpenAI
     """
     try:
         # Prepare the system message
-        system_message = """You are an expert QA testing agent. Your task is to generate detailed test cases for the provided test scenarios.\n\nCRITICAL: You must respond with ONLY valid JSON. Do not include any explanatory text, comments, or formatting outside of the JSON structure. Start your response directly with '{' and end with '}'.\n\nRequired JSON format:\n{\n    "scenarios": [\n        {\n            "id": "SC001",\n            "title": "Scenario Title",\n            "description": "Brief description of the scenario",\n            "preconditions": ["Precondition 1", "Precondition 2"],\n            "test_cases": [\n                {\n                    "id": "TC001",\n                    "title": "Test Case Title",\n                    "description": "Detailed test case description",\n                    "steps": ["Step 1", "Step 2", "Step 3"],\n                    "expected_result": "Expected outcome",\n                    "priority": "High/Medium/Low",\n                    "test_data": "Any required test data"\n                }\n            ]\n        }\n    ]\n}\n\nFor each scenario provided, generate comprehensive test cases covering:\n- Functional testing\n- UI/UX testing\n- Edge cases\n- Error handling\n- Data validation\n- User workflows\n\nRemember: Return ONLY the JSON object, no additional text."""
+        system_message = """You are an expert QA testing agent. Your task is to generate detailed test cases for the provided test scenarios.\n\nCRITICAL: You must respond with ONLY valid JSON. Do not include any explanatory text, comments, or formatting outside of the JSON structure. Start your response directly with '{' and end with '}'.\n\nRequired JSON format:\n{\n    "scenarios": [\n        {\n            "id": "SC001",\n            "title": "Scenario Title",\n            "description": "Brief description of the scenario",\n            "preconditions": ["Precondition 1", "Precondition 2"],\n            "estimated_test_cases": 10,\n            "test_cases": [\n                {\n                    "id": "TC001",\n                    "title": "Test Case Title",\n                    "description": "Detailed test case description",\n                    "steps": ["Step 1", "Step 2", "Step 3"],\n                    "expected_result": "Expected outcome",\n                    "priority": "High/Medium/Low",\n                    "test_data": "Any required test data"\n                }\n            ]\n        }\n    ]\n}\n\nCRITICAL REQUIREMENT: For EACH scenario, if it has an 'estimated_test_cases' field, you MUST generate EXACTLY that many test cases. If no estimate is provided, generate 8-12 detailed test cases.\n\nEach test case must cover:\n- Functional testing (happy path, alternative flows, negative scenarios)\n- UI/UX testing (layout, accessibility, user experience, visual feedback)\n- Edge cases (boundary values, empty states, maximum limits, special characters)\n- Error handling (invalid inputs, system failures, network errors, timeouts)\n- Data validation (format checks, required fields, data types, constraints)\n- Security testing (authentication, authorization, input sanitization, XSS, SQL injection)\n- Performance aspects (response times, resource usage)\n- Integration scenarios (external dependencies, API calls)\n- User workflows (complete end-to-end flows, multi-step processes)\n\nGenerate MAXIMUM test cases (8-12 per scenario or match estimated_test_cases) for thorough coverage.\nRemember: Return ONLY the JSON object, no additional text."""
 
-        user_message = f"Please generate detailed test cases for these scenarios:\n\n{json.dumps(scenarios, indent=2)}"
+        # Count scenarios and calculate expected test case counts
+        num_scenarios = len(scenarios) if isinstance(scenarios, list) else 0
+        total_estimated = 0
+        for scenario in scenarios:
+            if isinstance(scenario, dict) and 'estimated_test_cases' in scenario:
+                total_estimated += scenario['estimated_test_cases']
 
-        # Make API call
+        if total_estimated > 0:
+            user_message = f"Please generate detailed test cases for these {num_scenarios} scenarios.\n\nCRITICAL REQUIREMENT: You must generate EXACTLY {total_estimated} test cases total, matching the estimated_test_cases count for each scenario.\n\nFor each scenario:\n- If it has 'estimated_test_cases': 10, generate EXACTLY 10 test cases\n- If it has 'estimated_test_cases': 8, generate EXACTLY 8 test cases\n- This is mandatory for test planning accuracy.\n\nScenarios:\n{json.dumps(scenarios, indent=2)}"
+        else:
+            user_message = f"Please generate detailed test cases for these {num_scenarios} scenarios.\n\nCRITICAL: Generate 8-12 detailed test cases for EACH scenario below. Ensure comprehensive coverage across all testing types.\n\nScenarios:\n{json.dumps(scenarios, indent=2)}"
+
+        # Make API call with increased token limit for batch processing
         response = client.chat.completions.create(
             model=OPENAI_MODEL_TEXT,
             messages=[
                 {"role": "system", "content": system_message},
                 {"role": "user", "content": user_message}
             ],
-            max_tokens=4000,
+            max_tokens=7000,  # Further reduced to stay within 8192 token limit
             temperature=0.3
         )
 
@@ -72,10 +146,10 @@ def generate_test_cases_for_scenarios(scenarios):
         # Parse JSON response
         try:
             result = json.loads(content)
-            print("Successfully parsed JSON response")
+            app.logger.info("Successfully parsed JSON response for batch")
             return result
         except json.JSONDecodeError as e:
-            print(f"Direct JSON parsing failed: {e}")
+            app.logger.error(f"Direct JSON parsing failed: {e}")
 
             # Try to extract JSON from the response
             import re
@@ -83,10 +157,10 @@ def generate_test_cases_for_scenarios(scenarios):
             if json_match:
                 try:
                     result = json.loads(json_match.group())
-                    print("Successfully parsed JSON from regex match")
+                    app.logger.info("Successfully parsed JSON from regex match")
                     return result
                 except json.JSONDecodeError as e2:
-                    print(f"Regex JSON parsing failed: {e2}")
+                    app.logger.error(f"Regex JSON parsing failed: {e2}")
 
             # Try to find and parse JSON array if it exists
             if content:
@@ -97,15 +171,16 @@ def generate_test_cases_for_scenarios(scenarios):
                 try:
                     scenarios_array = json.loads(array_match.group())
                     result = {"scenarios": scenarios_array}
-                    print("Successfully parsed scenarios array")
+                    app.logger.info("Successfully parsed scenarios array")
                     return result
                 except json.JSONDecodeError as e3:
-                    print(f"Array JSON parsing failed: {e3}")
+                    app.logger.error(f"Array JSON parsing failed: {e3}")
 
             # If all parsing fails, return error
             return {"error": f"Failed to parse AI response as JSON: {content[:500]}"}
 
     except Exception as e:
+        app.logger.exception("An error occurred in generate_test_cases_for_batch")
         return {"error": str(e)}
 
 
@@ -115,28 +190,38 @@ def generate_test_scenarios_and_cases(description=None, image_path=None, scenari
     If scenarios_only is True, return only scenarios without detailed test cases
     """
     try:
-        print(f"generate_test_scenarios_and_cases called with description={description is not None}, image_path={image_path is not None}, scenarios_only={scenarios_only}")
+        app.logger.info(f"generate_test_scenarios_and_cases called with description={description is not None}, image_path={image_path is not None}, scenarios_only={scenarios_only}")
         
         # Prepare the system message
-        system_message = """You are an expert QA testing agent. Your task is to generate comprehensive test scenarios from a given description or image.\n\nCRITICAL: You must respond with ONLY valid JSON. Do not include any explanatory text, comments, or formatting outside of the JSON structure. Start your response directly with '{' and end with '}'.\n\nRequired JSON format:\n{\n    "scenarios": [\n        {\n            "id": "SC001",\n            "title": "Scenario Title",\n            "description": "Brief description of the scenario",\n            "preconditions": ["Precondition 1", "Precondition 2"],\n            "test_cases": []\n        }\n    ]\n}\n\nFor each feature or UI, generate a list of test scenarios.\n- If `scenarios_only` is true, return only the scenario title, description, and preconditions.\n- If `scenarios_only` is false, also generate detailed test cases for each scenario.\n\nFocus on:\n- Functional testing\n- UI/UX testing\n- Edge cases\n- Error handling\n- Data validation\n- User workflows\n\nRemember: Return ONLY the JSON object, no additional text."""
+        system_message = """You are an expert QA testing agent. Your task is to generate comprehensive test scenarios from a given description or image.\n\nCRITICAL: You must respond with ONLY valid JSON. Do not include any explanatory text, comments, or formatting outside of the JSON structure. Start your response directly with '{' and end with '}'.\n\nRequired JSON format:\n{\n    "scenarios": [\n        {\n            "id": "SC001",\n            "title": "Scenario Title",\n            "description": "Brief description of the scenario",\n            "preconditions": ["Precondition 1", "Precondition 2"],\n            "estimated_test_cases": 8,\n            "test_cases": []\n        }\n    ]\n}\n\nIMPORTANT: Generate 12-15 comprehensive test scenarios covering MAXIMUM aspects.\n- If `scenarios_only` is true, return scenarios with EMPTY test_cases arrays [] and include estimated_test_cases count.\n- If `scenarios_only` is false, generate detailed test cases matching the estimated_test_cases count for each scenario.\n\nYou MUST cover ALL of these:\n- Functional testing (positive flows, core features, all user actions)\n- UI/UX testing (layout, responsiveness, accessibility, usability)\n- Edge cases (boundary values, empty states, maximum limits, unusual inputs)\n- Error handling (invalid inputs, network failures, timeouts, system errors)\n- Data validation (format checks, required fields, data types, constraints)\n- Security testing (authentication, authorization, XSS, SQL injection, CSRF)\n- Performance testing (load times, concurrent users, stress testing)\n- Integration testing (third-party services, APIs, external dependencies)\n- Compatibility testing (browsers, devices, screen sizes)\n- User workflows (complete user journeys, multi-step processes)\n\nGenerate MAXIMUM scenarios (12-15) for thorough test coverage.\nRemember: Return ONLY the JSON object, no additional text."""
 
         # Prepare user message
         user_message_content = []
         model = OPENAI_MODEL_TEXT
 
         if description:
-            user_message_content.append({"type": "text", "text": f"Generate test scenarios for this feature:\n\n{description}"})
+            if scenarios_only:
+                user_message_content.append({"type": "text", "text": f"Generate ONLY test scenarios (no test cases) for this feature:\n\n{description}\n\nIMPORTANT: Return scenarios with EMPTY test_cases arrays []"})
+            else:
+                user_message_content.append({"type": "text", "text": f"Generate test scenarios for this feature:\n\n{description}"})
 
         if image_path:
             base64_image = encode_image_to_base64(image_path)
-            user_message_content.append({
-                "type": "image_url",
-                "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}
-            })
+            if scenarios_only:
+                user_message_content.append({
+                    "type": "image_url",
+                    "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}
+                })
+                user_message_content.append({"type": "text", "text": "\n\nIMPORTANT: Return scenarios with EMPTY test_cases arrays []"})
+            else:
+                user_message_content.append({
+                    "type": "image_url",
+                    "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}
+                })
             model = OPENAI_MODEL_VISION
 
         if not scenarios_only:
-            user_message_content.append({"type": "text", "text": "\n\nPlease also generate detailed test cases for each scenario."})
+            user_message_content.append({"type": "text", "text": "\n\nCRITICAL: Generate 8-12 detailed test cases for EACH scenario. If a scenario has an 'estimated_test_cases' field, generate EXACTLY that many test cases."})
 
         # Make API call
         response = client.chat.completions.create(
@@ -145,7 +230,7 @@ def generate_test_scenarios_and_cases(description=None, image_path=None, scenari
                 {"role": "system", "content": system_message},
                 {"role": "user", "content": user_message_content}
             ],
-            max_tokens=4000,
+            max_tokens=6000,
             temperature=0.3,
             timeout=300.0,
         )
@@ -155,10 +240,10 @@ def generate_test_scenarios_and_cases(description=None, image_path=None, scenari
         # Parse JSON response
         try:
             result = json.loads(content)
-            print("Successfully parsed JSON response")
+            app.logger.info("Successfully parsed JSON response")
             return result
         except json.JSONDecodeError as e:
-            print(f"Direct JSON parsing failed: {e}")
+            app.logger.error(f"Direct JSON parsing failed: {e}")
 
             # Try to extract JSON from the response
             import re
@@ -166,15 +251,16 @@ def generate_test_scenarios_and_cases(description=None, image_path=None, scenari
             if json_match:
                 try:
                     result = json.loads(json_match.group())
-                    print("Successfully parsed JSON from regex match")
+                    app.logger.info("Successfully parsed JSON from regex match")
                     return result
                 except json.JSONDecodeError as e2:
-                    print(f"Regex JSON parsing failed: {e2}")
+                    app.logger.error(f"Regex JSON parsing failed: {e2}")
 
             # If all parsing fails, return error
             return {"error": f"Failed to parse AI response as JSON: {content[:500]}"}
 
     except Exception as e:
+        app.logger.exception("Error generating test cases")
         return {"error": f"Error generating test cases: {str(e)}", "scenarios": []}
 
 
@@ -186,13 +272,13 @@ def health():
 @app.route("/analyze", methods=["POST"])
 def analyze():
     try:
-        print("Analyze endpoint called")
+        app.logger.info("Analyze endpoint called")
         data = {}
 
         # Check if description is provided
         if "description" in request.form and request.form["description"].strip():
             description = request.form["description"].strip()
-            print(f"Description received: {description[:100]}...")
+            app.logger.info(f"Description received: {description[:100]}...")
             data["description"] = description
         elif "image" in request.files and request.files["image"].filename:
             # Handle image upload
@@ -224,16 +310,22 @@ def analyze():
                 400,
             )
 
-        print("About to call generate_test_scenarios_and_cases")
+        app.logger.info("About to call generate_test_scenarios_and_cases")
         # Generate test scenarios only
         result = generate_test_scenarios_and_cases(
             description=data.get("description"), image_path=data.get("image_path"), scenarios_only=True
         )
-        print(f"Function returned result with keys: {result.keys() if isinstance(result, dict) else 'Not a dict'}")
+        app.logger.info(f"Function returned result with keys: {result.keys() if isinstance(result, dict) else 'Not a dict'}")
         if 'error' in result and result['error']:
-            print(f"Error in result: {result['error']}")
+            app.logger.error(f"Error in result: {result['error']}")
         if 'scenarios' in result:
-            print(f"Number of scenarios: {len(result['scenarios'])}")
+            app.logger.info(f"Number of scenarios: {len(result['scenarios'])}")
+            
+            # CRITICAL: Force test_cases to be empty for scenarios_only mode
+            for scenario in result['scenarios']:
+                if isinstance(scenario, dict):
+                    scenario['test_cases'] = []
+                    app.logger.debug(f"Cleared test_cases for scenario: {scenario.get('id', 'unknown')}")
 
         # Clean up temporary image file if it exists
         if "image_path" in data and os.path.exists(data["image_path"]):
@@ -242,9 +334,7 @@ def analyze():
         return jsonify(result)
 
     except Exception as e:
-        print(f"Exception in analyze endpoint: {str(e)}")
-        import traceback
-        traceback.print_exc()
+        app.logger.exception("Exception in analyze endpoint")
         return jsonify({"error": str(e)}), 500
 
 
@@ -263,7 +353,7 @@ def generate_test_cases():
         if not scenarios or len(scenarios) == 0:
             return jsonify({"error": "No scenarios provided"}), 400
         
-        print(f"Generating test cases for {len(scenarios)} selected scenarios")
+        app.logger.info(f"Generating test cases for {len(scenarios)} selected scenarios")
         
         # Generate test cases for selected scenarios
         result = generate_test_cases_for_scenarios(scenarios)
@@ -273,9 +363,7 @@ def generate_test_cases():
         return jsonify(result)
         
     except Exception as e:
-        print(f"Exception in generate_test_cases endpoint: {str(e)}")
-        import traceback
-        traceback.print_exc()
+        app.logger.exception("Exception in generate_test_cases endpoint")
         return jsonify({"error": str(e)}), 500
 
 
@@ -344,6 +432,7 @@ def generate():
         return jsonify(result)
 
     except Exception as e:
+        app.logger.exception("Exception in /generate endpoint")
         return jsonify({"error": f"Server error: {str(e)}", "scenarios": []}), 500
 
 
@@ -369,6 +458,7 @@ def analyze_website_endpoint():
         return jsonify(result)
 
     except Exception as e:
+        app.logger.exception("Exception in /analyze_website endpoint")
         return jsonify({"error": f"Server error: {str(e)}"}), 500
 
 
@@ -442,9 +532,7 @@ def analyze_api():
                 os.unlink(temp_api_path)
 
     except Exception as e:
-        print(f"Exception in analyze_api endpoint: {str(e)}")
-        import traceback
-        traceback.print_exc()
+        app.logger.exception("Exception in analyze_api endpoint")
         return jsonify({"error": f"Server error: {str(e)}"}), 500
 
 
@@ -469,7 +557,7 @@ def generate_api_test_cases_endpoint():
         if not scenarios or len(scenarios) == 0:
             return jsonify({"error": "No scenarios provided"}), 400
         
-        print(f"Generating detailed API test cases for {len(scenarios)} selected scenarios")
+        app.logger.info(f"Generating detailed API test cases for {len(scenarios)} selected scenarios")
         
         # Import the new function
         from api_test_generator import generate_api_test_cases_for_scenarios
@@ -499,9 +587,7 @@ def generate_api_test_cases_endpoint():
         return jsonify(result)
         
     except Exception as e:
-        print(f"Exception in generate_api_test_cases endpoint: {str(e)}")
-        import traceback
-        traceback.print_exc()
+        app.logger.exception("Exception in generate_api_test_cases endpoint")
         return jsonify({"error": str(e)}), 500
 
 
@@ -555,13 +641,13 @@ def main():
     host = os.getenv("BACKEND_HOST", "0.0.0.0")
     port_str = os.getenv("BACKEND_PORT")
     if not port_str:
-        print("❌ Error: BACKEND_PORT is not set in the .env file.", file=sys.stderr)
+        app.logger.critical("❌ Error: BACKEND_PORT is not set in the .env file.")
         sys.exit(1)
 
     try:
         port = int(port_str)
     except ValueError:
-        print(f"❌ Error: Invalid BACKEND_PORT '{port_str}'. Must be a number.", file=sys.stderr)
+        app.logger.critical(f"❌ Error: Invalid BACKEND_PORT '{port_str}'. Must be a number.")
         sys.exit(1)
 
     debug = (
@@ -569,15 +655,15 @@ def main():
     )
 
     if is_production:
-        print("🏭 Starting PRODUCTION server...")
-        print(f"🔒 Debug mode: DISABLED")
-        print(f"🌐 Host: {host}:{port}")
-        print("⚠️  Using production WSGI server recommended (gunicorn, uwsgi)")
-        print("   Example: gunicorn --bind 0.0.0.0:8000 backend.src.app:app")
+        app.logger.info("🏭 Starting PRODUCTION server...")
+        app.logger.info(f"🔒 Debug mode: DISABLED")
+        app.logger.info(f"🌐 Host: {host}:{port}")
+        app.logger.warning("⚠️  Using production WSGI server recommended (gunicorn, uwsgi)")
+        app.logger.warning("   Example: gunicorn --bind 0.0.0.0:8000 backend.src.app:app")
     else:
-        print("🛠️  Starting DEVELOPMENT server...")
-        print(f"🔧 Debug mode: ENABLED")
-        print(f"🌐 Host: {host}:{port}")
+        app.logger.info("🛠️  Starting DEVELOPMENT server...")
+        app.logger.info(f"🔧 Debug mode: ENABLED")
+        app.logger.info(f"🌐 Host: {host}:{port}")
 
     app.run(debug=debug, host=host, port=port)
 

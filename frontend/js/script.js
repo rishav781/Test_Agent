@@ -23,52 +23,62 @@ document.addEventListener('DOMContentLoaded', function() {
     const uploadLink = document.querySelector('.upload-link');
 
     // Click to browse files
-    uploadArea.addEventListener('click', function() {
-        imageInput.click();
-    });
+    if (uploadArea && imageInput) {
+        uploadArea.addEventListener('click', function() {
+            imageInput.click();
+        });
+    }
 
-    uploadLink.addEventListener('click', function(e) {
-        e.stopPropagation();
-        imageInput.click();
-    });
+    if (uploadLink && imageInput) {
+        uploadLink.addEventListener('click', function(e) {
+            e.stopPropagation();
+            imageInput.click();
+        });
+    }
 
     // File input change
-    imageInput.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            updateUploadArea(file.name);
-        }
-    });
+    if (imageInput) {
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                updateUploadArea(file.name);
+            }
+        });
+    }
 
     // Drag and drop functionality
-    uploadArea.addEventListener('dragover', function(e) {
-        e.preventDefault();
-        uploadArea.classList.add('dragover');
-    });
+    if (uploadArea) {
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
 
-    uploadArea.addEventListener('dragleave', function(e) {
-        e.preventDefault();
-        uploadArea.classList.remove('dragover');
-    });
+        uploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+        });
 
-    uploadArea.addEventListener('drop', function(e) {
-        e.preventDefault();
-        uploadArea.classList.remove('dragover');
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
 
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            const file = files[0];
-            if (file.type.startsWith('image/')) {
-                imageInput.files = files;
-                updateUploadArea(file.name);
-            } else {
-                alert('Please drop an image file.');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.type.startsWith('image/')) {
+                    imageInput.files = files;
+                    updateUploadArea(file.name);
+                } else {
+                    alert('Please drop an image file.');
+                }
             }
-        }
-    });
+        });
+    }
 
     function updateUploadArea(filename) {
+        if (!uploadArea) return;
         const uploadContent = uploadArea.querySelector('.upload-content');
+        if (!uploadContent) return;
         uploadContent.innerHTML = `
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M14 2H6C4.9 2 4.01 2.9 4.01 4L4 20C4 21.1 4.89 22 5.99 22H18C19.1 22 20 21.1 20 20V8L14 2ZM18 20H6V4H13V9H18V20Z" fill="#10b981"/>
@@ -84,52 +94,62 @@ document.addEventListener('DOMContentLoaded', function() {
     const apiUploadLink = document.querySelector('.api-upload-link');
 
     // Click to browse API files
-    apiUploadArea.addEventListener('click', function() {
-        apiFileInput.click();
-    });
+    if (apiUploadArea && apiFileInput) {
+        apiUploadArea.addEventListener('click', function() {
+            apiFileInput.click();
+        });
+    }
 
-    apiUploadLink.addEventListener('click', function(e) {
-        e.stopPropagation();
-        apiFileInput.click();
-    });
+    if (apiUploadLink && apiFileInput) {
+        apiUploadLink.addEventListener('click', function(e) {
+            e.stopPropagation();
+            apiFileInput.click();
+        });
+    }
 
     // API file input change
-    apiFileInput.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            updateApiUploadArea(file.name);
-        }
-    });
+    if (apiFileInput) {
+        apiFileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                updateApiUploadArea(file.name);
+            }
+        });
+    }
 
     // API file drag and drop functionality
-    apiUploadArea.addEventListener('dragover', function(e) {
-        e.preventDefault();
-        apiUploadArea.classList.add('dragover');
-    });
+    if (apiUploadArea) {
+        apiUploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            apiUploadArea.classList.add('dragover');
+        });
 
-    apiUploadArea.addEventListener('dragleave', function(e) {
-        e.preventDefault();
-        apiUploadArea.classList.remove('dragover');
-    });
+        apiUploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            apiUploadArea.classList.remove('dragover');
+        });
 
-    apiUploadArea.addEventListener('drop', function(e) {
-        e.preventDefault();
-        apiUploadArea.classList.remove('dragover');
+        apiUploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            apiUploadArea.classList.remove('dragover');
 
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            const file = files[0];
-            if (file.name.toLowerCase().endsWith('.json')) {
-                apiFileInput.files = files;
-                updateApiUploadArea(file.name);
-            } else {
-                alert('Please drop a JSON file.');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.name.toLowerCase().endsWith('.json')) {
+                    apiFileInput.files = files;
+                    updateApiUploadArea(file.name);
+                } else {
+                    alert('Please drop a JSON file.');
+                }
             }
-        }
-    });
+        });
+    }
 
     function updateApiUploadArea(filename) {
+        if (!apiUploadArea) return;
         const uploadContent = apiUploadArea.querySelector('.upload-content');
+        if (!uploadContent) return;
         uploadContent.innerHTML = `
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M8 9H16V11H8V9ZM8 13H16V15H8V13ZM10 17H14V19H10V17ZM20 5H4C3.45 5 3 5.45 3 6V18C3 18.55 3.45 19 4 19H20C20.55 19 21 18.55 21 18V6C21 5.45 20.55 5 20 5ZM19 17H5V7H19V17Z" fill="#10b981"/>
@@ -146,18 +166,110 @@ document.addEventListener('DOMContentLoaded', function() {
     const scenariosSection = document.getElementById('scenario-selection-section');
     const resultsContent = document.getElementById('results-content');
 
-    // Global variables
-    let lastGeneratedResults = null;
-    let availableScenarios = [];
-    // Track accepted test cases across renders (by id or fallback index key)
-    let acceptedTestCases = new Set();
+    // Global state variables
+    let allScenarios = [];
+    let scenarioSelections = [];
+    let currentApiInfo = null;
+    let currentDocumentType = null;
+    let lastAnalysisResult = null; // Cache the last result
 
     // Get references to main sections
     const inputSection = document.querySelector('.card');
     const stepper = document.querySelector('.stepper');
 
-    generateBtn.addEventListener('click', async function(e) {
-        e.preventDefault();
+    // State management for browser history
+    window.addEventListener('popstate', function(event) {
+        if (event.state) {
+            restoreState(event.state);
+        } else {
+            // This handles the case where the user navigates back to the initial page
+            showInputPage(true); // Force a full reset
+        }
+    });
+
+    function saveState(state) {
+        // Don't push the same state twice
+        if (history.state && history.state.page === state.page) {
+            history.replaceState(state, '', `#${state.page}`);
+        } else {
+            history.pushState(state, '', `#${state.page}`);
+        }
+    }
+
+    function restoreState(state) {
+        if (state.page === 'scenarios') {
+            // Restore data from state and re-render the scenario page
+            allScenarios = state.data.scenarios || [];
+            scenarioSelections = state.selections || [];
+            currentApiInfo = state.data.api_info;
+            currentDocumentType = state.data.document_type;
+            lastAnalysisResult = state.data;
+            
+            showScenarioPage(false, true); // Don't save state again, but indicate this is a restore
+            
+        } else if (state.page === 'results') {
+            // Restore data and display the results page
+            displayResults(state.data, false);
+
+        } else {
+            // Default to the input page
+            showInputPage(true);
+        }
+    }
+
+    function showInputPage(forceReset = false) {
+        if (scenariosSection) scenariosSection.style.display = 'none';
+        if (resultsSection) resultsSection.style.display = 'none';
+        if (inputSection) inputSection.style.display = 'block';
+        
+        const headerBlock = document.querySelector('.header-block');
+        if (headerBlock) headerBlock.style.display = 'block';
+        
+        updateStepper(1);
+
+        if (forceReset) {
+            // Reset all input fields to provide a "fresh" experience
+            const descriptionInput = document.getElementById('description');
+            if (descriptionInput) descriptionInput.value = '';
+            
+            const imageInput = document.getElementById('image');
+            if (imageInput) imageInput.value = '';
+            
+            const apiFileInput = document.getElementById('apiFile');
+            if (apiFileInput) apiFileInput.value = '';
+
+            const websiteUrlInput = document.getElementById('websiteUrl');
+            if (websiteUrlInput) websiteUrlInput.value = '';
+
+            // Reset upload area UI
+            const uploadContent = document.querySelector('#uploadArea .upload-content');
+            if (uploadContent) {
+                uploadContent.innerHTML = `
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4C9.11 4 6.6 5.64 5.35 8.04C2.34 8.36 0 10.91 0 14C0 17.31 2.69 20 6 20H19C21.76 20 24 17.76 24 15C24 12.36 21.95 10.22 19.35 10.04ZM19 18H6C3.79 18 2 16.21 2 14C2 11.95 3.53 10.24 5.56 10.03L6.63 9.92L7.13 8.97C8.08 7.14 9.94 6 12 6C14.76 6 17 8.24 17 11H19C20.66 11 22 12.34 22 14C22 15.66 20.66 17 19 17V18Z" fill="#4a5568"/>
+                        <path d="M8 13H10.55V17H13.45V13H16L12 9L8 13Z" fill="#4a5568"/>
+                    </svg>
+                    <p><strong>Drag & drop an image</strong> or <span class="upload-link">browse</span></p>
+                    <p class="upload-hint">Supports: PNG, JPG, GIF, WebP</p>
+                `;
+            }
+            const apiUploadContent = document.querySelector('#apiUploadArea .upload-content');
+             if (apiUploadContent) {
+                apiUploadContent.innerHTML = `
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                         <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4C9.11 4 6.6 5.64 5.35 8.04C2.34 8.36 0 10.91 0 14C0 17.31 2.69 20 6 20H19C21.76 20 24 17.76 24 15C24 12.36 21.95 10.22 19.35 10.04ZM19 18H6C3.79 18 2 16.21 2 14C2 11.95 3.53 10.24 5.56 10.03L6.63 9.92L7.13 8.97C8.08 7.14 9.94 6 12 6C14.76 6 17 8.24 17 11H19C20.66 11 22 12.34 22 14C22 15.66 20.66 17 19 17V18Z" fill="#4a5568"/>
+                        <path d="M8 13H10.55V17H13.45V13H16L12 9L8 13Z" fill="#4a5568"/>
+                    </svg>
+                    <p><strong>Drag & drop a JSON file</strong> or <span class="api-upload-link">browse</span></p>
+                    <p class="upload-hint">Supports: Swagger, Postman (JSON)</p>
+                `;
+            }
+        }
+    }
+
+    if (generateBtn) {
+        generateBtn.addEventListener('click', async function(e) {
+            e.preventDefault();
 
         // Check which tab is active
         const activeTab = document.querySelector('.tab-content.active');
@@ -167,7 +279,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const isWebsiteTab = activeTab.id === 'website-tab';
 
         let formData = new FormData();
-        let apiUrl = `${window.BACKEND_URL}/analyze`;
+        let apiUrl = `${window.BACKEND_URL}/api/analyze`;
 
         if (isDescriptionTab) {
             // Handle description form
@@ -193,7 +305,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             formData.append('api_file', apiFile);
-            apiUrl = `${window.BACKEND_URL}/analyze_api`;
+            apiUrl = `${window.BACKEND_URL}/api/analyze_api`;
         } else if (isWebsiteTab) {
             // Handle website URL
             let websiteUrl = document.getElementById('websiteUrl').value.trim();
@@ -217,12 +329,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             formData.append('url', websiteUrl);
-            apiUrl = `${window.BACKEND_URL}/analyze_website`;
+            apiUrl = `${window.BACKEND_URL}/api/analyze_website`;
         }
 
-    // Show loading state (spinner on button only)
+        // Show loading state (spinner on button only)
         generateBtn.disabled = true;
         generateBtn.classList.add('loading');
+
+        // Update stepper to show analyzing state
+        updateStepper(2);
 
         // Show specific loading message for website analysis
         if (isWebsiteTab) {
@@ -246,11 +361,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
             clearTimeout(timeoutId);
 
+            if (!response.ok) {
+                const errorText = await response.text();
+                try {
+                    const errorJson = JSON.parse(errorText);
+                    throw new Error(errorJson.error || `Server error: ${response.status}`);
+                } catch (e) {
+                    throw new Error(`Received non-JSON response from server (status: ${response.status}). Check Nginx logs.`);
+                }
+            }
+
             const result = await response.json();
+            lastAnalysisResult = result; // Cache the result
 
             if (response.ok) {
-                // Use the new scenario display function for all workflows
-                displayScenarios(result);
+                // Set global state from the result
+                allScenarios = result.scenarios || [];
+                scenarioSelections = []; // Always start with a fresh selection
+                currentApiInfo = result.api_info;
+                currentDocumentType = result.document_type;
+
+                // Transition to the scenario page
+                showScenarioPage();
             } else {
                 displayError(result.error || 'An error occurred while analyzing input.');
             }
@@ -277,7 +409,8 @@ document.addEventListener('DOMContentLoaded', function() {
             generateBtn.textContent = 'Analyze'; // Reset to original text
             // No full-page loading overlay
         }
-    });
+        });
+    }
 
     function updateStepper(activeStep) {
         console.log('Updating stepper to step:', activeStep);
@@ -300,9 +433,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    function displayResults(data) {
-        resultsSection.style.display = 'block';
+    function displayResults(data, shouldSaveState = true) {
+        if (resultsSection) {
+            resultsSection.style.display = 'block';
+        }
+        if (scenarioSection) {
+            scenarioSection.style.display = 'none';
+        }
         updateStepper(4);
+
+        if (shouldSaveState) {
+            saveState({ page: 'results', data: data });
+        }
 
         if (data.error) {
             displayError(data.error);
@@ -484,7 +626,9 @@ document.addEventListener('DOMContentLoaded', function() {
             html += '</div>';
         });
 
-        resultsContent.innerHTML = html;
+        if (resultsContent) {
+            resultsContent.innerHTML = html;
+        }
 
         // Update Export Accepted button enabled state
         const exportAcceptedBtn2 = document.getElementById('exportAcceptedBtn');
@@ -493,7 +637,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Scroll to results
-        resultsSection.scrollIntoView({ behavior: 'smooth' });
+        if (resultsSection) {
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
     }
 
     // Accept button toggle via event delegation in results
@@ -667,21 +813,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Results back button functionality
     const resultsBackBtn = document.getElementById('resultsBackBtn');
     resultsBackBtn.addEventListener('click', function() {
-        console.log('Results back button clicked');
-        resultsSection.style.display = 'none';
-        scenarioSection.style.display = 'block';
-        const headerBlock2 = document.querySelector('.header-block');
-        if (headerBlock2) headerBlock2.style.display = 'none';
-        // Keep stepper visible and show selection phase
-        stepper.style.display = 'flex';
-        updateStepper(3);
+        history.back();
     });
-
-
-
-
-
-
 
     // Scenario Selection Functionality
     const scenarioSection = document.getElementById('scenario-selection-section');
@@ -691,66 +824,230 @@ document.addEventListener('DOMContentLoaded', function() {
     const generateTestCasesBtn = document.getElementById('generateTestCasesBtn');
     const scenarioSelectedCount = document.getElementById('scenarioSelectedCount');
     
-    let allScenarios = [];
-    let scenarioSelections = [];
-    let currentApiInfo = null;
-    let currentDocumentType = null;
-
     // Back to input from scenarios
-    scenarioBackBtn.addEventListener('click', function() {
-        scenarioSection.style.display = 'none';
-        inputSection.style.display = 'block';
-        updateStepper(1);
-        
-        // Show header
-        const headerBlock = document.querySelector('.header-block');
-        if (headerBlock) headerBlock.style.display = 'block';
-    });
+    if (scenarioBackBtn) {
+        scenarioBackBtn.addEventListener('click', function() {
+            // Use browser history to navigate back, which will trigger popstate
+            history.back();
+        });
+    }
 
     // Select all/deselect all scenarios
-    selectAllBtn.addEventListener('click', function() {
-        if (selectAllBtn.classList.contains('all-selected')) {
-            // All are selected, so deselect all
-            scenarioSelections = [];
-        } else {
-            // Not all are selected, so select all
-            scenarioSelections = [...allScenarios];
-        }
-        updateScenarioSelection();
-    });
+    if (selectAllBtn) {
+        selectAllBtn.addEventListener('click', function() {
+            // Check actual selection state, not just the CSS class
+            const allSelected = scenarioSelections.length === allScenarios.length && allScenarios.length > 0;
+            
+            console.log('Select All clicked. Currently selected:', scenarioSelections.length, 'Total:', allScenarios.length, 'All selected:', allSelected);
+            
+            if (allSelected) {
+                // All are selected, so deselect all
+                console.log('Deselecting all scenarios');
+                scenarioSelections = [];
+            } else {
+                // Not all are selected, so select all
+                console.log('Selecting all scenarios');
+                scenarioSelections = [...allScenarios];
+            }
+            updateScenarioSelection();
+        });
+    }
 
     // Generate test cases for selected scenarios
-    generateTestCasesBtn.addEventListener('click', function() {
-        if (scenarioSelections.length === 0) {
-            alert('Please select at least one scenario');
-            return;
-        }
-        
-        generateTestCasesBtn.disabled = true;
-        generateTestCasesBtn.innerHTML = 'Generating...';
-        
-        generateDetailedTestCases();
-    });
+    if (generateTestCasesBtn) {
+        generateTestCasesBtn.addEventListener('click', function() {
+            if (scenarioSelections.length === 0) {
+                alert('Please select at least one scenario');
+                return;
+            }
+            
+            generateTestCasesBtn.disabled = true;
+            generateTestCasesBtn.innerHTML = 'Generating...';
+            
+            generateDetailedTestCases();
+        });
+    }
 
-    function displayScenarios(data) {
-        allScenarios = data.scenarios || [];
-        scenarioSelections = [];
-        currentApiInfo = data.api_info;
-        currentDocumentType = data.document_type;
-        
-        // Hide input section and show scenario selection
-        inputSection.style.display = 'none';
-        scenarioSection.style.display = 'block';
-        updateStepper(3);
-        
+    async function generateDetailedTestCases() {
+        try {
+            let endpoint, requestData;
+            
+            // Determine which endpoint to use based on current context
+            if (currentApiInfo) {
+                // API workflow
+                endpoint = `${window.BACKEND_URL}/api/generate_api_test_cases`;
+                requestData = {
+                    scenarios: scenarioSelections,
+                    api_info: currentApiInfo,
+                    document_type: currentDocumentType
+                };
+            } else {
+                // Regular workflow (text/image)
+                endpoint = `${window.BACKEND_URL}/api/generate_test_cases`;
+                requestData = {
+                    scenarios: scenarioSelections
+                };
+            }
+            
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData)
+            });
+
+            if (!response.ok) {
+                // Attempt to read response as text, as it might be HTML from nginx
+                const errorText = await response.text();
+                try {
+                    // See if it's valid JSON
+                    const errorJson = JSON.parse(errorText);
+                    throw new Error(errorJson.error || 'An unknown error occurred.');
+                } catch (e) {
+                    // If not JSON, it's likely an HTML error page
+                    throw new Error(`Server returned an error page (status: ${response.status}). Check Nginx configuration.`);
+                }
+            }
+
+            const result = await response.json();
+            
+            if (result.error) {
+                throw new Error(result.error);
+            }
+            
+            // Hide scenario selection and show results
+            if (scenarioSection) scenarioSection.style.display = 'none'; 
+            displayResults(result);
+            
+        } catch (error) {
+            console.error('Error generating test cases:', error);
+            console.error('Error details:', {
+                endpoint: endpoint,
+                requestData: requestData,
+                backendUrl: window.BACKEND_URL
+            });
+            alert('Error generating test cases: ' + error.message);
+        } finally {
+            if (generateTestCasesBtn) {
+                generateTestCasesBtn.disabled = false;
+                // Re-enable the button and update the count
+                updateScenarioSelection();
+            }
+        }
+    }
+
+    function showScenarioPage(shouldSaveState = true, isRestore = false) {
+        // Hide other sections and show the scenario section
+        if (inputSection) inputSection.style.display = 'none';
+        if (resultsSection) resultsSection.style.display = 'none';
+        if (scenarioSection) scenarioSection.style.display = 'block';
+
+        // Update stepper based on context
+        if (isRestore) {
+            // When restoring from history, show step 3 (Selection)
+            updateStepper(3);
+        }
+        // Otherwise keep at step 2 (Analysis) until user interacts
+
         // Hide header
         const headerBlock = document.querySelector('.header-block');
         if (headerBlock) headerBlock.style.display = 'none';
-        
-        // Populate scenarios
+
+        // Save the current state to browser history
+        if (shouldSaveState) {
+            saveState({
+                page: 'scenarios',
+                data: lastAnalysisResult,
+                selections: scenarioSelections
+            });
+        }
+
+        // Populate the list of scenarios and update all UI elements
+        populateScenarioList();
+        updateScenarioSelection();
+
+        // Reattach event listeners for buttons that might have lost them during navigation
+        attachScenarioButtonListeners();
+        updateScenarioSelection(); // Update button states after attaching listeners
+    }    function attachScenarioButtonListeners() {
+        // Reattach Select All button listener
+        const selectAllBtn = document.getElementById('selectAllBtn');
+        if (selectAllBtn) {
+            // Store current classes and text before cloning
+            const currentClasses = selectAllBtn.className;
+            const currentText = selectAllBtn.textContent;
+
+            // Remove existing listeners to avoid duplicates
+            selectAllBtn.replaceWith(selectAllBtn.cloneNode(true));
+            const newSelectAllBtn = document.getElementById('selectAllBtn');
+
+            // Restore classes and text
+            newSelectAllBtn.className = currentClasses;
+            newSelectAllBtn.textContent = currentText;
+
+            newSelectAllBtn.addEventListener('click', function() {
+                // Update stepper to step 3 (Selection) on first interaction
+                updateStepper(3);
+
+                // Check actual selection state, not just the CSS class
+                const allSelected = scenarioSelections.length === allScenarios.length && allScenarios.length > 0;
+
+                console.log('Select All clicked. Currently selected:', scenarioSelections.length, 'Total:', allScenarios.length, 'All selected:', allSelected);
+
+                if (allSelected) {
+                    // All are selected, so deselect all
+                    console.log('Deselecting all scenarios');
+                    scenarioSelections = [];
+                } else {
+                    // Not all are selected, so select all
+                    console.log('Selecting all scenarios');
+                    scenarioSelections = [...allScenarios];
+                }
+                updateScenarioSelection();
+            });
+        }
+
+        // Reattach Generate Test Cases button listener
+        const generateTestCasesBtn = document.getElementById('generateTestCasesBtn');
+        if (generateTestCasesBtn) {
+            // Store current classes and HTML before cloning
+            const currentClasses = generateTestCasesBtn.className;
+            const currentHTML = generateTestCasesBtn.innerHTML;
+
+            // Remove existing listeners to avoid duplicates
+            generateTestCasesBtn.replaceWith(generateTestCasesBtn.cloneNode(true));
+            const newGenerateBtn = document.getElementById('generateTestCasesBtn');
+
+            // Restore classes and HTML
+            newGenerateBtn.className = currentClasses;
+            newGenerateBtn.innerHTML = currentHTML;
+
+            newGenerateBtn.addEventListener('click', function() {
+                // Update stepper to step 3 (Selection) on first interaction
+                updateStepper(3);
+
+                if (scenarioSelections.length === 0) {
+                    alert('Please select at least one scenario');
+                    return;
+                }
+
+                // Update stepper to step 4 (Generation) when starting test case generation
+                updateStepper(4);
+
+                // Disable button and show loading state
+                newGenerateBtn.disabled = true;
+                newGenerateBtn.innerHTML = 'Generating...';
+
+                // Generate test cases for selected scenarios
+                generateTestCasesForScenarios(scenarioSelections);
+            });
+        }
+    }
+
+    function populateScenarioList() {
         let html = '';
-        
-        if (allScenarios.length === 0) {
+        if (!allScenarios || allScenarios.length === 0) {
             html = '<div class="no-scenarios">No scenarios generated. Please try again with different input.</div>';
         } else {
             allScenarios.forEach((scenario, index) => {
@@ -758,11 +1055,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 const category = scenario.category || 'functional';
                 const estimatedCases = scenario.estimated_test_cases || scenario.test_cases?.length || 5;
                 
+                // Determine if the current scenario is selected
+                const isSelected = scenarioSelections.some(s => 
+                    (s.id && scenario.id && s.id === scenario.id) || 
+                    (s.title === scenario.title && s.description === scenario.description)
+                );
+
                 html += `
-                    <div class="scenario-card" data-index="${index}">
+                    <div class="scenario-card ${isSelected ? 'selected' : ''}" data-index="${index}">
                         <div class="scenario-card-header">
-                            <div class="scenario-checkbox" data-index="${index}">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                            <div class="scenario-checkbox ${isSelected ? 'checked' : ''}" data-index="${index}">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: ${isSelected ? 'block' : 'none'};">
                                     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" stroke="currentColor" stroke-width="2" fill="currentColor"/>
                                 </svg>
                             </div>
@@ -788,52 +1091,64 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
         
-        scenarioContent.innerHTML = html;
+        if (scenarioContent) {
+            scenarioContent.innerHTML = html;
+        }
         
-        // Add click handlers for scenario cards and checkboxes
+        // Re-add click handlers for the newly created scenario cards and checkboxes
         document.querySelectorAll('.scenario-card').forEach(card => {
             card.addEventListener('click', function(e) {
-                if (!e.target.closest('.scenario-checkbox')) {
-                    toggleScenarioSelection(parseInt(this.dataset.index));
+                // Prevent selection when clicking on links or buttons inside the card
+                if (e.target.tagName.toLowerCase() === 'a' || e.target.closest('button')) {
+                    return;
                 }
+                toggleScenarioSelection(parseInt(this.dataset.index, 10));
             });
         });
-        
-        document.querySelectorAll('.scenario-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('click', function(e) {
-                e.stopPropagation();
-                toggleScenarioSelection(parseInt(this.dataset.index));
-            });
-        });
-        
-        updateScenarioSelection();
     }
 
     function toggleScenarioSelection(index) {
+        // Update stepper to step 3 (Selection) on first interaction
+        updateStepper(3);
+
         const scenario = allScenarios[index];
+        if (!scenario) return;
+
         const existingIndex = scenarioSelections.findIndex(s => 
-            (s.id && s.id === scenario.id) || 
+            (s.id && scenario.id && s.id === scenario.id) || 
             (s.title === scenario.title && s.description === scenario.description)
         );
         
         if (existingIndex >= 0) {
+            // Deselect
             scenarioSelections.splice(existingIndex, 1);
         } else {
+            // Select
             scenarioSelections.push(scenario);
         }
         
+        // Update the UI and save the new selection state
         updateScenarioSelection();
+        saveState({ 
+            page: 'scenarios', 
+            data: lastAnalysisResult,
+            selections: scenarioSelections 
+        });
     }
 
     function updateScenarioSelection() {
-        // Update UI
+        if (!allScenarios) return;
+        
+        // Update card and checkbox visuals
         document.querySelectorAll('.scenario-card').forEach((card, index) => {
             const checkbox = card.querySelector('.scenario-checkbox');
-            const checkmark = checkbox.querySelector('svg');
+            const checkmark = checkbox ? checkbox.querySelector('svg') : null;
             const scenario = allScenarios[index];
             
+            if (!scenario || !checkbox || !checkmark) return;
+
             const isSelected = scenarioSelections.some(s => 
-                (s.id && s.id === scenario.id) || 
+                (s.id && scenario.id && s.id === scenario.id) || 
                 (s.title === scenario.title && s.description === scenario.description)
             );
             
@@ -848,71 +1163,32 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Update button and counter
-        scenarioSelectedCount.textContent = `(${scenarioSelections.length} selected)`;
-        generateTestCasesBtn.disabled = scenarioSelections.length === 0;
+        // Update button text and state
+        const currentCountEl = document.getElementById('scenarioSelectedCount');
+        if (currentCountEl) {
+            currentCountEl.textContent = `(${scenarioSelections.length} selected)`;
+        }
         
-        // Update Select All button visual state
-        if (scenarioSelections.length === allScenarios.length && allScenarios.length > 0) {
-            selectAllBtn.classList.add('all-selected');
-        } else {
-            selectAllBtn.classList.remove('all-selected');
+        const currentGenerateBtn = document.getElementById('generateTestCasesBtn');
+        if (currentGenerateBtn) {
+            currentGenerateBtn.disabled = scenarioSelections.length === 0;
+            // Ensure button text is correct if not generating
+            if (!currentGenerateBtn.classList.contains('loading')) {
+                 currentGenerateBtn.innerHTML = `Generate Test Cases <span id="scenarioSelectedCount">(${scenarioSelections.length} selected)</span>`;
+            }
         }
-    }
-
-    async function generateDetailedTestCases() {
-        try {
-            let endpoint, requestData;
-            
-            // Determine which endpoint to use based on current context
-            if (currentApiInfo) {
-                // API workflow
-                endpoint = `${window.BACKEND_URL}/generate_api_test_cases`;
-                requestData = {
-                    scenarios: scenarioSelections,
-                    api_info: currentApiInfo,
-                    document_type: currentDocumentType
-                };
+        
+        // Update "Select All" button
+        const currentSelectAllBtn = document.getElementById('selectAllBtn');
+        if (currentSelectAllBtn) {
+            const allAreSelected = scenarioSelections.length === allScenarios.length && allScenarios.length > 0;
+            if (allAreSelected) {
+                currentSelectAllBtn.classList.add('all-selected');
+                currentSelectAllBtn.textContent = 'Deselect All';
             } else {
-                // Regular workflow (text/image)
-                endpoint = `${window.BACKEND_URL}/generate_test_cases`;
-                requestData = {
-                    scenarios: scenarioSelections
-                };
+                currentSelectAllBtn.classList.remove('all-selected');
+                currentSelectAllBtn.textContent = 'Select All';
             }
-            
-            const response = await fetch(endpoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestData)
-            });
-
-            const result = await response.json();
-            
-            if (result.error) {
-                throw new Error(result.error);
-            }
-            
-            // Hide scenario selection and show results
-            scenarioSection.style.display = 'none'; 
-            displayResults(result);
-            
-        } catch (error) {
-            console.error('Error generating test cases:', error);
-            console.error('Error details:', {
-                endpoint: endpoint,
-                requestData: requestData,
-                backendUrl: window.BACKEND_URL
-            });
-            alert('Error generating test cases: ' + error.message);
-        } finally {
-            generateTestCasesBtn.disabled = false;
-            generateTestCasesBtn.innerHTML = 'Generate Test Cases <span id="scenarioSelectedCount">(0 selected)</span>';
         }
     }
-
-    // Update existing analyze functions to show scenarios instead of results directly
-    window.displayScenarios = displayScenarios;
 });

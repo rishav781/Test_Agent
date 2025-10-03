@@ -12,6 +12,7 @@ import argparse
 import platform
 import venv
 from pathlib import Path
+from dotenv import load_dotenv
 
 def get_project_root():
     """Get the project root directory"""
@@ -155,22 +156,6 @@ def check_environment():
         return False
     return True
 
-def get_port_from_user(prompt):
-    """Prompt the user for a port and validate it."""
-    while True:
-        port_str = input(f"Enter the {prompt} port: ")
-        if not port_str:
-            print("❌ Port number is required.")
-            continue
-        try:
-            port = int(port_str)
-            if 1 <= port <= 65535:
-                return port
-            else:
-                print("❌ Invalid port. Please enter a number between 1 and 65535.")
-        except ValueError:
-            print("❌ Invalid input. Please enter a number.")
-
 def start_production_backend(host='0.0.0.0', port=8000, workers=4):
     """Start the backend with gunicorn for production using virtual environment"""
     print(f"🚀 Starting production backend server on {host}:{port}")
@@ -260,6 +245,19 @@ def setup_deployment_environment():
     print("✅ Deployment environment setup complete!")
     return True
 
+def load_production_env():
+    """Load environment variables from .env.production"""
+    project_root = get_project_root()
+    prod_env_file = project_root / "env" / ".env.production"
+    if prod_env_file.exists():
+        load_dotenv(dotenv_path=prod_env_file)
+        print(f"✅ Loaded environment variables from {prod_env_file}")
+        return True
+    else:
+        print(f"⚠️  Warning: Production environment file not found at {prod_env_file}")
+        print("   Please ensure it exists and contains BACKEND_PORT and FRONTEND_PORT.")
+        return False
+
 def main():
     parser = argparse.ArgumentParser(description='Enhanced production deployment for Pcloudy Test Case Agent')
     parser.add_argument('--backend-only', action='store_true',
@@ -289,6 +287,10 @@ def main():
             print("❌ Failed to setup deployment environment")
             sys.exit(1)
     
+    # Load production environment variables
+    if not load_production_env():
+        sys.exit(1)
+
     # If setup-only, exit after setup
     if args.setup_only:
         print("✅ Environment setup complete. Use --skip-setup to start servers.")
@@ -300,23 +302,9 @@ def main():
         if response not in ['y', 'yes']:
             sys.exit(1)
 
-    # Get ports from user
-    print("\n🔌 Port Configuration")
-    print("=" * 30)
-    
-    backend_port = 8000
-    frontend_port = 3000
-
-    if not args.backend_only and not args.frontend_only:
-        print("🔧 Configuring ports for both backend and frontend servers...")
-        backend_port = get_port_from_user("backend")
-        frontend_port = get_port_from_user("frontend")
-    elif args.backend_only:
-        print("🔧 Configuring port for backend server only...")
-        backend_port = get_port_from_user("backend")
-    elif args.frontend_only:
-        print("🔧 Configuring port for frontend server only...")
-        frontend_port = get_port_from_user("frontend")
+    # Get ports from environment variables, with fallbacks
+    backend_port = int(os.getenv('BACKEND_PORT', 8000))
+    frontend_port = int(os.getenv('FRONTEND_PORT', 3000))
 
     # Display configuration summary
     print(f"\n📋 Deployment Configuration")

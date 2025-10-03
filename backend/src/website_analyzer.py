@@ -11,17 +11,15 @@ from urllib.parse import urljoin, urlparse
 
 import openai
 import requests
-from dotenv import load_dotenv
-import os
 
-# Load environment variables
-load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
+# Import centralized configuration
+from config import config
 
-# Configure OpenAI client
-client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY", "your-openai-api-key-here"))
+# Configure OpenAI client using centralized config
+client = openai.OpenAI(api_key=config.openai_api_key)
 
 # Configure LLM Model
-OPENAI_MODEL_WEBSITE = os.getenv("OPENAI_MODEL_WEBSITE", "gpt-4")
+OPENAI_MODEL_WEBSITE = config.openai_model_website
 
 
 def extract_api_endpoints(html_content, base_url):
