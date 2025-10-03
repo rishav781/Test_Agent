@@ -184,6 +184,11 @@ def start_production_backend(host='0.0.0.0', port=8000, workers=4):
     # Set environment variable for the backend port
     os.environ['BACKEND_PORT'] = str(port)
     os.environ['BACKEND_URL'] = f"http://{host}:{port}"
+    
+    # Set PYTHONPATH to include backend/src
+    project_root = get_project_root()
+    backend_src = project_root / "backend" / "src"
+    os.environ['PYTHONPATH'] = str(backend_src)
 
     cmd = [
         str(python_executable), "-m", "gunicorn",

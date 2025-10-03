@@ -23,7 +23,7 @@ def get_project_root():
 # Load environment variables from env/.env file
 project_root = get_project_root()
 env_file = project_root / 'env' / '.env'
-load_dotenv(dotenv_path=env_file)
+# load_dotenv will be called after environment selection
 
 def select_environment():
     """Ask user to select environment"""
@@ -136,6 +136,9 @@ def main():
         sys.exit(1)
     print(f"✅ Successfully switched to {selected_env} environment")
     print()
+
+    # Load environment variables after switching
+    load_dotenv(dotenv_path=env_file)
 
     # Now load configuration
     config = load_configuration()

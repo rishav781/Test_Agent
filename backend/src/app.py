@@ -230,6 +230,10 @@ def analyze():
             description=data.get("description"), image_path=data.get("image_path"), scenarios_only=True
         )
         print(f"Function returned result with keys: {result.keys() if isinstance(result, dict) else 'Not a dict'}")
+        if 'error' in result and result['error']:
+            print(f"Error in result: {result['error']}")
+        if 'scenarios' in result:
+            print(f"Number of scenarios: {len(result['scenarios'])}")
 
         # Clean up temporary image file if it exists
         if "image_path" in data and os.path.exists(data["image_path"]):
