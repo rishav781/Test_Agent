@@ -279,7 +279,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const isWebsiteTab = activeTab.id === 'website-tab';
 
         let formData = new FormData();
-        let apiUrl = `${window.BACKEND_URL}/api/analyze`;
+        let apiUrl;
 
         if (isDescriptionTab) {
             // Handle description form
@@ -289,6 +289,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             formData.append('description', description);
+            apiUrl = `${window.BACKEND_URL}/api/analyze`;
         } else if (isUploadTab) {
             // Handle upload form
             const imageFile = document.getElementById('image').files[0];
@@ -297,6 +298,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             formData.append('image', imageFile);
+            apiUrl = `${window.BACKEND_URL}/api/analyze`;
         } else if (isApiTab) {
             // Handle API document upload
             const apiFile = document.getElementById('apiFile').files[0];
