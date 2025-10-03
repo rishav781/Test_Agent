@@ -10,8 +10,8 @@ This folder contains environment-specific configuration files for the Pcloudy Te
 ## File Structure
 
 - `.env.template` - Template file for setting up new environments
-- `.env.development` - Development environment configuration
-- `.env.production` - Production environment configuration
+- `.env.development` - Development environment configuration (auto-generated)
+- `.env.production` - Production environment configuration (auto-generated)
 - `.env` - Active configuration file (auto-generated, do not edit directly)
 - `.env.backup` - Backup of previous configuration (auto-generated)
 

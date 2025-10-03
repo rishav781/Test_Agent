@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Pcloudy Test Case Agent - Startup Script
-Starts both backend API and frontend servers with environment selection
+Starts both backend API and frontend servers
 """
 
 import subprocess
@@ -9,8 +9,8 @@ import sys
 import os
 import signal
 import time
-import shutil
 from pathlib import Path
+from dotenv import load_dotenv
 
 def get_project_root():
     """Get the project root directory"""
@@ -20,33 +20,10 @@ def get_project_root():
             return parent
     return Path(__file__).parent
 
-def switch_environment(env_name):
-    """Switch to the specified environment"""
-    project_root = get_project_root()
-    env_dir = project_root / 'env'
-    env_file = env_dir / f'.env.{env_name}'
-    target_file = env_dir / '.env'
-
-    if not env_file.exists():
-        print(f"❌ Environment file '.env.{env_name}' not found in env folder!")
-        print(f"   Expected location: {env_file}")
-        return False
-
-    # Backup current .env if it exists
-    if target_file.exists():
-        backup_file = env_dir / '.env.backup'
-        shutil.copy2(target_file, backup_file)
-
-    # Copy the environment file
-    shutil.copy2(env_file, target_file)
-
-    # Also create a copy in the root for backward compatibility
-    root_env = project_root / '.env'
-    if root_env.exists():
-        root_env.unlink()  # Remove existing file
-    shutil.copy2(target_file, root_env)
-
-    return True
+# Load environment variables from env/.env file
+project_root = get_project_root()
+env_file = project_root / 'env' / '.env'
+load_dotenv(dotenv_path=env_file)
 
 def select_environment():
     """Ask user to select environment"""
@@ -119,6 +96,22 @@ def load_configuration():
         print(f"❌ Failed to load configuration: {e}")
         sys.exit(1)
 
+def switch_environment(env_name):
+    """Switch to the specified environment by copying the appropriate .env file"""
+    project_root = get_project_root()
+    env_dir = project_root / 'env'
+    source_file = env_dir / f'.env.{env_name}'
+    target_file = env_dir / '.env'
+
+    try:
+        # Copy the environment file
+        import shutil
+        shutil.copy2(source_file, target_file)
+        return True
+    except Exception as e:
+        print(f"❌ Error switching environment: {e}")
+        return False
+
 def start_backend(config):
     """Start the backend Flask API server"""
     print("🚀 Starting Backend API Server...")
@@ -167,9 +160,13 @@ def main():
     backend_process = start_backend(config)
     time.sleep(2)  # Wait for backend to start
 
-    # Start frontend server
-    frontend_process = start_frontend(config)
-    time.sleep(1)  # Wait for frontend to start
+    # Start frontend server (only in development)
+    if config.is_development:
+        frontend_process = start_frontend(config)
+        time.sleep(1)  # Wait for frontend to start
+    else:
+        frontend_process = None
+        print("🌐 Frontend served by nginx")
 
     print("\n✅ Services Started Successfully!")
     print(f"📱 Frontend: {config.frontend_url}")
@@ -193,11 +190,13 @@ def main():
 
         # Terminate processes
         backend_process.terminate()
-        frontend_process.terminate()
+        if frontend_process:
+            frontend_process.terminate()
 
         # Wait for processes to finish
         backend_process.wait()
-        frontend_process.wait()
+        if frontend_process:
+            frontend_process.wait()
 
         print("👋 All services stopped. Goodbye!")
 

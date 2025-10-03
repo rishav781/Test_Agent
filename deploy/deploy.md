@@ -2,18 +2,22 @@
 
 This folder contains the enhanced **production deployment** script for Linux servers. For development and testing on any platform, use `python start.py` instead.
 
+**Alternative: Nginx Deployment**
+For SSL-enabled deployments with static file serving, see the main README.md for nginx configuration with SSL certificates.
+
 **When to use this script:**
 
-- ✅ Production deployment on Linux servers
+- ✅ Production deployment on Linux servers (without nginx)
 - ✅ Need for gunicorn WSGI server with multiple workers
 - ✅ Automated virtual environment and dependency setup
 - ✅ Proper production server configuration
 
-**When to use `start.py`:**
+**When to use nginx (recommended for public sites):**
 
-- ✅ Development and testing on any platform (Windows/Mac/Linux)
-- ✅ Quick environment switching and server startup
-- ✅ Flask development server for debugging
+- ✅ SSL/HTTPS support
+- ✅ Static file serving
+- ✅ Reverse proxy with load balancing
+- ✅ Public web deployment
 
 ## Files
 

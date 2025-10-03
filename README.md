@@ -70,13 +70,21 @@ An intelligent AI-powered test case generation platform that creates comprehensi
    - Automatically configure the environment
    - Start both frontend and backend servers
 
-   **Note:** `start.py` uses Flask's development server suitable for development and testing. For production deployment on Linux servers, use the deployment script:
+   **Note:** `start.py` uses Flask's development server suitable for development and testing. For production deployment, you have two options:
 
+   **Option 1: Nginx + SSL (Recommended for public deployments)**
+   ```bash
+   # 1. Configure nginx (see Production Deployment section below)
+   # 2. Run the application
+   python start.py
+   ```
+
+   **Option 2: Gunicorn deployment script**
    ```bash
    python deploy/deploy.py
    ```
 
-   The deployment script uses gunicorn with multiple workers for production workloads.
+   The nginx setup provides SSL termination and static file serving, while the gunicorn script uses multiple workers for production workloads.
 
    **Available Environments:**
    - `development`: Debug mode enabled, local development servers
@@ -86,6 +94,88 @@ The application will be available at (fully configurable in `.env`):
 
 - Frontend: Your configured `FRONTEND_URL` (default: `http://localhost:8080`)
 - Backend API: Your configured `BACKEND_URL` (default: `http://localhost:5050`)
+
+## Production Deployment
+
+### Option 1: Nginx with SSL (Recommended)
+
+For secure production deployments with HTTPS:
+
+1. **SSL Certificates**: Place your certificates at `/etc/ssl/server.key` and `/etc/ssl/ssl_bundle.crt`
+
+2. **Nginx Configuration**: The application includes pre-configured nginx setup. Copy the site config:
+
+   ```bash
+   sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/yourdomain.com
+   ```
+
+   Edit `/etc/nginx/sites-available/yourdomain.com`:
+
+   ```nginx
+   server {
+       listen 443 ssl;
+       server_name yourdomain.com;
+
+       ssl_certificate /etc/ssl/ssl_bundle.crt;
+       ssl_certificate_key /etc/ssl/server.key;
+
+       # Proxy API requests to backend
+       location ~ ^/(health|analyze|generate|analyze_website|analyze_api) {
+           proxy_pass http://localhost:5050;
+           proxy_set_header Host $host;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+           proxy_set_header X-Forwarded-Proto $scheme;
+       }
+
+       # Serve static files
+       location / {
+           root /path/to/Test_Agent/frontend;
+           try_files $uri $uri/ /index.html;
+           add_header Cache-Control "no-cache, no-store, must-revalidate";
+       }
+   }
+
+   # Redirect HTTP to HTTPS
+   server {
+       listen 80;
+       server_name yourdomain.com;
+       return 301 https://$server_name$request_uri;
+   }
+   ```
+
+3. **Enable Site**:
+
+   ```bash
+   sudo ln -sf /etc/nginx/sites-available/yourdomain.com /etc/nginx/sites-enabled/
+   sudo rm -f /etc/nginx/sites-enabled/default
+   sudo nginx -t && sudo systemctl reload nginx
+   ```
+
+4. **Environment Configuration**: Update `.env.production`:
+
+   ```env
+   ENV=production
+   FRONTEND_URL=https://yourdomain.com
+   BACKEND_URL=https://yourdomain.com
+   FLASK_DEBUG=False
+   ```
+
+5. **Start Application**:
+
+   ```bash
+   python start.py  # Select production
+   ```
+
+### Option 2: Gunicorn Deployment
+
+For high-traffic deployments without nginx:
+
+```bash
+python deploy/deploy.py
+```
+
+This uses gunicorn with multiple workers and automatic virtual environment setup.
 
 ## Core Functionality
 
